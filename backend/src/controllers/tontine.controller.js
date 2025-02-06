@@ -12,6 +12,7 @@ const createTontineSchema = Joi.object({
   name: Joi.string().min(3).max(50).required(),
   description: Joi.string().max(255).optional(),
   amount: Joi.number().positive().required(),
+  userId: Joi.string().required(),
   frequency: Joi.string()
     .valid("quotidien", "hebdomadaire", "mensuel", "annuel")
     .required(),
@@ -21,20 +22,18 @@ const createTontineSchema = Joi.object({
 
 exports.createTontine = async (req, res) => {
   try {
-
     // validation des données de la requête
     const { error } = createTontineSchema.validate(req.body);
     if (error) {
-        return res
+      return res
         .status(400)
         .json({ error: `Données invalide : ${error.details[0].message}` });
     }
 
-      // Vérification de l'utilisateur
-      if (!req.user || !req.user.userId) {
-        return res.status(401).json({ error: "Utilisateur non authentifié" });
-      }
-
+    // Vérification de l'utilisateur
+    // if (!req.user || !req.user.userId) {
+    //  return res.status(401).json({ error: "Utilisateur non authentifié" });
+    //  }
 
     let date = new Date(); // date actuelle
     const code = uuid4(); // code d'invitation unique
@@ -43,10 +42,10 @@ exports.createTontine = async (req, res) => {
     const tontineData = {
       name: req.body.name,
       description: req.body.description,
-      creatorId: req.user.userId,
+      creatorId: req.body.userId,
       codeInvitation: code,
-      membersId: [req.user.userId],
-      adminId: [req.user.userId],
+      membersId: [req.body.userId],
+      adminId: [req.body.userId],
       inviteId: [],
       amount: req.body.amount,
       frequency: req.body.frequency,
@@ -72,12 +71,16 @@ exports.createTontine = async (req, res) => {
       .status(201)
       .json({ message: "Tontine créée avec succès", codeInvitation: code });
   } catch (err) {
-    res.status(500).json({ error: "échec lors de la création de la tontine" });
+    res
+      .status(500)
+      .json({
+        error: ` échec de la création de la tontine ${err.message}`
+      });
   }
 };
 exports.updateTontine = async (req, res) => {};
 exports.deleteTontine = async (req, res) => {};
-exports.getTontineId = async (req, res) => {};
+exports.getTontineById = async (req, res) => {};
 exports.makeAdmin = async (req, res) => {};
 exports.joinTontine = async (req, res) => {};
-exports.invitemember = async (req, res) => {};
+exports.inviteMember = async (req, res) => {};

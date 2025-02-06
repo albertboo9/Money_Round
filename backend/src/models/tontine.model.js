@@ -2,7 +2,7 @@
  * @fileoverview Modèle de données pour les tontines utilisant Firestore et Joi pour la validation.
  */
 
-const admin = require("firebase-admin"); // Importation du SDK Firebase Admin
+const admin = require("../config/firebase"); // Importation du SDK Firebase Admin
 const db = admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
 
@@ -13,7 +13,7 @@ const tontineSchema = Joi.object({
   name: Joi.string().min(3).max(50).required(), // Nom de la tontine (3 à 50 caractères, requis)
   description: Joi.string().max(255).optional(), // Description (max 255 caractères, optionnelle)
   creatorId: Joi.string().required(), // ID du créateur (requis)
-  codeInvitation: Joi.string().require(), // Code d'invitation (requis)
+  codeInvitation: Joi.string().required(), // Code d'invitation (requis)
   membersId: Joi.array().items(Joi.string()).default([]), // Liste des membres (par défaut vide)
   adminId: Joi.array().items(Joi.string()).default([]), // Liste des admins (par défaut vide)
   inviteId: Joi.array().items(Joi.string()).default([]), // Liste des utilisateurs invités à réjoindre la tontine (par défaut vide)
@@ -24,8 +24,8 @@ const tontineSchema = Joi.object({
   startDate: Joi.date().iso().required(), // Date de début (format ISO, requise)
   endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(), // Date de fin (optionnelle, doit être après startDate)
   status: Joi.string().valid("active", "terminée", "annulée").default("active"), // Statut de la tontine (valeurs prédéfinies, défaut: active)
-  createdAt: Joi.date().default(() => new Date(), "current date"), // Date de création (valeur par défaut: date actuelle)
-  updatedAt: Joi.date().default(() => new Date(), "current date"), // Date de mise à jour (valeur par défaut: date actuelle)
+  createdAt: Joi.date().required(), // Date de création (valeur par défaut: date actuelle)
+  updatedAt: Joi.date().required(), // Date de mise à jour (valeur par défaut: date actuelle)
 }).strict(); // Empêche l'ajout de champs non définis
 
 class TontineModel {

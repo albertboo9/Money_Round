@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 // Créer une nouvelle tontine
-router.post('/create', authMiddleware, tontineCtrl.createTontine);
+router.post('/create',  tontineCtrl.createTontine);
 
 // Mettre à jour une tontine existante
 router.put('/update/:tontineId', authMiddleware, tontineCtrl.updateTontine);
