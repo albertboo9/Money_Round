@@ -3,7 +3,7 @@
  */
 
 const admin = require("../config/firebase"); // Importation du SDK Firebase Admin
-const db = admin.firestore(); // Initialisation de Firestore
+const db = admin.admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
 const { FieldValue} = require('firebase-admin/firestore');
 
