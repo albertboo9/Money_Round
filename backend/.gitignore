@@ -1,6 +1,8 @@
 # Ignorer le dossier node_modules (très lourd)
 node_modules/
 
+#credential firebase
+src/config/moneyround-aa7a9-firebase-adminsdk-fbsvc-5c1b5bf2bb.json
 # Ignorer les fichiers d'environnement contenant des clés secrètes
 .env
 .env.local
@@ -24,3 +26,6 @@ serviceAccountKey.json
 # Ignorer les fichiers de dépendances locales
 package-lock.json
 yarn.lock
+
+#generateur de cle d'api
+src/script/generate.js
