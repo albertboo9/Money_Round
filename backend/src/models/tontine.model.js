@@ -5,6 +5,8 @@
 const admin = require("../config/firebase"); // Importation du SDK Firebase Admin
 const db = admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
+const { FieldValue} = require('firebase-admin/firestore');
+
 
 const TONTINE_COLLECTION = "tontines"; // Nom de la collection Firestore dédiée aux tontines
 
@@ -24,9 +26,11 @@ const tontineSchema = Joi.object({
   startDate: Joi.date().iso().required(), // Date de début (format ISO, requise)
   endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(), // Date de fin (optionnelle, doit être après startDate)
   status: Joi.string().valid("active", "terminée", "annulée").default("active"), // Statut de la tontine (valeurs prédéfinies, défaut: active)
-  createdAt: Joi.date().required(), // Date de création (valeur par défaut: date actuelle)
-  updatedAt: Joi.date().required(), // Date de mise à jour (valeur par défaut: date actuelle)
+  createdAt: Joi.date().optional(), // Date de création (valeur par défaut: date actuelle)
+  updatedAt: Joi.date().optional(), // Date de mise à jour (valeur par défaut: date actuelle)
 }).strict(); // Empêche l'ajout de champs non définis
+
+let date = new Date()
 
 class TontineModel {
   /**
@@ -43,8 +47,8 @@ class TontineModel {
       // Ajout de la tontine à Firestore avec timestamp
       const tontineRef = await db.collection(TONTINE_COLLECTION).add({
         ...value,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
       });
 
       return tontineRef.id; // Retourne l'ID de la tontine créée
@@ -135,4 +139,4 @@ class TontineModel {
   }
 }
 
-module.exports = TontineModel; // Exportation du modèle pour utilisation externe
+module.exports = {TontineModel, tontineSchema}; // Exportation du modèle pour utilisation externe
