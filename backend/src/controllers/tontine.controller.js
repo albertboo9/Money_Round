@@ -2,8 +2,7 @@
  * @fileoverview controllers pour la gestion des tontines de MoneyRound
  */
 
-const { FiledValue } = require("firebase-admin").firestore;
-const tontineModel = require("../models/tontine.model");
+const { TontineModel, tontineSchema } = require("../models/tontine.model");
 const { v4: uuid4 } = require("uuid");
 const Joi = require("joi");
 
@@ -36,8 +35,14 @@ exports.createTontine = async (req, res) => {
     //  }
 
     let date = new Date(); // date actuelle
+    let date1 = new Date();
+    date1 = req.body.startDate; // date actuelle
+    console.log(date1);
+    let date2 = new Date(); // date actuelle
     const code = uuid4(); // code d'invitation unique
 
+    console.log(req.body.startDate);
+    console.log(date);
     // données de la tontine
     const tontineData = {
       name: req.body.name,
@@ -49,33 +54,29 @@ exports.createTontine = async (req, res) => {
       inviteId: [],
       amount: req.body.amount,
       frequency: req.body.frequency,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
+      startDate: new Date(req.body.startDate), // Conversion en objet Date
+      endDate: req.body.endDate ? new Date(req.body.endDate) : null, // Conversion en objet Date si endDate est fourni
       status: "active",
-      createdAt: date,
-      updatedAt: date,
     };
 
     // validation des données de créationd de la tontine
-    const tontineSchema = tontineModel.tontineSchema;
-
     const { err } = tontineSchema.validate(tontineData);
 
     if (err) {
-      return res.status(400).json({ error: err.details[0].message });
+      return res
+        .status(400)
+        .json({ error: err.message, message: "tontineShema invalide" });
     }
 
     //création de la tontine
-    await tontineModel.createTontine(tontineData);
+    await TontineModel.createTontine(tontineData);
     res
       .status(201)
       .json({ message: "Tontine créée avec succès", codeInvitation: code });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        error: ` échec de la création de la tontine ${err.message}`
-      });
+    res.status(500).json({
+      error: ` échec de la création de la tontine ${err.message}`,
+    });
   }
 };
 exports.updateTontine = async (req, res) => {};

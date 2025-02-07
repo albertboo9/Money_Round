@@ -19,6 +19,7 @@ firebase-debug.log
 # Ignorer les fichiers générés par l'OS
 .DS_Store
 Thumbs.db
+serviceAccountKey.json
 
 # Ignorer les fichiers de dépendances locales
 package-lock.json
