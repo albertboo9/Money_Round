@@ -30,6 +30,23 @@ const tontineSchema = Joi.object({
   updatedAt: Joi.date().optional(), // Date de mise à jour (valeur par défaut: date actuelle)
 }).strict(); // Empêche l'ajout de champs non définis
 
+const updateTontineSchema = Joi.object({
+  name: Joi.string().min(3).max(50).optional(),
+  description: Joi.string().max(255).optional(),
+  creatorId: Joi.string().optional(),
+  codeInvitation: Joi.string().optional(),
+  membersId: Joi.array().items(Joi.string()).optional(),
+  adminId: Joi.array().items(Joi.string()).optional(),
+  inviteId: Joi.array().items(Joi.string()).optional(),
+  amount: Joi.number().positive().optional(),
+  frequency: Joi.string().valid("quotidien", "hebdomadaire", "mensuel", "annuel").optional(),
+  startDate: Joi.date().iso().optional(),
+  endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
+  status: Joi.string().valid("active", "terminée", "annulée").optional(),
+  createdAt: Joi.date().optional(),
+  updatedAt: Joi.date().optional(),
+}).strict();
+
 let date = new Date()
 
 class TontineModel {
@@ -93,8 +110,8 @@ class TontineModel {
       const tontineDoc = await tontineRef.get();
       if (!tontineDoc.exists) throw new Error("Tontine introuvable");
 
-      // Validation des données mises à jour
-      const { error, value } = tontineSchema.validate(tontineData, {
+      // Validation des données mises à jour avec Joi
+      const { error, value } = updateTontineSchema.validate(tontineData, {
         allowUnknown: false, // Empêche l'ajout de champs non définis
         presence: "optional", // Rend tous les champs optionnels
       });
@@ -103,7 +120,7 @@ class TontineModel {
       // Mise à jour des données dans Firestore
       await tontineRef.update({
         ...value,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(), // Mise à jour de la date
+        updatedAt: FieldValue.serverTimestamp(), // Mise à jour de la date
       });
 
       return { id: tontineId, ...value }; // Retourne les nouvelles données de la tontine

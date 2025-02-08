@@ -9,7 +9,7 @@ router.use(verifyApiKey)
 router.post('/create',  tontineCtrl.createTontine);
 
 // Mettre à jour une tontine existante
-router.put('/update/:tontineId', authMiddleware, tontineCtrl.updateTontine);
+router.put('/update/:tontineId', tontineCtrl.updateTontine);
 
 // Supprimer une tontine
 router.delete('/delete/:tontineId', authMiddleware, tontineCtrl.deleteTontine);
