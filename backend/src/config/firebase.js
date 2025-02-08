@@ -1,4 +1,3 @@
-
 // Import the functions you need from the SDKs you need
 require("dotenv").config();
 

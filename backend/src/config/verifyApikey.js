@@ -9,7 +9,7 @@ const verifyApiKey= async(req,res,next)=>{
     const appName=req.header('appname');
 
     if(!apiKey||!appName){
-        return res.status(400).json({message:'apiKey and  appName are reuires'})
+        return res.status(400).json({message:'apiKey and  appName are required'})
     }
 
     try {
