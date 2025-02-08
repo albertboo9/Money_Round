@@ -18,6 +18,17 @@ const createTontineSchema = Joi.object({
   startDate: Joi.date().iso().required(),
   endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
 });
+const updateTontineSchema = Joi.object({
+  name: Joi.string().min(3).max(50).optional(),
+  description: Joi.string().max(255).optional(),
+  amount: Joi.number().positive().optional(),
+  frequency: Joi.string()
+    .valid("quotidien", "hebdomadaire", "mensuel", "annuel")
+    .optional(),
+  startDate: Joi.date().iso().optional(),
+  endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
+  status: Joi.string().valid("active", "terminée", "annulée").optional(),
+});
 
 exports.createTontine = async (req, res) => {
   try {
@@ -79,7 +90,36 @@ exports.createTontine = async (req, res) => {
     });
   }
 };
-exports.updateTontine = async (req, res) => {};
+exports.updateTontine = async (req, res) => {
+  try {
+    // Validation des données de la requête
+    const { error } = updateTontineSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: `Données invalides : ${error.details[0].message}` });
+    }
+
+    const tontineId = req.params.tontineId;
+    console.log("l'Id de la tontine est " + tontineId);
+
+    // Vérification de l'existence de la tontine
+    const tontineDoc = await TontineModel.getTontineById(tontineId);
+    if (!tontineDoc) {
+      return res.status(404).json({ error: "Tontine introuvable" });
+    }
+
+    // Préparation des données à mettre à jour
+    const tontineData = {
+      ...req.body,
+      updatedAt: new Date(), // Mise à jour de la date
+    };
+
+    // Mise à jour de la tontine
+    const updatedTontine = await TontineModel.updateTontine(tontineId, tontineData);
+    res.status(200).json({ message: "Tontine mise à jour avec succès", tontine: updatedTontine });
+  } catch (err) {
+    res.status(500).json({ error: `Échec de la mise à jour de la tontine : ${err.message}` });
+  }
+};
 exports.deleteTontine = async (req, res) => {};
 exports.getTontineById = async (req, res) => {};
 exports.makeAdmin = async (req, res) => {};
