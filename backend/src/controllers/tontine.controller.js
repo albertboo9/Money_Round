@@ -1,6 +1,7 @@
 /**
  * @fileoverview controllers pour la gestion des tontines de MoneyRound
  */
+const NotificationService = require("../services/notification.service");
 
 const { TontineModel, tontineSchema } = require("../models/tontine.model");
 const { v4: uuid4 } = require("uuid");
@@ -81,6 +82,14 @@ exports.createTontine = async (req, res) => {
 
     //création de la tontine
     await TontineModel.createTontine(tontineData);
+
+    await NotificationService.sendNotification(
+      //userid ....
+      //firebase token
+      "Nouvelle Tontine Créée",
+      `Votre tontine "${tontineData.name}" a été créée avec succès.`
+    );
+
     res
       .status(201)
       .json({ message: "Tontine créée avec succès", codeInvitation: code });
