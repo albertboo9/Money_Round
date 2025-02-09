@@ -154,6 +154,58 @@ class TontineModel {
       throw new Error("Impossible de supprimer la tontine.");
     }
   }
+
+  /**
+   * Ajoute un utilisateur à la liste des invités d'une tontine.
+   * @param {string} tontineId - ID de la tontine.
+   * @param {string} userId - ID de l'utilisateur à inviter.
+   * @returns {Promise<void>}
+   */
+  static async inviteMember(tontineId, userId) {
+    try {
+      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
+      const tontineDoc = await tontineRef.get();
+      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
+
+      // Ajouter l'utilisateur à la liste des invités
+      await tontineRef.update({
+        inviteId: admin.firestore.FieldValue.arrayUnion(userId),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'invitation de l'utilisateur:", error.message);
+      throw new Error("Impossible d'inviter l'utilisateur.");
+    }
+  }
+
+  /**
+   * Ajoute un utilisateur à la liste des membres d'une tontine et le retire de la liste des invités.
+   * @param {string} tontineId - ID de la tontine.
+   * @param {string} userId - ID de l'utilisateur à ajouter.
+   * @returns {Promise<void>}
+   */
+  static async joinTontine(tontineId, userId) {
+    try {
+      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
+      const tontineDoc = await tontineRef.get();
+      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
+
+      const tontineData = tontineDoc.data();
+      if (!tontineData.inviteId.includes(userId)) {
+        throw new Error("L'utilisateur n'est pas invité à rejoindre la tontine");
+      }
+
+      // Ajouter l'utilisateur à la liste des membres et le retirer de la liste des invités
+      await tontineRef.update({
+        membersId: admin.firestore.FieldValue.arrayUnion(userId),
+        inviteId: admin.firestore.FieldValue.arrayRemove(userId),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'ajout de l'utilisateur à la tontine:", error.message);
+      throw new Error("Impossible d'ajouter l'utilisateur à la tontine.");
+    }
+  }
 }
 
 module.exports = {TontineModel, tontineSchema}; // Exportation du modèle pour utilisation externe
