@@ -1,9 +1,11 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const admin = require("../config/firebase");
+const {getAuth} = require("firebase-admin/auth");
 
 module.exports = () => async (req, res, next) => {
   try {
+    console.log("Middleware appelé");
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({ message: "Accès non autorisé" });
@@ -11,22 +13,16 @@ module.exports = () => async (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
-    // Vérification du token JWT
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    // Vérification du token JWT
-    /*    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded
-    // Vérification du token Firebase
-    const firebaseToken = req.headers["firebase-token"];
-    if (!firebaseToken) {
-      return res.status(401).json({ message: "Token Firebase manquant" });
+    // Vérification et décodage du JWT
+    try {
+      req.user = await getAuth().verifyIdToken(token);
+      console.log("Id de l'utilisateur", req.user.uid);
+      next(); // On retourne au contrôleur si tout est Okay
+    } catch (error) {
+      console.error("Token invalide ou expiré", error.message);
+      return res.status(401).json({ message: "Token invalide ou expiré" });
     }
 
-    const firebaseUser = await admin.auth().verifyIdToken(firebaseToken);
-    req.firebaseUser = firebaseUser; */
-
-    next();
   } catch (error) {
     console.error("Erreur d'authentification", error.message);
     return res.status(401).json({ message: "Accès non autorisé" });

@@ -13,33 +13,28 @@ exports.syncUser = async (req, res) => {
         }
 
         const token = authHeader.split(" ")[1];
+        let decodedToken;
 
         // Vérification et décodage du JWT
-        let decodedToken;
-        await getAuth()
-            .verifyIdToken(token)
-            .then((decodedIdToken) => {
-                decodedToken = decodedIdToken;
-                //res.status(200).json({message: "User created successfully.", token: decodedToken.uid});
-            })
-            .catch((error) => {
-                console.error("Token invalide ou expiré", error.message);
-                res.status(400).json({ error: "Token invalide ou expiré" });
-            })
+        try {
+            decodedToken = await getAuth().verifyIdToken(token);
+            console.log("Id de l'utilisateur", decodedToken.uid);
+        } catch (error) {
+            console.error("Token invalide ou expiré", error.message);
+            return res.status(401).json({ message: "Token invalide ou expiré" });
+        }
 
+        //const user = req.user;
+        //console.log(user);
         const userData = {
             uid: decodedToken.uid,
             email: decodedToken.email,
         };
         await UserModel.createUser(userData);
 
-        res
-            .status(200)
-            .json({ message: `Utilisateur récupéré avec succès`, id: decodedToken.uid});
+        return  res.status(200).json({ message: `Utilisateur récupéré avec succès`, id: decodedToken.uid});
     } catch (err) {
-        res.status(500).json({
-            error: ` échec de recupération de l'utilisateur ${err.message}`,
-        });
+        return  res.status(500).json({error: ` échec de recupération de l'utilisateur ${err.message}`});
     }
 };
 
