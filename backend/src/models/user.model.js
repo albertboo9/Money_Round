@@ -28,9 +28,8 @@ class UserModel {
      */
     static async createUser(userData) {
         try {
-
             // Ajout de l'utilisateur à Firestore
-            const userRef = await db.collection("users").doc(userData.uid).set({
+            const userRef = await db.collection(USER_COLLECTION).doc(userData.uid).set({
                 ...userData,
                 fullName: null,
                 phoneNumber: null,

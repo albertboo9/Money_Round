@@ -1,32 +1,41 @@
 const { UserModel, userSchema } = require("../models/user.model");
 const { v4: uuid4 } = require("uuid");
 const Joi = require("joi");
+const {getAuth} = require("firebase-admin/auth");
 
 
-// schema de validation des données provenant de la requête
-const createUserSchema = Joi.object({
-    fullName: Joi.string().min(3).max(50).required(),
-    email: Joi.string().email().required(),
-    phoneNumber: Joi.string().required(),
-});
+exports.syncUser = async (req, res) => {
 
-
-exports.createUser = async (req, res) => {
     try {
-        const user = req.user;
-        console.log("Données de l'utilisateur extraites du jwt: " + user);
-        const uid = user.user_id;
-        const email = user.email;
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "Accès non autorisé" });
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        // Vérification et décodage du JWT
+        let decodedToken;
+        await getAuth()
+            .verifyIdToken(token)
+            .then((decodedIdToken) => {
+                decodedToken = decodedIdToken;
+                //res.status(200).json({message: "User created successfully.", token: decodedToken.uid});
+            })
+            .catch((error) => {
+                console.error("Token invalide ou expiré", error.message);
+                res.status(400).json({ error: "Token invalide ou expiré" });
+            })
 
         const userData = {
-            uid: uid,
-            email: email
+            uid: decodedToken.uid,
+            email: decodedToken.email,
         };
         await UserModel.createUser(userData);
 
         res
             .status(200)
-            .json({ message: `Utilisateur récupéré avec succès`, data: user});
+            .json({ message: `Utilisateur récupéré avec succès`, id: decodedToken.uid});
     } catch (err) {
         res.status(500).json({
             error: ` échec de recupération de l'utilisateur ${err.message}`,

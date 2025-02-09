@@ -4,10 +4,11 @@ const express = require('express');
 const router = express.Router();
 const verifyApiKey=require('../config/verifyApikey')
 
-router.use(verifyApiKey)
+//router.use(verifyApiKey);
 
-// Créer un nouvel utilisateur
-router.post('/', authMiddleware, userController.createUser);
+// Synchronisation des données de l'utilisateur Firebase Authentification avec Firestore
+//router.post('/sync', authMiddleware, userController.createUser);
+router.post('/sync', userController.syncUser);
 
 // Récupérer un utilisateur par son Id
 router.get('/:userId', authMiddleware, userController.getUserById);
