@@ -18,6 +18,7 @@ module.exports = () => async (req, res, next) => {
       req.user = await getAuth().verifyIdToken(token);
       console.log("Id de l'utilisateur", req.user.uid);
       next(); // On retourne au contrôleur si tout est Okay
+
     } catch (error) {
       console.error("Token invalide ou expiré", error.message);
       return res.status(401).json({ message: "Token invalide ou expiré" });
