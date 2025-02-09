@@ -24,7 +24,7 @@ const corsOptions = {
   optionsSuccessStatus: 204
 };
 app.use(cors(corsOptions));
-app.use(helmet)
+app.use(helmet());
 
 // Utiliser Morgan pour journaliser les requêtes HTTP
 app.use(morgan('combined'));
