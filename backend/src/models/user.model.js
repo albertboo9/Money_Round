@@ -2,8 +2,6 @@ const admin = require("../config/firebase"); // Importation du SDK Firebase Admi
 const db = admin.admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
 const { FieldValue} = require('firebase-admin/firestore');
-const functions = require('firebase-functions');
-const {createUser} = require("../controllers/user.controller");
 
 const USER_COLLECTION = "users"; // Collection Firestore dédiée aux utilisateurs
 
@@ -23,29 +21,6 @@ const userSchema = Joi.object({
 
 class UserModel {
 
-    static async syncNewUserToFirestore(user) {
-        try {
-            const { uid, email } = user;
-            const userData = {
-                uid: uid,
-                email: email,
-                fullName: null,
-                phoneNumber: null,
-                profilePicture: null,
-                amount: 0,
-                inscriptionDate: FieldValue.serverTimestamp(),
-                updatedAt: FieldValue.serverTimestamp(),
-            };
-
-            const userRef = await db.collection("users").doc(uid).set(userData);
-
-            console.log(`Utilisateur ${userRef.id} crée avec succès !`)
-        }catch(err) {
-            console.error("Erreur lors de la synchronisation de l'utilisateur avec Firestore:", err.message);
-            throw new Error("Impossible de synchroniser l'utilisateur");
-        }
-    }
-
     /**
      * Crée un nouvel utilisateur et l'ajoute à Firestore.
      * @param {Object} userData - Données de l'utilisateur à créer.
@@ -53,19 +28,19 @@ class UserModel {
      */
     static async createUser(userData) {
         try {
-            // Validation des données avec Joi
-            const { error, value } = userSchema.validate(userData);
-            if (error) throw new Error(`Validation échouée: ${error.message}`);
 
             // Ajout de l'utilisateur à Firestore
-            const userRef = await db.collection(USER_COLLECTION).add({
-                ...value,
+            const userRef = await db.collection("users").doc(userData.uid).set({
+                ...userData,
+                fullName: null,
+                phoneNumber: null,
+                profilePicture: null,
                 amount: 0,
                 inscriptionDate: FieldValue.serverTimestamp(),
-                updatedAt: FieldValue.serverTimestamp(),
+                updatedAt: FieldValue.serverTimestamp()
             });
 
-            return userRef.id; // Retourne l'Id de l'utilisateur créé
+            return userRef.id; // Retourne l'Id de l'utilisateur recupéré
         } catch (error) {
             console.error("Erreur lors de la création de l'utilisateur :", error.message);
             throw new Error("Impossible de créer l'utilisateur.");
@@ -74,8 +49,3 @@ class UserModel {
 }
 
 module.exports = {UserModel, userSchema};
-
-// Appel de la fonction de synchronisation de l'utilisateur Firebase Authentification avec Firestore
-exports.createUser = functions.auth.user().onCreate((user) => {
-    return UserModel.syncNewUserToFirestore(user);
-});

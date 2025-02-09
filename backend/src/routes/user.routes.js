@@ -7,10 +7,10 @@ const verifyApiKey=require('../config/verifyApikey')
 router.use(verifyApiKey)
 
 // Créer un nouvel utilisateur
-router.post('/',  userController.createUser);
+router.post('/', authMiddleware, userController.createUser);
 
 // Récupérer un utilisateur par son Id
-router.get('/:tontineId', authMiddleware, userController.getUserById);
+router.get('/:userId', authMiddleware, userController.getUserById);
 
 // Mise à jour d'un utilisateur
 router.put('/:userId', authMiddleware, userController.updateUser);

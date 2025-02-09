@@ -13,27 +13,23 @@ const createUserSchema = Joi.object({
 
 exports.createUser = async (req, res) => {
     try {
-        // validation des données de la requête
-        const { error } = createUserSchema.validate(req.body);
-        if (error) {
-            return res
-                .status(400)
-                .json({ error: `Données invalides : ${error.details[0].message}` });
-        }
+        const user = req.user;
+        console.log("Données de l'utilisateur extraites du jwt: " + user);
+        const uid = user.user_id;
+        const email = user.email;
 
-        // données de la tontine
         const userData = {
-            fullName: req.body.fullName,
-            email: req.body.email,
-            phoneNumber: req.body.phoneNumber
+            uid: uid,
+            email: email
         };
+        await UserModel.createUser(userData);
 
         res
-            .status(201)
-            .json({ message: "Utilisateur créé avec succès"});
+            .status(200)
+            .json({ message: `Utilisateur récupéré avec succès`, data: user});
     } catch (err) {
         res.status(500).json({
-            error: ` échec de création de l'utilisateur ${err.message}`,
+            error: ` échec de recupération de l'utilisateur ${err.message}`,
         });
     }
 };
