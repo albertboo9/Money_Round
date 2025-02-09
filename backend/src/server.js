@@ -4,8 +4,16 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const tontineRoutes = require('./routes/tontine.routes'); // Importation des routes
+const requestLogger = require('./middlewares/requestLogger');
+const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
+
+// utilisation d'un middleware de logging
+app.use(requestLogger);
+
+// utilisation d'un middleware de gestion des erreurs
+app.use(errorHandler);
 
 // Configuration des options CORS
 const corsOptions = {

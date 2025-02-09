@@ -12,10 +12,10 @@ router.post('/create',  tontineCtrl.createTontine);
 router.put('/update/:tontineId', tontineCtrl.updateTontine);
 
 // Supprimer une tontine
-router.delete('/delete/:tontineId', authMiddleware, tontineCtrl.deleteTontine);
+router.delete('/delete/:tontineId',  tontineCtrl.deleteTontine);
 
 // Récupérer une tontine par son ID
-router.get('/:tontineId', authMiddleware, tontineCtrl.getTontineById);
+router.get('/:tontineId', tontineCtrl.getTontineById);
 
 // Nommer un administrateur de tontine
 router.put('/admin/:tontineId', authMiddleware, tontineCtrl.makeAdmin);
