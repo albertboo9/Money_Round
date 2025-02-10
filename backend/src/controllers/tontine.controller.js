@@ -20,7 +20,6 @@ const createTontineSchema = Joi.object({
   endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
 });
 
-
 const updateTontineSchema = Joi.object({
   name: Joi.string().min(3).max(50).optional(),
   description: Joi.string().max(255).optional(),
@@ -102,13 +101,14 @@ exports.createTontine = async (req, res) => {
   }
 };
 
-
 exports.updateTontine = async (req, res) => {
   try {
     // Validation des données de la requête
     const { error } = updateTontineSchema.validate(req.body);
     if (error) {
-      return res.status(400).json({ error: `Données invalides : ${error.details[0].message}` });
+      return res
+        .status(400)
+        .json({ error: `Données invalides : ${error.details[0].message}` });
     }
 
     const tontineId = req.params.tontineId;
@@ -127,13 +127,24 @@ exports.updateTontine = async (req, res) => {
     };
 
     // Mise à jour de la tontine
-    const updatedTontine = await TontineModel.updateTontine(tontineId, tontineData);
-    res.status(200).json({ message: "Tontine mise à jour avec succès", tontine: updatedTontine });
+    const updatedTontine = await TontineModel.updateTontine(
+      tontineId,
+      tontineData
+    );
+    res
+      .status(200)
+      .json({
+        message: "Tontine mise à jour avec succès",
+        tontine: updatedTontine,
+      });
   } catch (err) {
-    res.status(500).json({ error: `Échec de la mise à jour de la tontine : ${err.message}` });
+    res
+      .status(500)
+      .json({
+        error: `Échec de la mise à jour de la tontine : ${err.message}`,
+      });
   }
 };
-
 
 exports.deleteTontine = async (req, res) => {
   try {
@@ -150,10 +161,13 @@ exports.deleteTontine = async (req, res) => {
     await TontineModel.deleteTontine(tontineId);
     res.status(200).json({ message: "Tontine supprimée avec succès" });
   } catch (err) {
-    res.status(500).json({ error: `Échec de la suppression de la tontine : ${err.message}` });
+    res
+      .status(500)
+      .json({
+        error: `Échec de la suppression de la tontine : ${err.message}`,
+      });
   }
 };
-
 
 exports.getTontineById = async (req, res) => {
   try {
@@ -169,10 +183,13 @@ exports.getTontineById = async (req, res) => {
     // Renvoyer les données de la tontine
     res.status(200).json(tontineDoc);
   } catch (err) {
-    res.status(500).json({ error: `Échec de la récupération de la tontine : ${err.message}` });
+    res
+      .status(500)
+      .json({
+        error: `Échec de la récupération de la tontine : ${err.message}`,
+      });
   }
 };
-
 
 exports.makeAdmin = async (req, res) => {
   try {
@@ -181,7 +198,9 @@ exports.makeAdmin = async (req, res) => {
     const requestingUserId = req.user.userId; // ID de l'utilisateur qui effectue la requête
     console.log("L'ID de la tontine est " + tontineId);
     console.log("L'ID de l'utilisateur à promouvoir est " + userIdToPromote);
-    console.log("L'ID de l'utilisateur qui effectue la requête est " + requestingUserId);
+    console.log(
+      "L'ID de l'utilisateur qui effectue la requête est " + requestingUserId
+    );
 
     // Vérification de l'existence de la tontine
     const tontineDoc = await TontineModel.getTontineById(tontineId);
@@ -191,17 +210,27 @@ exports.makeAdmin = async (req, res) => {
 
     // Vérification si l'utilisateur qui effectue la requête est un administrateur
     if (!tontineDoc.adminId.includes(requestingUserId)) {
-      return res.status(403).json({ error: "Accès refusé : Vous devez être administrateur pour promouvoir un membre" });
+      return res
+        .status(403)
+        .json({
+          error:
+            "Accès refusé : Vous devez être administrateur pour promouvoir un membre",
+        });
     }
 
     // Promotion de l'utilisateur en administrateur
     await TontineModel.makeAdmin(tontineId, userIdToPromote);
-    res.status(200).json({ message: "Utilisateur promu en administrateur avec succès" });
+    res
+      .status(200)
+      .json({ message: "Utilisateur promu en administrateur avec succès" });
   } catch (err) {
-    res.status(500).json({ error: `Échec de la promotion de l'utilisateur en administrateur : ${err.message}` });
+    res
+      .status(500)
+      .json({
+        error: `Échec de la promotion de l'utilisateur en administrateur : ${err.message}`,
+      });
   }
 };
-
 
 exports.joinTontine = async (req, res) => {
   try {
@@ -218,17 +247,27 @@ exports.joinTontine = async (req, res) => {
 
     // Vérification si l'utilisateur est invité
     if (!tontineDoc.inviteId.includes(userId)) {
-      return res.status(403).json({ error: "Accès refusé : Vous devez être invité pour rejoindre cette tontine" });
+      return res
+        .status(403)
+        .json({
+          error:
+            "Accès refusé : Vous devez être invité pour rejoindre cette tontine",
+        });
     }
 
     // Ajout de l'utilisateur à la tontine
     await TontineModel.joinTontine(tontineId, userId);
-    res.status(200).json({ message: "Utilisateur ajouté à la tontine avec succès" });
+    res
+      .status(200)
+      .json({ message: "Utilisateur ajouté à la tontine avec succès" });
   } catch (err) {
-    res.status(500).json({ error: `Échec de l'ajout de l'utilisateur à la tontine : ${err.message}` });
+    res
+      .status(500)
+      .json({
+        error: `Échec de l'ajout de l'utilisateur à la tontine : ${err.message}`,
+      });
   }
 };
-
 
 exports.inviteMember = async (req, res) => {
   try {
@@ -237,7 +276,9 @@ exports.inviteMember = async (req, res) => {
     const requestingUserId = req.user.userId; // ID de l'utilisateur qui effectue la requête
     console.log("L'ID de la tontine est " + tontineId);
     console.log("L'ID de l'utilisateur à inviter est " + userIdToInvite);
-    console.log("L'ID de l'utilisateur qui effectue la requête est " + requestingUserId);
+    console.log(
+      "L'ID de l'utilisateur qui effectue la requête est " + requestingUserId
+    );
 
     // Vérification de l'existence de la tontine
     const tontineDoc = await TontineModel.getTontineById(tontineId);
@@ -247,13 +288,22 @@ exports.inviteMember = async (req, res) => {
 
     // Vérification si l'utilisateur qui effectue la requête est un administrateur
     if (!tontineDoc.adminId.includes(requestingUserId)) {
-      return res.status(403).json({ error: "Accès refusé : Vous devez être administrateur pour inviter un membre" });
+      return res
+        .status(403)
+        .json({
+          error:
+            "Accès refusé : Vous devez être administrateur pour inviter un membre",
+        });
     }
 
     // Invitation de l'utilisateur
     await TontineModel.inviteMember(tontineId, userIdToInvite);
     res.status(200).json({ message: "Utilisateur invité avec succès" });
   } catch (err) {
-    res.status(500).json({ error: `Échec de l'invitation de l'utilisateur : ${err.message}` });
+    res
+      .status(500)
+      .json({
+        error: `Échec de l'invitation de l'utilisateur : ${err.message}`,
+      });
   }
 };
