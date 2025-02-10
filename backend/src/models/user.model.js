@@ -16,33 +16,50 @@ const userSchema = Joi.object({
     phoneNumber: Joi.string().required(),  // Numero de telephone de l'utilisateur
     inscriptionDate: Joi.date().optional(), // Date d'inscription (valeur par défaut: date actuelle)
     updatedAt: Joi.date().optional(), // Date de mise à jour (valeur par défaut: date actuelle)
+    isActive: Joi.boolean().optional(),
+    isBlocked: Joi.boolean().optional(),
 }).strict(); // Empêche l'ajout de champs non définis
 
 
 class UserModel {
 
     /**
-     * Crée un nouvel utilisateur et l'ajoute à Firestore.
-     * @param {Object} userData - Données de l'utilisateur à créer.
-     * @returns {Promise<string>} - ID de l'utilisateur créé.
+     * Synchronise les données de l'utilisateur Firebase Authentification avec celles de Firestore.
+     * @param {Object} userData - Données de l'utilisateur recupérées dans le JWT de la requete.
+     * @returns {Promise<string>} - ID de l'utilisateur.
      */
     static async syncUser(userData) {
         try {
-            // Ajout de l'utilisateur à Firestore
-            const userRef = await db.collection(USER_COLLECTION).doc(userData.uid).set({
-                ...userData,
-                //fullName: null,
-                //phoneNumber: null,
-                profilePicture: null,
-                amount: 0,
-                inscriptionDate: FieldValue.serverTimestamp(),
-                updatedAt: FieldValue.serverTimestamp()
-            });
+            const userRef = db.collection(USER_COLLECTION).doc(userData.uid);
 
-            //return userRef.id; // Retourne l'Id de l'utilisateur recupéré
+            const userDoc = await userRef.get();
+
+            // Si l'utilisateur n'existe pas encore dans Firestore on l'ajoute
+            if (!userDoc.exists) {
+                await userRef.set({
+                    ...userData,
+                    profilePicture: null,
+                    amount: 0,
+                    inscriptionDate: FieldValue.serverTimestamp(),
+                    updatedAt: FieldValue.serverTimestamp(),
+                    isActive: true,
+                    isBlocked: false,
+                });
+                console.log("Utilisateur ajouté", userRef.id);
+
+            }else {
+                // Si l'utilisateur existe déja on met à jour ses informations
+                await userRef.update({
+                    ...userData,
+                    updatedAt: FieldValue.serverTimestamp()
+                });
+                console.log("Utilisateur mis à jour", userRef.id);
+            }
+
+            return userRef.id;
         } catch (error) {
-            console.error("Erreur lors de la création de l'utilisateur :", error.message);
-            throw new Error("Impossible de créer l'utilisateur.");
+            console.error("Erreur lors de la synchronisation de l'utilisateur :", error.message);
+            throw new Error("Impossible de synchroniser l'utilisateur.");
         }
     }
 }
