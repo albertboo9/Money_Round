@@ -1,0 +1,24 @@
+:root{
+    --strong-grey:rgb(82, 82, 82);
+    --medium-grey:#dcdcdc;
+    --small-grey:#f5f5f5;
+    --primary-color:#5ceb70;
+    --secondary-color:#b3ed78;
+    --hover-color:#269735;
+    --third-color:#ebf9ff;
+
+
+}
+*,*:link,*::placeholder{
+    font-family: "berlin sans fb";
+}
+.classic-btn{
+    border:none;
+    border-radius: 50px;
+    cursor:pointer;
+    color:white;
+    background-color: var(--primary-color);
+}
+.classic-btn:hover{
+    background-color: var(--hover-color);
+}

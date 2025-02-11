@@ -1,0 +1,113 @@
+#landingPage{
+    background-color: var(--small-grey);
+    }
+    #landingPage .second-view{
+        width: 100%;
+        background-color: var(--third-color);
+        margin-top: 150px;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+        padding-top: 20px;
+        }   
+        #landingPage .second-view section{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        #landingPage .second-view .first-text{
+            font-size: 60px;
+            margin-bottom: 30px;
+            }
+            #landingPage .second-view .first-text span{
+                color: var(--primary-color);
+        }
+        #landingPage .second-view .second-text{
+            font-size: 22px;
+            width: 60%;
+            align-self: center;
+            color: #aaaaaa;
+            margin-bottom: 30px;
+        }
+        #landingPage .second-view button{
+            height: 40px;
+            width: auto;
+            align-self: center;
+            box-sizing: border-box;
+            font-size: 25px;
+            padding: 30px 20px 30px 20px;
+            display: flex;
+            vertical-align: middle;
+            color:black;
+            margin-bottom: 30px;
+            }
+            #landingPage .second-view button div{
+                align-self: center;
+            }
+            #landingPage .second-view button span{
+                margin-left: 5px;
+                align-self: center;
+        }
+        #landingPage .second-view .presentation img{
+            width:60%;
+            align-self: center;
+            margin-bottom:60px ;
+        }
+        #landingPage .second-view .feature{
+
+            }
+            #landingPage .second-view .feature .feature-head{
+                background-color:var(--medium-grey);
+                align-self: center;
+                width: auto;
+                height: auto;
+                font-size: 20px;
+                padding: 10px 20px;
+                border-radius: 50px;
+                margin-bottom: 30px;
+            }
+            #landingPage .second-view .feature .first-text{
+                width: 40%;
+                align-self: center;
+            }
+
+        #landingPage .second-view .all-advantages{
+            width: 90%;
+            align-self: center;
+            background-color: #D3F0FC;
+            color: black !important;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap:5%;
+            padding: 50px;
+            border-radius: 50px;
+            }
+            #landingPage .second-view .all-advantages .see-advantages{
+                grid-row: 1;
+                grid-column: 1;
+                display: flex;
+                flex-direction: column;
+                transform: translateY(30%);
+                }
+                #landingPage .second-view .all-advantages .see-advantages .second-text{
+                    color: black;
+                    width: 100%;
+                    text-align: left;
+                }
+                #landingPage .second-view .all-advantages .see-advantages .advantage{
+                    background-color: var(--primary-color);
+                    margin-bottom: 15px;
+                    align-self: baseline;
+                    width: auto;
+                    padding: 5px;
+                    text-align: left;
+                    border-radius: 50px;
+                }
+            #landingPage .second-view .all-advantages .img-advantage{
+                grid-column: 2;
+                }
+                #landingPage .second-view .all-advantages .img-advantage img{
+                    width: 100%;
+                }
+

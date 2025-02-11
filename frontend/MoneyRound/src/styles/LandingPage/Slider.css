@@ -1,0 +1,58 @@
+.swiper {
+    width: 100%;
+    z-index: 0;
+
+    }
+    .swiper-slide{
+        width: 100%;
+        height: calc(100vh );
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: 0%;
+        }
+        .swiper .swiper-slide img{
+            width: 100%;
+        }
+        .swiper .swiper-slide .info-slider{
+            position:absolute;
+            top: 50%;
+            left: 10%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            }
+            .swiper .swiper-slide .info-slider .title,.swiper .swiper-slide .info-slider .caption{
+                color: white;
+            }
+            .swiper .swiper-slide .info-slider .title{
+                font-size: 50px;
+                width: 45%;
+                margin-bottom: 30px;
+
+            }
+            .swiper .swiper-slide .info-slider .caption{
+                font-size: 30px;
+                width: 50%;
+                margin-bottom: 20px;
+            }
+            .swiper .swiper-slide .info-slider button{
+                height: 30px;
+                width: auto;
+                align-self: flex-start;
+                box-sizing: border-box;
+                font-size: 20px;
+                padding: 25px 20px 25px 20px;
+                display: flex;
+                vertical-align: middle;
+                color:black;
+                margin-bottom: 30px;
+                }
+                .swiper .swiper-slide .info-slider button div{
+                    align-self: center;
+                }
+                .swiper .swiper-slide .info-slider button span{
+                    margin-left: 5px;
+                    align-self: center;
+                }
+
