@@ -2,19 +2,21 @@ const { UserModel, userSchema } = require("../models/user.model");
 const { v4: uuid4 } = require("uuid");
 const Joi = require("joi");
 const jwt = require("jsonwebtoken");
-const {getAuth} = require("firebase-admin/auth");
 
 
 exports.syncUser = async (req, res) => {
-
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ message: "Accès non autorisé" });
         }
-
         const token = authHeader.split(" ")[1];
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        let decodedToken;
+        try {
+            decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        }catch(err) {
+            return  res.status(401).json({ message: "Erreur d'authentification: token invalide ou expiré"});
+        }
 
         // Vérification et décodage du JWT
         /*try {
@@ -35,14 +37,42 @@ exports.syncUser = async (req, res) => {
         };
         await UserModel.syncUser(userData);
 
-        return  res.status(200).json({ message: `Utilisateur récupéré avec succès`, id: decodedToken.uid});
+        return  res.status(200).json({ message: `Utilisateur synchronisé avec succès`, id: decodedToken.uid});
     } catch (err) {
-        return  res.status(500).json({error: ` échec de recupération de l'utilisateur ${err.message}`});
+        return  res.status(500).json({error: ` échec de synchronisation de l'utilisateur ${err.message}`});
     }
 };
 
-exports.getUserById = async (req, res) => {};
+exports.getUserById = async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ message: "Accès non autorisé" });
+        }
+        const token = authHeader.split(" ")[1];
+        let decodedToken;
+        try {
+            decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        }catch(err) {
+            return res.status(401).json({ message: "Erreur d'authentification: token invalide ou expiré"});
+        }
 
-exports.updateUser = async (req, res) => {};
+        const userId = req.params.userId;
+
+        const userData = await UserModel.getUserById(userId);
+        if (!userData) {
+            return res.status(404).json({ error: "Utilisateur introuvable" });
+        }
+
+        // Renvoyer les données de l'utilisateur
+        res.status(200).json(userData);
+    } catch (err) {
+        res
+            .status(500)
+            .json({error: `Échec de la récupération de l'Utilisateur : ${err.message}`,});
+    }
+};
+
+//exports.updateUser = async (req, res) => {};
 
 exports.deleteUser = async (req, res) => {};

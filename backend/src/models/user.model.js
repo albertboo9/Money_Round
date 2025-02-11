@@ -56,10 +56,33 @@ class UserModel {
                 console.log("Utilisateur mis à jour", userRef.id);
             }
 
-            return userRef.id;
+            return userDoc.id;
         } catch (error) {
             console.error("Erreur lors de la synchronisation de l'utilisateur :", error.message);
             throw new Error("Impossible de synchroniser l'utilisateur.");
+        }
+    }
+
+    /**
+     * Récupère un utilisateur par son Id
+     * @param {string} userId - ID de l'utilisateur à récupérer.
+     * @returns {Promise<Object>} - Données de l'utilisateur.
+     */
+    static async getUserById(userId) {
+        try {
+            const userDoc = await db
+                .collection(USER_COLLECTION)
+                .doc(userId)
+                .get();
+            if (!userDoc.exists) throw new Error("Utilisateur introuvable");
+
+            return { id: userDoc.id, ...userDoc.data() }; // Retourne les données de l'utilisateur
+        } catch (error) {
+            console.error(
+                "Erreur lors de la récupération de l'utilisateur:",
+                error.message
+            );
+            throw new Error("Impossible de récupérer l'utilisateur");
         }
     }
 }
