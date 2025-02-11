@@ -7,7 +7,7 @@ const USER_COLLECTION = "users"; // Collection Firestore dédiée aux utilisateu
 
 // Définition du schéma de validation des utilisateurs avec Joi
 const userSchema = Joi.object({
-    uid: Joi.string().required(),  // Id de l'utilisateur
+    //uid: Joi.string().required(),  // Id de l'utilisateur
     fullName: Joi.string().min(3).max(50).required(), // Nom de l'utilisateur (3 à 50 caractères, requis)
     email: Joi.string().email().required(), // Email de l'utilisateur (requis)
     //password: Joi.string().required(),
@@ -26,20 +26,20 @@ class UserModel {
      * @param {Object} userData - Données de l'utilisateur à créer.
      * @returns {Promise<string>} - ID de l'utilisateur créé.
      */
-    static async createUser(userData) {
+    static async syncUser(userData) {
         try {
             // Ajout de l'utilisateur à Firestore
             const userRef = await db.collection(USER_COLLECTION).doc(userData.uid).set({
                 ...userData,
-                fullName: null,
-                phoneNumber: null,
+                //fullName: null,
+                //phoneNumber: null,
                 profilePicture: null,
                 amount: 0,
                 inscriptionDate: FieldValue.serverTimestamp(),
                 updatedAt: FieldValue.serverTimestamp()
             });
 
-            return userRef.id; // Retourne l'Id de l'utilisateur recupéré
+            //return userRef.id; // Retourne l'Id de l'utilisateur recupéré
         } catch (error) {
             console.error("Erreur lors de la création de l'utilisateur :", error.message);
             throw new Error("Impossible de créer l'utilisateur.");

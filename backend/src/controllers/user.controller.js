@@ -1,6 +1,7 @@
 const { UserModel, userSchema } = require("../models/user.model");
 const { v4: uuid4 } = require("uuid");
 const Joi = require("joi");
+const jwt = require("jsonwebtoken");
 const {getAuth} = require("firebase-admin/auth");
 
 
@@ -13,24 +14,26 @@ exports.syncUser = async (req, res) => {
         }
 
         const token = authHeader.split(" ")[1];
-        let decodedToken;
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
         // Vérification et décodage du JWT
-        try {
+        /*try {
             decodedToken = await getAuth().verifyIdToken(token);
             console.log("Id de l'utilisateur", decodedToken.uid);
         } catch (error) {
             console.error("Token invalide ou expiré", error.message);
             return res.status(401).json({ message: "Token invalide ou expiré" });
-        }
+        }*/
 
         //const user = req.user;
         //console.log(user);
         const userData = {
             uid: decodedToken.uid,
             email: decodedToken.email,
+            fullName: decodedToken.fullName,
+            phoneNumber: decodedToken.phoneNumber
         };
-        await UserModel.createUser(userData);
+        await UserModel.syncUser(userData);
 
         return  res.status(200).json({ message: `Utilisateur récupéré avec succès`, id: decodedToken.uid});
     } catch (err) {
