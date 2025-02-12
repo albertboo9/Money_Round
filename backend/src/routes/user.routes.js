@@ -11,10 +11,10 @@ const verifyApiKey=require('../config/verifyApikey')
 router.post('/sync', userController.syncUser);
 
 // Récupérer un utilisateur par son Id
-router.get('/:userId', authMiddleware, userController.getUserById);
+router.get('/:userId', userController.getUserById);
 
 // Mise à jour d'un utilisateur
-router.put('/:userId', authMiddleware, userController.updateUser);
+//router.put('/:userId', authMiddleware, userController.updateUser);
 
 // Suppression d'un utilisateur
 router.delete('/:userId', authMiddleware, userController.deleteUser);
