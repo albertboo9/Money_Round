@@ -1,0 +1,28 @@
+#landingPage .second-view .revolution .box-head-revolution{
+    background-color:black;
+    align-self: center;
+    width: auto;
+    height: auto;
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    margin-bottom: 30px;
+    color: white;
+}
+#landingPage .second-view .revolution .before-after{
+    width: 60%;
+    align-self: center;
+    background-color: #D3F0FC;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap:20px;
+    padding: 50px;
+    border-radius: 50px;
+    margin-bottom: 30px;
+    }
+    #landingPage .second-view .revolution .before{
+        grid-column: 1;
+    }
+    #landingPage .second-view .revolution .after{
+        grid-column: 2;
+    }
