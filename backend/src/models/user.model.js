@@ -101,6 +101,15 @@ class UserModel {
                 updatedAt: FieldValue.serverTimestamp() // Mise à jour de la date de modification
             });
 
+            // Mise à jour de l'email dans Firebase Authentification
+            if (userData.email){
+                await admin.admin.auth().updateUser(userId, {
+                    email: userData.email,
+                    emailVerified: false
+                });
+                console.log("Mise à jour de l'email dans Firebase Authentification");
+            }
+
             return { id: userDoc.id, ...userData }; // Retourne les données mises à jour de l'utilisateur
         } catch (error) {
             console.error("Erreur lors de la mise à jour de l'utilisateur:", error.message);

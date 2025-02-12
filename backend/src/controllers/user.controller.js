@@ -8,6 +8,7 @@ const updateUserSchema = Joi.object({
     fullName: Joi.string().min(3).max(50).optional(),
     email: Joi.string().email().optional(),
     phoneNumber: Joi.string().optional(),
+    profilePicture: Joi.string().base64().optional()
 });
 
 /*exports.syncUser = async (req, res) => {
@@ -52,6 +53,10 @@ exports.getUserById = async (req, res) => {
 // Mise à jour de l'utilisateur
 exports.updateUser = async (req, res) => {
     try {
+        const decodedToken = req.user;
+        // Si l'utilisateur n'existe pas encore dans Firestore on l'ajoute
+        await UserModel.syncUser({uid: decodedToken.uid, email: decodedToken.email});
+
         // Validation des données
         const {error, value} = updateUserSchema.validate(req.body);
         if (error) {
