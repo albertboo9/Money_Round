@@ -26,7 +26,7 @@ class UserModel {
     /**
      * Synchronise les données de l'utilisateur Firebase Authentification avec celles de Firestore.
      * @param {Object} userData - Données de l'utilisateur recupérées dans le JWT de la requete.
-     * @returns {Promise<string>} - ID de l'utilisateur.
+     * @returns {void} - ne retourne rien.
      */
     static async syncUser(userData) {
         try {
@@ -37,7 +37,10 @@ class UserModel {
             // Si l'utilisateur n'existe pas encore dans Firestore on l'ajoute
             if (!userDoc.exists) {
                 await userRef.set({
-                    ...userData,
+                    uid: userData.uid,
+                    email: userData.email,
+                    fullName: null,
+                    phoneNumber: null,
                     profilePicture: null,
                     amount: 0,
                     inscriptionDate: FieldValue.serverTimestamp(),
@@ -47,16 +50,16 @@ class UserModel {
                 });
                 console.log("Utilisateur ajouté", userRef.id);
 
-            }else {
+            }/*else {
                 // Si l'utilisateur existe déja on met à jour ses informations
                 await userRef.update({
                     ...userData,
                     updatedAt: FieldValue.serverTimestamp()
                 });
                 console.log("Utilisateur mis à jour", userRef.id);
-            }
+            }*/
 
-            return userDoc.id;
+            //return userDoc.id;
         } catch (error) {
             console.error("Erreur lors de la synchronisation de l'utilisateur :", error.message);
             throw new Error("Impossible de synchroniser l'utilisateur.");
@@ -76,13 +79,70 @@ class UserModel {
                 .get();
             if (!userDoc.exists) throw new Error("Utilisateur introuvable");
 
-            return { id: userDoc.id, ...userDoc.data() }; // Retourne les données de l'utilisateur
+            return {...userDoc.data() }; // Retourne les données de l'utilisateur
         } catch (error) {
-            console.error(
-                "Erreur lors de la récupération de l'utilisateur:",
-                error.message
-            );
+            console.error("Erreur lors de la récupération de l'utilisateur:", error.message);
             throw new Error("Impossible de récupérer l'utilisateur");
+        }
+    }
+
+
+    /**
+     * Mets à jour les données de l'utilisateur
+     * @param {string} userId - ID de l'utilisateur à récupérer.
+     * @returns {Promise<Object>} - Données mises à jour de l'utilisateur.
+     */
+    static async updateUser(userId, userData) {
+        try {
+            const userRef = db.collection(USER_COLLECTION).doc(userId);
+            const userDoc = await userRef.get();
+            if (!userDoc.exists) throw new Error("Utilisateur introuvable");
+
+            // Mise à jour des données dans Firestore
+            await userRef.update({
+                ...userData,
+                updatedAt: FieldValue.serverTimestamp() // Mise à jour de la date de modification
+            });
+
+            // Mise à jour de l'email dans Firebase Authentification
+            if (userData.email){
+                await admin.admin.auth().updateUser(userId, {
+                    email: userData.email,
+                    emailVerified: false
+                });
+                console.log("Mise à jour de l'email dans Firebase Authentification");
+            }
+
+            return { id: userDoc.id, ...userData }; // Retourne les données mises à jour de l'utilisateur
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour de l'utilisateur:", error.message);
+            throw new Error("Impossible de mettre à jour les données l'utilisateur");
+        }
+    }
+
+
+    /**
+     * Suppression de l'utilisateur
+     * @param {string} userId - ID de l'utilisateur à supprimer.
+     * @returns {Promise<Object>} - Id de l'utilisateur supprimé.
+     */
+    static async deleteUser(userId) {
+        try {
+            const userRef = db.collection(USER_COLLECTION).doc(userId);
+            const userDoc = await userRef.get();
+            if (!userDoc.exists) throw new Error("Utilisateur introuvable");
+
+            // Suppression de l'utilisateur dans Firebase Authentification
+            await admin.admin.auth().deleteUser(userId);
+            console.log(`Utilisateur ${userId} supprmé de Firebase Authentification`);
+
+            // Suppression de l'utilisateur dans Firestore
+            await userRef.delete();
+
+            return { id: userDoc.id}; // Retourne l'id de l'utilisateur supprimé
+        } catch (error) {
+            console.error("Erreur lors de la suppression de l'utilisateur:", error.message);
+            throw new Error("Impossible de supprimer l'utilisateur");
         }
     }
 }

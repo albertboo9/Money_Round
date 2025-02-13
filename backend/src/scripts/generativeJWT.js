@@ -3,12 +3,12 @@ require("dotenv").config();
 const jwt = require('jsonwebtoken');
 
 const payload = {
-  uid: 'user12345',
+  uid: 'mNRQib0ZaEQ7VPphMLX1tp6V7vi2',
   fullName: 'Doe',
-  email: 'doe@example.com',
+  email: 'example@gmail.com',
   phoneNumber: +2376899444,
   // Ajoutez d'autres informations nécessaires
 };
 
-const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '4m' });
+const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '10m' });
 console.log(token);

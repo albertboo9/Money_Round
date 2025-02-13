@@ -4,31 +4,16 @@ const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 
 
-exports.syncUser = async (req, res) => {
+const updateUserSchema = Joi.object({
+    fullName: Joi.string().min(3).max(50).optional(),
+    email: Joi.string().email().optional(),
+    phoneNumber: Joi.string().optional(),
+    profilePicture: Joi.string().base64().optional()
+});
+
+/*exports.syncUser = async (req, res) => {
     try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.status(401).json({ message: "Accès non autorisé" });
-        }
-        const token = authHeader.split(" ")[1];
-        let decodedToken;
-        try {
-            decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-        }catch(err) {
-            return  res.status(401).json({ message: "Erreur d'authentification: token invalide ou expiré"});
-        }
-
-        // Vérification et décodage du JWT
-        /*try {
-            decodedToken = await getAuth().verifyIdToken(token);
-            console.log("Id de l'utilisateur", decodedToken.uid);
-        } catch (error) {
-            console.error("Token invalide ou expiré", error.message);
-            return res.status(401).json({ message: "Token invalide ou expiré" });
-        }*/
-
-        //const user = req.user;
-        //console.log(user);
+        const decodedToken = req.user;
         const userData = {
             uid: decodedToken.uid,
             email: decodedToken.email,
@@ -41,21 +26,13 @@ exports.syncUser = async (req, res) => {
     } catch (err) {
         return  res.status(500).json({error: ` échec de synchronisation de l'utilisateur ${err.message}`});
     }
-};
+};*/
 
 exports.getUserById = async (req, res) => {
     try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.status(401).json({ message: "Accès non autorisé" });
-        }
-        const token = authHeader.split(" ")[1];
-        let decodedToken;
-        try {
-            decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-        }catch(err) {
-            return res.status(401).json({ message: "Erreur d'authentification: token invalide ou expiré"});
-        }
+        const decodedToken = req.user;
+        // Si l'utilisateur n'existe pas encore dans Firestore on l'ajoute
+        await UserModel.syncUser({uid: decodedToken.uid, email: decodedToken.email});
 
         const userId = req.params.userId;
 
@@ -73,6 +50,43 @@ exports.getUserById = async (req, res) => {
     }
 };
 
-//exports.updateUser = async (req, res) => {};
+// Mise à jour de l'utilisateur
+exports.updateUser = async (req, res) => {
+    try {
+        const decodedToken = req.user;
+        // Si l'utilisateur n'existe pas encore dans Firestore on l'ajoute
+        await UserModel.syncUser({uid: decodedToken.uid, email: decodedToken.email});
 
-exports.deleteUser = async (req, res) => {};
+        // Validation des données
+        const {error, value} = updateUserSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({error: `Données invalides : ${error.details[0].message}` });
+        }
+
+        const userId = req.params.userId;
+        const userDoc = await UserModel.getUserById(userId);
+        if (!userDoc) {
+            return res.status(404).json({ error: "Utilisateur introuvable" });
+        }
+
+        const updatedUser = await UserModel.updateUser(userId, value);
+        return res.status(200).json({message: "Utilisateur mis à jour", data: updatedUser });
+    }catch (err) {
+        return res.status(500).json({error: `Échec de la mise à jour de l'utilisateur : ${err.message}`,});
+    }
+};
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const decodedToken = req.user;
+        // Si l'utilisateur n'existe pas encore dans Firestore on l'ajoute
+        await UserModel.syncUser({uid: decodedToken.uid, email: decodedToken.email});
+
+        const userId = req.params.userId;
+        const deletedUser = await UserModel.deleteUser(userId);
+        return res.status(200).json({message: "Utilisateur supprimé", id: deletedUser.id});
+
+    }catch (err) {
+        return res.status(500).json({error: `Échec de suppression de l'utilisateur : ${err.message}`,});
+    }
+};
