@@ -11,6 +11,16 @@ const updateUserSchema = Joi.object({
     profilePicture: Joi.string().base64().optional()
 });
 
+const registerWithEmailPasswordSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string()
+        .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+        .required()
+        .messages({
+            'string.pattern.base': 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.',
+        })
+});
+
 /*exports.syncUser = async (req, res) => {
     try {
         const decodedToken = req.user;
@@ -27,6 +37,26 @@ const updateUserSchema = Joi.object({
         return  res.status(500).json({error: ` échec de synchronisation de l'utilisateur ${err.message}`});
     }
 };*/
+
+// Inscription de l'utilisateur par email et mot de passe
+exports.registerWithEmailPassword = async (req, res) => {
+    try {
+        // Validation des données
+        const {error, value} = registerWithEmailPasswordSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({error: `Données invalides : ${error.details[0].message}` });
+        }
+        const registeredUserId = await UserModel.registerWithEmailPassword(value);
+        if (!registeredUserId) {
+            return res.status(500).json({error: `Échec d'inscription de l'utilisateur : ${err.message}`});
+        }
+
+        return res.status(200).json({message: "Utilisateur inscrit avec succès", userId: registeredUserId});
+
+    }catch (err) {
+        return res.status(500).json({error: `Échec: ${err.message}`});
+    }
+}
 
 exports.getUserById = async (req, res) => {
     try {

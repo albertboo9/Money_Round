@@ -2,6 +2,7 @@
 require("dotenv").config();
 
 const admin = require("firebase-admin");
+const { initializeApp} = require("firebase/app");
 
 const firebaseConfig = {
   type: process.env.TYPE,
@@ -29,10 +30,14 @@ admin.initializeApp({
   credential: admin.credential.cert(firebaseConfig),
 });
 
-// Exportation de `admin` et `db` (Firestore)
+// Initialisation de Firebase Client SDK
+const app = initializeApp(firebaseConfig);
+
+// Exportation de `admin`, `app` et `db` (Firestore)
 const db = admin.firestore(); // Accès à la base de données Firestore
 
 module.exports = {
   admin,
   db,
+  app
 };

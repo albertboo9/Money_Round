@@ -1,7 +1,12 @@
 const admin = require("../config/firebase"); // Importation du SDK Firebase Admin
+const {app} = require("../config/firebase"); // Importation du SDK Firebase Client
 const db = admin.admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
 const { FieldValue} = require('firebase-admin/firestore');
+//const {getAuth} = require("firebase-admin/auth");
+const { getAuth , createUserWithEmailAndPassword} = require('firebase/auth');
+const auth = getAuth(app);
+
 
 const USER_COLLECTION = "users"; // Collection Firestore dédiée aux utilisateurs
 
@@ -10,7 +15,6 @@ const userSchema = Joi.object({
     //uid: Joi.string().required(),  // Id de l'utilisateur
     fullName: Joi.string().min(3).max(50).required(), // Nom de l'utilisateur (3 à 50 caractères, requis)
     email: Joi.string().email().required(), // Email de l'utilisateur (requis)
-    //password: Joi.string().required(),
     amount: Joi.number().positive().optional(), // Solde de l'utilisateur (nombre positif requis)
     profilePicture: Joi.string().base64().optional(), // Image de profile encodée en Base64
     phoneNumber: Joi.string().required(),  // Numero de telephone de l'utilisateur
@@ -66,6 +70,41 @@ class UserModel {
         }
     }
 
+
+    /**
+     * Inscription de l'utilisateur par email et password
+     * @param {Object} registerData - email et password l'utilisateur recupérés dans le body de la requete
+     * @returns {Promise<string>} - retourne l'ID de l'utilisateur inscrit.
+     */
+    static async registerWithEmailPassword(registerData) {
+        const { email, password } = registerData;
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            console.log("Utilisateur inscrit avec succès :", user.uid);
+
+            const userRef = db.collection(USER_COLLECTION).doc(user.uid);
+            await userRef.set({
+                email: user.email,
+                fullName: null,
+                phoneNumber: null,
+                profilePicture: null,
+                amount: 0,
+                inscriptionDate: FieldValue.serverTimestamp(),
+                updatedAt: FieldValue.serverTimestamp(),
+                isActive: true,
+                isBlocked: false,
+            });
+            console.log("Utilisateur ajouté dans Firestore", userRef.id);
+
+            return user.uid; // Retourne l'ID de l'utilisateur inscrit
+
+        }catch(error) {
+            console.error("Erreur lors de l'inscription de l'utilisateur:", error.message);
+            throw new Error("Impossible d'inscrire l'utilisateur ou email déjà utilisé");
+        }
+    }
+
     /**
      * Récupère un utilisateur par son Id
      * @param {string} userId - ID de l'utilisateur à récupérer.
@@ -116,7 +155,7 @@ class UserModel {
             return { id: userDoc.id, ...userData }; // Retourne les données mises à jour de l'utilisateur
         } catch (error) {
             console.error("Erreur lors de la mise à jour de l'utilisateur:", error.message);
-            throw new Error("Impossible de mettre à jour les données l'utilisateur");
+            throw new Error("Impossible de mettre à jour les données de l'utilisateur");
         }
     }
 
