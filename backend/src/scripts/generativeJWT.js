@@ -3,9 +3,9 @@ require("dotenv").config();
 const jwt = require('jsonwebtoken');
 
 const payload = {
-  uid: 'msfJTGJAqohfveQ0pDiqH2Z9n4g1',
+  uid: 'mNRQib0ZaEQ7VPphMLX1tp6V7vi2',
   fullName: 'Doe',
-  email: 'doe@example.com',
+  email: 'example@gmail.com',
   phoneNumber: +2376899444,
   // Ajoutez d'autres informations nécessaires
 };

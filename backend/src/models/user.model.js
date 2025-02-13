@@ -37,7 +37,10 @@ class UserModel {
             // Si l'utilisateur n'existe pas encore dans Firestore on l'ajoute
             if (!userDoc.exists) {
                 await userRef.set({
-                    ...userData,
+                    uid: userData.uid,
+                    email: userData.email,
+                    fullName: null,
+                    phoneNumber: null,
                     profilePicture: null,
                     amount: 0,
                     inscriptionDate: FieldValue.serverTimestamp(),
@@ -76,7 +79,7 @@ class UserModel {
                 .get();
             if (!userDoc.exists) throw new Error("Utilisateur introuvable");
 
-            return { id: userDoc.id, ...userDoc.data() }; // Retourne les données de l'utilisateur
+            return {...userDoc.data() }; // Retourne les données de l'utilisateur
         } catch (error) {
             console.error("Erreur lors de la récupération de l'utilisateur:", error.message);
             throw new Error("Impossible de récupérer l'utilisateur");
@@ -114,6 +117,32 @@ class UserModel {
         } catch (error) {
             console.error("Erreur lors de la mise à jour de l'utilisateur:", error.message);
             throw new Error("Impossible de mettre à jour les données l'utilisateur");
+        }
+    }
+
+
+    /**
+     * Suppression de l'utilisateur
+     * @param {string} userId - ID de l'utilisateur à supprimer.
+     * @returns {Promise<Object>} - Id de l'utilisateur supprimé.
+     */
+    static async deleteUser(userId) {
+        try {
+            const userRef = db.collection(USER_COLLECTION).doc(userId);
+            const userDoc = await userRef.get();
+            if (!userDoc.exists) throw new Error("Utilisateur introuvable");
+
+            // Suppression de l'utilisateur dans Firebase Authentification
+            await admin.admin.auth().deleteUser(userId);
+            console.log(`Utilisateur ${userId} supprmé de Firebase Authentification`);
+
+            // Suppression de l'utilisateur dans Firestore
+            await userRef.delete();
+
+            return { id: userDoc.id}; // Retourne l'id de l'utilisateur supprimé
+        } catch (error) {
+            console.error("Erreur lors de la suppression de l'utilisateur:", error.message);
+            throw new Error("Impossible de supprimer l'utilisateur");
         }
     }
 }

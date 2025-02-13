@@ -76,4 +76,17 @@ exports.updateUser = async (req, res) => {
     }
 };
 
-exports.deleteUser = async (req, res) => {};
+exports.deleteUser = async (req, res) => {
+    try {
+        const decodedToken = req.user;
+        // Si l'utilisateur n'existe pas encore dans Firestore on l'ajoute
+        await UserModel.syncUser({uid: decodedToken.uid, email: decodedToken.email});
+
+        const userId = req.params.userId;
+        const deletedUser = await UserModel.deleteUser(userId);
+        return res.status(200).json({message: "Utilisateur supprimé", id: deletedUser.id});
+
+    }catch (err) {
+        return res.status(500).json({error: `Échec de suppression de l'utilisateur : ${err.message}`,});
+    }
+};
