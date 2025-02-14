@@ -6,8 +6,11 @@ const verifyApiKey=require('../config/verifyApikey')
 
 //router.use(verifyApiKey);
 
-// Synchronisation des données de l'utilisateur Firebase Authentification avec Firestore
-//router.post('/sync', authMiddleware(), userController.syncUser);
+// Inscription de l'utilisateur par email et password
+router.post('/register', userController.registerWithEmailPassword);
+
+// Connexion de l'utilisateur par email et password
+router.post('/login', userController.signInWithEmailAndPassword);
 
 // Récupérer un utilisateur par son Id
 router.get('/:userId', authMiddleware(), userController.getUserById);
