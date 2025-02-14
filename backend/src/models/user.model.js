@@ -3,7 +3,7 @@ const db = admin.admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
 const { FieldValue} = require('firebase-admin/firestore');
 //const {getAuth} = require("firebase-admin/auth");
-const { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword} = require('firebase/auth');
+const { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} = require('firebase/auth');
 const auth = getAuth();
 
 
@@ -124,6 +124,21 @@ class UserModel {
             console.error("Email ou Mot de passe incorrect:", error.message);
             throw new Error(error.message);
         }
+    }
+
+
+    /**
+     * Déconnexion de l'utilisateur
+     * @param {void} -
+     * @returns {Promise<void>} -  ne retourne rien
+     */
+    static async signOut() {
+        signOut(auth).then(() => {
+            console.log("Utilisateur déconnecté.");
+        })
+            .catch((err) => {
+                console.error(err.message);
+            });
     }
 
     /**

@@ -221,3 +221,13 @@
 {"level":"info","message":"POST /api/users/login"}
 {"level":"info","message":"POST /api/users/login"}
 {"level":"info","message":"POST /api/users/login"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}

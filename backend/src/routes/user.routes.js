@@ -12,6 +12,9 @@ router.post('/register', userController.registerWithEmailPassword);
 // Connexion de l'utilisateur par email et password
 router.post('/login', userController.signInWithEmailAndPassword);
 
+// Déconnexion de l'utilisateur
+router.post('/logout', authMiddleware(), userController.signOut);
+
 // Récupérer un utilisateur par son Id
 router.get('/:userId', authMiddleware(), userController.getUserById);
 

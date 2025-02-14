@@ -83,6 +83,14 @@ exports.signInWithEmailAndPassword = async (req, res) => {
     }
 }
 
+exports.signOut = async (req, res) => {
+    try {
+        await UserModel.signOut();
+        return res.status(200).json({message:"Utilisateur déconnecté avec succès"});
+    }catch (err) {
+        return res.status(500).json({error: `Impossible de déconnecter l'utilisateur: ${err.message}`});
+    }
+}
 
 exports.getUserById = async (req, res) => {
     try {
