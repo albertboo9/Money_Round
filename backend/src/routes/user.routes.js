@@ -7,7 +7,10 @@ const verifyApiKey=require('../config/verifyApikey')
 //router.use(verifyApiKey);
 
 // Inscription de l'utilisateur par email et password
-router.post('/email-register', userController.registerWithEmailPassword);
+router.post('/register', userController.registerWithEmailPassword);
+
+// Connexion de l'utilisateur par email et password
+router.post('/login', userController.signInWithEmailAndPassword);
 
 // Récupérer un utilisateur par son Id
 router.get('/:userId', authMiddleware(), userController.getUserById);

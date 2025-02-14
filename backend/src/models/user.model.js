@@ -1,11 +1,10 @@
 const admin = require("../config/firebase"); // Importation du SDK Firebase Admin
-const {app} = require("../config/firebase"); // Importation du SDK Firebase Client
 const db = admin.admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
 const { FieldValue} = require('firebase-admin/firestore');
 //const {getAuth} = require("firebase-admin/auth");
-const { getAuth , createUserWithEmailAndPassword} = require('firebase/auth');
-const auth = getAuth(app);
+const { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword} = require('firebase/auth');
+const auth = getAuth();
 
 
 const USER_COLLECTION = "users"; // Collection Firestore dédiée aux utilisateurs
@@ -102,6 +101,28 @@ class UserModel {
         }catch(error) {
             console.error("Erreur lors de l'inscription de l'utilisateur:", error.message);
             throw new Error("Impossible d'inscrire l'utilisateur ou email déjà utilisé");
+        }
+    }
+
+
+    /**
+     * Connexion de l'utilisateur par email et password
+     * @param {Object} loginData - email et password l'utilisateur recupérés dans le body de la requete
+     * @returns {Promise<string>} - retourne le token d'authentification de l'utilisateur inscrit.
+     */
+    static async signInWithEmailAndPassword(loginData) {
+        const { email, password } = loginData;
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const idToken = await userCredential.user.getIdToken();
+            console.log("Utilisateur connecté avec succès :", idToken);
+
+
+            return idToken; // Retourne le token de l'utilisateur connecté
+
+        }catch(error) {
+            console.error("Email ou Mot de passe incorrect:", error.message);
+            throw new Error(error.message);
         }
     }
 

@@ -21,6 +21,11 @@ const registerWithEmailPasswordSchema = Joi.object({
         })
 });
 
+const signInWithEmailAndPasswordSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+});
+
 /*exports.syncUser = async (req, res) => {
     try {
         const decodedToken = req.user;
@@ -48,15 +53,36 @@ exports.registerWithEmailPassword = async (req, res) => {
         }
         const registeredUserId = await UserModel.registerWithEmailPassword(value);
         if (!registeredUserId) {
-            return res.status(500).json({error: `Échec d'inscription de l'utilisateur : ${err.message}`});
+            return res.status(409).json({error: `Échec d'inscription de l'utilisateur : ${err.message}`});
         }
 
         return res.status(200).json({message: "Utilisateur inscrit avec succès", userId: registeredUserId});
 
     }catch (err) {
-        return res.status(500).json({error: `Échec: ${err.message}`});
+        return res.status(409).json({error: `Échec: ${err.message}`});
     }
 }
+
+// Connexion de l'utilisateur par email et mot de passe
+exports.signInWithEmailAndPassword = async (req, res) => {
+    try {
+        // Validation des données
+        const {error, value} = signInWithEmailAndPasswordSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({error: `Données invalides : ${error.details[0].message}` });
+        }
+        const idToken = await UserModel.signInWithEmailAndPassword(value);
+        if (!idToken) {
+            return res.status(401).json({error: `Email ou Mot de passe incorrect: ${err.message}`});
+        }
+
+        return res.status(200).json({message: "Utilisateur connecté avec succès", token: idToken});
+
+    }catch (err) {
+        return res.status(401).json({error: `Email ou Mot de passe incorrect: ${err.message}`});
+    }
+}
+
 
 exports.getUserById = async (req, res) => {
     try {

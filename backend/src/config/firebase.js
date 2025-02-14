@@ -31,13 +31,12 @@ admin.initializeApp({
 });
 
 // Initialisation de Firebase Client SDK
-const app = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
 
-// Exportation de `admin`, `app` et `db` (Firestore)
+// Exportation de `admin` et `db` (Firestore)
 const db = admin.firestore(); // Accès à la base de données Firestore
 
 module.exports = {
   admin,
   db,
-  app
 };
