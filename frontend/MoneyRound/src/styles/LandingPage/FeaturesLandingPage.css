@@ -9,7 +9,6 @@
     margin-bottom: 30px;
 }
 #landingPage .second-view .feature .first-text{
-    width: 40%;
     align-self: center;
 }
 #landingPage .second-view .feature  .all-advantages{
@@ -53,3 +52,27 @@
         #landingPage .second-view .feature .all-advantages .img-advantage img{
             width: 100%;
         }
+/* Remarquez bien que j'ai pluto défini le comportement face a un grand ecran */
+@media screen and (min-width:1000px) {
+    #landingPage .second-view .feature .first-text{
+        width: 40%;
+    }  
+}
+
+/* Comportement face à un écran de téléphone */
+@media screen and (max-width:600px) {
+    #landingPage .second-view .feature  .all-advantages {
+        display: flex;
+        } 
+        #landingPage .second-view .feature .all-advantages .img-advantage{
+            display: none;
+        }  
+}
+/* Juste une meilleur gestion de la position de l'explication des avntages dans les features */
+@media screen and (max-width:1000px){
+    #landingPage .second-view .feature  .all-advantages .see-advantages{
+        transform: translateX(0%);
+    }
+}
+
+        

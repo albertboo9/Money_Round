@@ -1,0 +1,51 @@
+.how-work .help-start{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0px 5%;
+    }
+    .how-work .help-start .first-text{
+        font-size: 35px !important;
+        width: 400px;
+        text-align: left;
+    }
+    .how-work .help-start button{
+        align-items: center;
+        color: white;
+        font-size: 25px !important;
+    }
+.how-work .first-step{
+
+}
+.how-work .first-step {
+    position: relative; /* Nécessaire pour positionner les pseudo-éléments */
+    padding: 20px;
+    background-color: lightgray;
+    text-align: center;
+    margin: 50px;
+
+}
+
+
+.how-work .first-step::after {
+    content: '';
+    position: absolute;
+    bottom: 0; /* Positionne le pseudo-élément en bas */
+    left: 0; /* Commence à gauche */
+    width: 75%; /* 75% de la largeur de l'élément */
+    height: 5px; /* Épaisseur de la bordure inférieure */
+    background-color: coral; /* Couleur de la bordure inférieure */
+
+}
+
+
+.how-work .first-step::before {
+    content: '';
+    position: absolute;
+    top: 0; /* Positionne le pseudo-élément en haut */
+    left: 0; /* Commence à gauche */
+    width: 5px; /* Épaisseur de la bordure gauche */
+    height: 75%; /* 75% de la hauteur de l'élément */
+    background-color: coral; /* Couleur de la bordure gauche */
+
+}

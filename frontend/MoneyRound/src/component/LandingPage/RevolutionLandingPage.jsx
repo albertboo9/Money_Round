@@ -13,22 +13,38 @@ function RevolutionLandingPage(){
             Discover how Budgeta simplifies budgeting, expense tracking, and goal setting, making financial management easier and more efficient.
         </div>
         <div className="before-after">
-            <div className="all-before">
-                {allBefore.map((elt,index)=>(
-                    <div key={index}>
-                        <span className="material-icons">sentiment dissatified</span> 
-                        {elt}
-                    </div>
-                ))}
+            <div className="before">
+                <div className="head-before-after">
+                    Before using MoneyRound
+                </div>
+                
+                <div className="all-content">
+                    {allBefore.map((elt,index)=>(
+                        <div key={index}>
+                            <span class="material-icons">sentiment_dissatisfied</span> 
+                               {elt}
+                        </div>
+                    ))}
+                </div>
             </div>
-            <div className="all-after">
-            {allAfter.map((elt,index)=>(
-                    <div key={index}>
-                        <span className="material-icons">sentiment satified</span> 
-                        {elt}
-                    </div>
-                ))}                            
-            </div>
+    
+            <div className="after">
+                <div className="head-before-after">
+                    After using MoneyRound
+                </div>
+                <div className="all-content">
+                    {allAfter.map((elt,index)=>(
+                            <div key={index}>
+                                <span className="material-icons">sentiment_satisfied</span> 
+                                {elt}
+                            </div>
+                        ))} 
+                </div>
+                <button className="classic-btn">
+                    Get Started for Free
+                </button>
+            </div>  
+
         </div>
     </section>);
 }

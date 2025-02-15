@@ -8,7 +8,8 @@ import Slider from "../component/LandingPage/Slider";
 import PresentationLandingPage from "../component/LandingPage/PresentationLandingPage";
 import FeaturesLandingPage from "../component/LandingPage/FeaturesLandingPage";
 import RevolutionLandingPage from "../component/LandingPage/RevolutionLandingPage";
-
+import Footer from "../component/Footer/Footer";
+import WorkLandingPage from "../component/LandingPage/WorkLandingPage";
 function LandingPage(){
     return (<>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
@@ -20,9 +21,10 @@ function LandingPage(){
                 <PresentationLandingPage/>
                 <FeaturesLandingPage/>
                 <RevolutionLandingPage/>
-
+                <WorkLandingPage/>
             </section>
         </main>
+        <Footer/>
         
     </>);
 }
