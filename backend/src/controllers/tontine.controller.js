@@ -145,7 +145,7 @@ exports.updateTontine = async (req, res) => {
       });
   }
 };
-
+/* implémentation du sytème de tour, on créera un champ tour pour sauvegarder les tours passés et en cours  */
 exports.deleteTontine = async (req, res) => {
   try {
     const tontineId = req.params.tontineId;
