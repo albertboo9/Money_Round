@@ -30,6 +30,23 @@ const updateTontineSchema = Joi.object({
   startDate: Joi.date().iso().optional(),
   endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
   status: Joi.string().valid("active", "terminée", "annulée").optional(),
+    tours: joi
+      .array()
+      .items(
+        joi.object({
+          tourId: joi.string().required(),
+          startDate: joi.date().iso().optional(),
+          endDate: joi.date().iso().greater(joi.ref("startDate")).optional(),
+          amount: Joi.number().positive().optional(), // Montant de participation (nombre positif requis)
+          status: joi
+            .string()
+            .valid("en cours", "terminée", "annulée")
+            .optional(),
+          participantNotYetReceived: joi.array().items(joi.string()).default([]),
+          participantReceived: joi.array().items(joi.string()).default([]),
+        })
+      )
+      .optional(),
 });
 
 exports.createTontine = async (req, res) => {
