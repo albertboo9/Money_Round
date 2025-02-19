@@ -5,8 +5,7 @@
 const admin = require("../config/firebase"); // Importation du SDK Firebase Admin
 const db = admin.admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
-const { FieldValue} = require('firebase-admin/firestore');
-
+const { FieldValue } = require("firebase-admin/firestore");
 
 const TONTINE_COLLECTION = "tontines"; // Nom de la collection Firestore dédiée aux tontines
 
@@ -16,10 +15,10 @@ const tontineSchema = Joi.object({
   description: Joi.string().max(255).optional(), // Description (max 255 caractères, optionnelle)
   creatorId: Joi.string().required(), // ID du créateur (requis)
   codeInvitation: Joi.string().required(), // Code d'invitation (requis)
+  amount: Joi.number().positive().required().default(O), // montant économisé par la tontine
   membersId: Joi.array().items(Joi.string()).default([]), // Liste des membres (par défaut vide)
   adminId: Joi.array().items(Joi.string()).default([]), // Liste des admins (par défaut vide)
   inviteId: Joi.array().items(Joi.string()).default([]), // Liste des utilisateurs invités à réjoindre la tontine (par défaut vide)
-  amount: Joi.number().positive().required(), // Montant de participation (nombre positif requis)
   frequency: Joi.string()
     .valid("quotidien", "hebdomadaire", "mensuel", "annuel")
     .required(), // Fréquence des paiements (valeurs prédéfinies, requis)
@@ -28,6 +27,23 @@ const tontineSchema = Joi.object({
   status: Joi.string().valid("active", "terminée", "annulée").default("active"), // Statut de la tontine (valeurs prédéfinies, défaut: active)
   createdAt: Joi.date().optional(), // Date de création (valeur par défaut: date actuelle)
   updatedAt: Joi.date().optional(), // Date de mise à jour (valeur par défaut: date actuelle)
+  tours: joi
+    .array()
+    .items(
+      joi.object({
+        tourId: joi.string().required(),
+        startDate: joi.date().iso().required(),
+        endDate: joi.date().iso().greater(joi.ref("startDate")).required(),
+        amount: Joi.number().positive().required(), // Montant de participation (nombre positif requis)
+        status: joi
+          .string()
+          .valid("en cours", "terminée", "annulée")
+          .required(),
+        participantNotYetReceived: joi.array().items(joi.string()).default([]),
+        participantReceived: joi.array().items(joi.string()).default([]),
+      })
+    )
+    .optional(),
 }).strict(); // Empêche l'ajout de champs non définis
 
 const updateTontineSchema = Joi.object({
@@ -35,19 +51,38 @@ const updateTontineSchema = Joi.object({
   description: Joi.string().max(255).optional(),
   creatorId: Joi.string().optional(),
   codeInvitation: Joi.string().optional(),
+  amount: Joi.number().positive().optional(), // montant économisé par la tontine
   membersId: Joi.array().items(Joi.string()).optional(),
   adminId: Joi.array().items(Joi.string()).optional(),
   inviteId: Joi.array().items(Joi.string()).optional(),
-  amount: Joi.number().positive().optional(),
-  frequency: Joi.string().valid("quotidien", "hebdomadaire", "mensuel", "annuel").optional(),
+  frequency: Joi.string()
+    .valid("quotidien", "hebdomadaire", "mensuel", "annuel")
+    .optional(),
   startDate: Joi.date().iso().optional(),
   endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
   status: Joi.string().valid("active", "terminée", "annulée").optional(),
   createdAt: Joi.date().optional(),
   updatedAt: Joi.date().optional(),
+  tours: joi
+    .array()
+    .items(
+      joi.object({
+        tourId: joi.string().required(),
+        startDate: joi.date().iso().optional(),
+        endDate: joi.date().iso().greater(joi.ref("startDate")).optional(),
+        amount: Joi.number().positive().optional(), // Montant de participation (nombre positif requis)
+        status: joi
+          .string()
+          .valid("en cours", "terminée", "annulée")
+          .optional(),
+        participantNotYetReceived: joi.array().items(joi.string()).default([]),
+        participantReceived: joi.array().items(joi.string()).default([]),
+      })
+    )
+    .optional(),
 }).strict();
 
-let date = new Date()
+//let date = new Date();
 
 class TontineModel {
   /**
@@ -173,7 +208,10 @@ class TontineModel {
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
     } catch (error) {
-      console.error("Erreur lors de l'invitation de l'utilisateur:", error.message);
+      console.error(
+        "Erreur lors de l'invitation de l'utilisateur:",
+        error.message
+      );
       throw new Error("Impossible d'inviter l'utilisateur.");
     }
   }
@@ -192,7 +230,9 @@ class TontineModel {
 
       const tontineData = tontineDoc.data();
       if (!tontineData.inviteId.includes(userId)) {
-        throw new Error("L'utilisateur n'est pas invité à rejoindre la tontine");
+        throw new Error(
+          "L'utilisateur n'est pas invité à rejoindre la tontine"
+        );
       }
 
       // Ajouter l'utilisateur à la liste des membres et le retirer de la liste des invités
@@ -202,10 +242,13 @@ class TontineModel {
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
     } catch (error) {
-      console.error("Erreur lors de l'ajout de l'utilisateur à la tontine:", error.message);
+      console.error(
+        "Erreur lors de l'ajout de l'utilisateur à la tontine:",
+        error.message
+      );
       throw new Error("Impossible d'ajouter l'utilisateur à la tontine.");
     }
   }
 }
 
-module.exports = {TontineModel, tontineSchema}; // Exportation du modèle pour utilisation externe
+module.exports = { TontineModel, tontineSchema }; // Exportation du modèle pour utilisation externe

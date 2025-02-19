@@ -1,6 +1,7 @@
 const tontineCtrl = require('../controllers/tontine.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 const express = require('express');
+const checkTourStatus = require('../middlewares/checkTourStatus');
 const router = express.Router();
 const verifyApiKey=require('../config/verifyApikey')
 
