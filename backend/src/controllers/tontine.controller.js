@@ -30,20 +30,20 @@ const updateTontineSchema = Joi.object({
   startDate: Joi.date().iso().optional(),
   endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
   status: Joi.string().valid("active", "terminée", "annulée").optional(),
-    tours: joi
+    tours: Joi
       .array()
       .items(
-        joi.object({
-          tourId: joi.string().required(),
-          startDate: joi.date().iso().optional(),
-          endDate: joi.date().iso().greater(joi.ref("startDate")).optional(),
+        Joi.object({
+          tourId: Joi.string().required(),
+          startDate: Joi.date().iso().optional(),
+          endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
           amount: Joi.number().positive().optional(), // Montant de participation (nombre positif requis)
-          status: joi
+          status: Joi
             .string()
             .valid("en cours", "terminée", "annulée")
             .optional(),
-          participantNotYetReceived: joi.array().items(joi.string()).default([]),
-          participantReceived: joi.array().items(joi.string()).default([]),
+          participantNotYetReceived: Joi.array().items(Joi.string()).default([]),
+          participantReceived: Joi.array().items(Joi.string()).default([]),
         })
       )
       .optional(),
