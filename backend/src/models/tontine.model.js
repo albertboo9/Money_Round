@@ -15,7 +15,7 @@ const tontineSchema = Joi.object({
   description: Joi.string().max(255).optional(), // Description (max 255 caractères, optionnelle)
   creatorId: Joi.string().required(), // ID du créateur (requis)
   codeInvitation: Joi.string().required(), // Code d'invitation (requis)
-  amount: Joi.number().positive().required().default(O), // montant économisé par la tontine
+  amount: Joi.number().positive().required(), // montant économisé par la tontine
   membersId: Joi.array().items(Joi.string()).default([]), // Liste des membres (par défaut vide)
   adminId: Joi.array().items(Joi.string()).default([]), // Liste des admins (par défaut vide)
   inviteId: Joi.array().items(Joi.string()).default([]), // Liste des utilisateurs invités à réjoindre la tontine (par défaut vide)
@@ -27,20 +27,20 @@ const tontineSchema = Joi.object({
   status: Joi.string().valid("active", "terminée", "annulée").default("active"), // Statut de la tontine (valeurs prédéfinies, défaut: active)
   createdAt: Joi.date().optional(), // Date de création (valeur par défaut: date actuelle)
   updatedAt: Joi.date().optional(), // Date de mise à jour (valeur par défaut: date actuelle)
-  tours: joi
+  tours: Joi
     .array()
     .items(
-      joi.object({
-        tourId: joi.string().required(),
-        startDate: joi.date().iso().required(),
-        endDate: joi.date().iso().greater(joi.ref("startDate")).required(),
+      Joi.object({
+        tourId: Joi.string().required(),
+        startDate: Joi.date().iso().required(),
+        endDate: Joi.date().iso().greater(Joi.ref("startDate")).required(),
         amount: Joi.number().positive().required(), // Montant de participation (nombre positif requis)
-        status: joi
+        status: Joi
           .string()
           .valid("en cours", "terminée", "annulée")
           .required(),
-        participantNotYetReceived: joi.array().items(joi.string()).default([]),
-        participantReceived: joi.array().items(joi.string()).default([]),
+        participantNotYetReceived: Joi.array().items(Joi.string()).default([]),
+        participantReceived: Joi.array().items(Joi.string()).default([]),
       })
     )
     .optional(),
@@ -63,20 +63,20 @@ const updateTontineSchema = Joi.object({
   status: Joi.string().valid("active", "terminée", "annulée").optional(),
   createdAt: Joi.date().optional(),
   updatedAt: Joi.date().optional(),
-  tours: joi
+  tours: Joi
     .array()
     .items(
-      joi.object({
-        tourId: joi.string().required(),
-        startDate: joi.date().iso().optional(),
-        endDate: joi.date().iso().greater(joi.ref("startDate")).optional(),
+      Joi.object({
+        tourId: Joi.string().required(),
+        startDate: Joi.date().iso().optional(),
+        endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
         amount: Joi.number().positive().optional(), // Montant de participation (nombre positif requis)
-        status: joi
+        status: Joi
           .string()
           .valid("en cours", "terminée", "annulée")
           .optional(),
-        participantNotYetReceived: joi.array().items(joi.string()).default([]),
-        participantReceived: joi.array().items(joi.string()).default([]),
+        participantNotYetReceived: Joi.array().items(Joi.string()).default([]),
+        participantReceived: Joi.array().items(Joi.string()).default([]),
       })
     )
     .optional(),
