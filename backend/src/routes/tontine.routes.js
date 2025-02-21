@@ -21,7 +21,7 @@ router.delete(
 );
 
 // Récupérer une tontine par son ID
-router.get("/:tontineId", authMiddleware(), tontineCtrl.getTontineById);
+router.get("/:tontineId", authMiddleware(), checkTourStatus, tontineCtrl.getTontineById);
 
 // Nommer un administrateur de tontine
 router.put(

@@ -1,38 +1,37 @@
-const { db } = require("../config/firebase"); // Connexion à Firestore
+const admin = require("../config/firebase");
+const db = admin.admin.firestore();
 
-/**
- * Middleware pour vérifier si une tontine a un tour en cours avant modification.
- * Empêche les modifications si un tour est actif.
- */
 const checkTourStatus = async (req, res, next) => {
   try {
-    const { tontineId } = req.params; // Récupérer l'ID de la tontine depuis l'URL
+    const tontineId = req.params.tontineId;
+    console.log(`Vérification de l'état des tours pour la tontine: ${tontineId}`);
 
-    // Récupération du document Firestore
-    const tontineRef = db.collection("tontines").doc(tontineId);
-    const tontineDoc = await tontineRef.get();
-
-    // Vérifier si la tontine existe
+    const tontineDoc = await db.collection("tontines").doc(tontineId).get();
     if (!tontineDoc.exists) {
+      console.log("Tontine introuvable");
       return res.status(404).json({ error: "Tontine introuvable" });
     }
 
-    const tontineData = tontineDoc.data(); // Récupérer les données de la tontine
+    const tontineData = tontineDoc.data();
+    console.log("Tontine trouvée:", tontineData);
 
     // Vérifier s'il y a un tour en cours
-    const hasOngoingTour = tontineData.tours?.some((tour) => tour.status === "en cours");
-
-    if (hasOngoingTour) {
-      return res.status(400).json({
-        error: "Un tour est en cours, modification non autorisée",
-      });
+    if (!Array.isArray(tontineData.tours)) {
+      console.log("Aucun champ 'tours' trouvé dans la tontine ou 'tours' n'est pas un tableau");
+      return res.status(400).json({ error: "Aucun champ 'tours' trouvé dans la tontine ou 'tours' n'est pas un tableau" });
     }
 
-    next(); // Passer au middleware suivant si tout est OK
+    const ongoingTour = tontineData.tours.some(tour => tour.status === "en cours");
+    if (ongoingTour) {
+      console.log("Un tour est en cours:", ongoingTour);
+      return res.status(400).json({ error: "Un tour est en cours, modification non autorisée" });
+    }
+
+    console.log("Aucun tour en cours, passage au middleware suivant");
+    next();
   } catch (err) {
-    res.status(500).json({
-      error: `Erreur lors de la vérification du tour: ${err.message}`,
-    });
+    console.error("Erreur lors de la vérification du tour:", err.message);
+    res.status(500).json({ error: `Erreur lors de la vérification du tour: ${err.message}` });
   }
 };
 

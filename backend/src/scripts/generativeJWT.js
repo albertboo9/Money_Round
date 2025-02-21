@@ -10,5 +10,5 @@ const payload = {
   // Ajoutez d'autres informations nécessaires
 };
 
-const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '10m' });
+const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 console.log(token);
