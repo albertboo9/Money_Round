@@ -252,7 +252,7 @@ exports.makeAdmin = async (req, res) => {
 exports.joinTontine = async (req, res) => {
   try {
     const tontineId = req.params.tontineId;
-    const userId = req.user.userId; // ID de l'utilisateur qui effectue la requête
+    const userId = req.body.userId; // ID de l'utilisateur qui effectue la requête
     console.log("L'ID de la tontine est " + tontineId);
     console.log("L'ID de l'utilisateur qui rejoint est " + userId);
 
@@ -290,12 +290,12 @@ exports.inviteMember = async (req, res) => {
   try {
     const tontineId = req.params.tontineId;
     const userIdToInvite = req.body.userId; // ID de l'utilisateur à inviter
-    const requestingUserId = req.user.userId; // ID de l'utilisateur qui effectue la requête
+    //const requestingUserId = req.user.userId; // ID de l'utilisateur qui effectue la requête
     console.log("L'ID de la tontine est " + tontineId);
     console.log("L'ID de l'utilisateur à inviter est " + userIdToInvite);
-    console.log(
+/*     console.log(
       "L'ID de l'utilisateur qui effectue la requête est " + requestingUserId
-    );
+    ); */
 
     // Vérification de l'existence de la tontine
     const tontineDoc = await TontineModel.getTontineById(tontineId);
@@ -304,14 +304,14 @@ exports.inviteMember = async (req, res) => {
     }
 
     // Vérification si l'utilisateur qui effectue la requête est un administrateur
-    if (!tontineDoc.adminId.includes(requestingUserId)) {
+/*     if (!tontineDoc.adminId.includes(requestingUserId)) {
       return res
         .status(403)
         .json({
           error:
             "Accès refusé : Vous devez être administrateur pour inviter un membre",
         });
-    }
+    } */
 
     // Invitation de l'utilisateur
     await TontineModel.inviteMember(tontineId, userIdToInvite);
