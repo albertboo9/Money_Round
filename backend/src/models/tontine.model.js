@@ -45,6 +45,18 @@ const tontineSchema = Joi.object({
     .optional(),
 }).strict(); // Empêche l'ajout de champs non définis
 
+const tourShema = Joi.object({
+  tourId: Joi.string().required(),
+  startDate: Joi.date().iso().required(),
+  endDate: Joi.date().iso().greater(Joi.ref("startDate")).required(),
+  amount: Joi.number().positive().required(), // Montant de participation (nombre positif requis)
+  status: Joi.string()
+    .valid("en cours", "terminée", "en attente")
+    .required(),
+  participantNotYetReceived: Joi.array().items(Joi.string()).default([]),
+  participantReceived: Joi.array().items(Joi.string()).default([]),
+}).strict();
+
 const updateTontineSchema = Joi.object({
   name: Joi.string().min(3).max(50).optional(),
   description: Joi.string().max(255).optional(),
@@ -304,6 +316,21 @@ class TontineModel {
       throw new Error("Impossible d'ajouter l'utilisateur à la tontine.");
     }
   }
+
+  /** 
+  *Crée un nouveau tour dans une tontine donnée
+  *@param {string} tontineId - ID de la tontine.
+  *@param {Object} tourData - Données du tour à créer.
+  *@returns {Promise<string>} - ID du tour créé.
+  */
+ static async createTour(tontineID, tourData){
+  try{
+
+
+  }catch(error){
+
+  }
+}
 }
 
 module.exports = { TontineModel, tontineSchema }; // Exportation du modèle pour utilisation externe

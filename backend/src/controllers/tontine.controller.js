@@ -12,7 +12,6 @@ const createTontineSchema = Joi.object({
   name: Joi.string().min(3).max(50).required(),
   description: Joi.string().max(255).optional(),
   amount: Joi.number().positive().required(),
-  userId: Joi.string().required(),
   frequency: Joi.string()
     .valid("quotidien", "hebdomadaire", "mensuel", "annuel")
     .required(),
@@ -58,28 +57,29 @@ exports.createTontine = async (req, res) => {
     }
 
     // Vérification de l'utilisateur
-    // if (!req.user || !req.user.userId) {
-    //  return res.status(401).json({ error: "Utilisateur non authentifié" });
-    //  }
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ error: "Utilisateur non authentifié" });
+    }
 
     let date = new Date(); // date actuelle
     let date1 = new Date();
     date1 = req.body.startDate; // date actuelle
-    console.log(date1);
-    let date2 = new Date(); // date actuelle
+    // console.log(date1);
+    //let date2 = new Date(); // date actuelle
     const code = uuid4(); // code d'invitation unique
 
-    console.log(req.body.startDate);
-    console.log(date);
+    //console.log(req.body.startDate);
+    //console.log(date);
     // données de la tontine
     const tontineData = {
       name: req.body.name,
       description: req.body.description,
-      creatorId: req.body.userId,
+      creatorId: req.user.userId,
       codeInvitation: code,
-      membersId: [req.body.userId],
-      adminId: [req.body.userId],
+      membersId: [req.user.userId],
+      adminId: [req.user.userId],
       inviteId: [],
+      tours:[],
       amount: req.body.amount,
       frequency: req.body.frequency,
       startDate: new Date(req.body.startDate), // Conversion en objet Date
@@ -118,6 +118,17 @@ exports.createTontine = async (req, res) => {
 
 exports.updateTontine = async (req, res) => {
   try {
+    // Vérification de l'utilisateur
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ error: "Utilisateur non authentifié" });
+    }
+    // Vérification si l'utilisateur qui effectue la requête est un administrateur
+    if (!tontineDoc.adminId.includes(req.user.userId)) {
+      return res.status(403).json({
+        error:
+          "Accès refusé : Vous devez être administrateur pour promouvoir un membre",
+      });
+    }
     // Validation des données de la requête
     const { error } = updateTontineSchema.validate(req.body);
     if (error) {
@@ -147,7 +158,7 @@ exports.updateTontine = async (req, res) => {
       tontineData
     );
     res.status(200).json({
-      message: "Tontine mise à jour avec succès",
+      message: `Tontine mise à jour avec succès par ${req.user.fullName} mail:${req.user.email} `,
       tontine: updatedTontine,
     });
   } catch (err) {
@@ -159,6 +170,17 @@ exports.updateTontine = async (req, res) => {
 /* implémentation du sytème de tour, on créera un champ tour pour sauvegarder les tours passés et en cours  */
 exports.deleteTontine = async (req, res) => {
   try {
+    // Vérification de l'utilisateur
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ error: "Utilisateur non authentifié" });
+    }
+    // Vérification si l'utilisateur qui effectue la requête est un administrateur
+    if (!tontineDoc.adminId.includes(req.user.userId)) {
+      return res.status(403).json({
+        error:
+          "Accès refusé : Vous devez être administrateur pour promouvoir un membre",
+      });
+    }
     const tontineId = req.params.tontineId;
     console.log("L'ID de la tontine à supprimer est " + tontineId);
 
@@ -180,6 +202,10 @@ exports.deleteTontine = async (req, res) => {
 
 exports.getTontineById = async (req, res) => {
   try {
+    // Vérification de l'utilisateur
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({ error: "Utilisateur non authentifié" });
+    }
     const tontineId = req.params.tontineId;
     console.log("L'ID de la tontine à récupérer est " + tontineId);
 
@@ -202,12 +228,12 @@ exports.makeAdmin = async (req, res) => {
   try {
     const tontineId = req.params.tontineId;
     const userIdToPromote = req.body.userId; // ID de l'utilisateur à promouvoir
-    //const requestingUserId = req.user.userId; // ID de l'utilisateur qui effectue la requête
+    const requestingUserId = req.user.userId; // ID de l'utilisateur qui effectue la requête
     console.log("L'ID de la tontine est " + tontineId);
     console.log("L'ID de l'utilisateur à promouvoir est " + userIdToPromote);
-    /*     console.log(
+    console.log(
       "L'ID de l'utilisateur qui effectue la requête est " + requestingUserId
-    ); */
+    );
 
     // Vérification de l'existence de la tontine
     const tontineDoc = await TontineModel.getTontineById(tontineId);
@@ -216,14 +242,12 @@ exports.makeAdmin = async (req, res) => {
     }
 
     // Vérification si l'utilisateur qui effectue la requête est un administrateur
-    /*     if (!tontineDoc.adminId.includes(requestingUserId)) {
-      return res
-        .status(403)
-        .json({
-          error:
-            "Accès refusé : Vous devez être administrateur pour promouvoir un membre",
-        });
-    } */
+    if (!tontineDoc.adminId.includes(requestingUserId)) {
+      return res.status(403).json({
+        error:
+          "Accès refusé : Vous devez être administrateur pour promouvoir un membre",
+      });
+    }
 
     // Promotion de l'utilisateur en administrateur
     await TontineModel.makeAdmin(tontineId, userIdToPromote);
@@ -240,7 +264,7 @@ exports.makeAdmin = async (req, res) => {
 exports.joinTontine = async (req, res) => {
   try {
     const tontineId = req.params.tontineId;
-    const userId = req.body.userId; // ID de l'utilisateur qui effectue la requête
+    const userId = req.user.userId; // ID de l'utilisateur qui effectue la requête
     console.log("L'ID de la tontine est " + tontineId);
     console.log("L'ID de l'utilisateur qui rejoint est " + userId);
 
@@ -274,12 +298,12 @@ exports.inviteMember = async (req, res) => {
   try {
     const tontineId = req.params.tontineId;
     const userIdToInvite = req.body.userId; // ID de l'utilisateur à inviter
-    //const requestingUserId = req.user.userId; // ID de l'utilisateur qui effectue la requête
+    const requestingUserId = req.user.userId; // ID de l'utilisateur qui effectue la requête
     console.log("L'ID de la tontine est " + tontineId);
     console.log("L'ID de l'utilisateur à inviter est " + userIdToInvite);
-    /*     console.log(
+    console.log(
       "L'ID de l'utilisateur qui effectue la requête est " + requestingUserId
-    ); */
+    );
 
     // Vérification de l'existence de la tontine
     const tontineDoc = await TontineModel.getTontineById(tontineId);
@@ -288,14 +312,12 @@ exports.inviteMember = async (req, res) => {
     }
 
     // Vérification si l'utilisateur qui effectue la requête est un administrateur
-    /*     if (!tontineDoc.adminId.includes(requestingUserId)) {
-      return res
-        .status(403)
-        .json({
-          error:
-            "Accès refusé : Vous devez être administrateur pour inviter un membre",
-        });
-    } */
+    if (!tontineDoc.adminId.includes(requestingUserId)) {
+      return res.status(403).json({
+        error:
+          "Accès refusé : Vous devez être administrateur pour inviter un membre",
+      });
+    }
 
     // Invitation de l'utilisateur
     await TontineModel.inviteMember(tontineId, userIdToInvite);
