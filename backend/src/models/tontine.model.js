@@ -225,7 +225,46 @@ class TontineModel {
       throw new Error("Impossible d'inviter l'utilisateur.");
     }
   }
-  
+
+
+    /**
+   * Faire passer un simple utilisateur au rôle d'admin dans une tontine donnée
+   * @param {string} tontineId - ID de la tontine.
+   * @param {string} userId - ID de l'utilisateur qui passera admin
+   * @returns {Promise<void>}
+   */
+
+  static async makeAdmin (tontineId, userId) {
+    try {
+      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
+      const tontineDoc = await tontineRef.get();
+      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
+
+      // on vérifie si le userID correspond à un id présent dans la firestore et valide
+      const userDoc = await db.collection(USERS_COLLECTION).doc(userId).get();
+      if (!userDoc.exists) {
+        throw new Error("utilisateur introuvable, veuillez entrer un id valide");
+      }
+      const tontineData = tontineDoc.data();
+      if (!tontineData.membersId.includes(userId)) {
+        throw new Error(
+          "L'utilisateur n'est pas membre de la tontine"
+        );
+      }
+
+      // Ajouter l'utilisateur à la liste des admins
+      await tontineRef.update({
+        adminId: FieldValue.arrayUnion(userId),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error(
+        "Erreur lors de la nomination de l'administrateur de la tontine:",
+        error.message
+      );
+      throw new Error("Impossible de nommer l'administrateur de la tontine.");
+    }
+  }
 
   /**
    * Ajoute un utilisateur à la liste des membres d'une tontine et le retire de la liste des invités.

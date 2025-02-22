@@ -56,3 +56,8 @@
 {"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
 {"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
 {"level":"info","message":"POST /api/tontines/join/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/admin/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"PUT /api/tontines/admin/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"PUT /api/tontines/admin/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"PUT /api/tontines/admin/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"PUT /api/tontines/admin/B3aPTdPrIuVmJgXazP0s  "}
