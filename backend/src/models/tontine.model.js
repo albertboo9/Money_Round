@@ -8,7 +8,7 @@ const Joi = require("joi"); // Importation de Joi pour la validation des donnée
 const { FieldValue } = require("firebase-admin/firestore");
 
 const TONTINE_COLLECTION = "tontines"; // Nom de la collection Firestore dédiée aux tontines
-const USERS_COLLECTION = "users";  // Nom de la collection Firestore dédiée aux tontines
+const USERS_COLLECTION = "users"; // Nom de la collection Firestore dédiée aux tontines
 
 // Définition du schéma de validation des tontines avec Joi
 const tontineSchema = Joi.object({
@@ -28,16 +28,14 @@ const tontineSchema = Joi.object({
   status: Joi.string().valid("active", "terminée", "annulée").default("active"), // Statut de la tontine (valeurs prédéfinies, défaut: active)
   createdAt: Joi.date().optional(), // Date de création (valeur par défaut: date actuelle)
   updatedAt: Joi.date().optional(), // Date de mise à jour (valeur par défaut: date actuelle)
-  tours: Joi
-    .array()
+  tours: Joi.array()
     .items(
       Joi.object({
         tourId: Joi.string().required(),
         startDate: Joi.date().iso().required(),
         endDate: Joi.date().iso().greater(Joi.ref("startDate")).required(),
         amount: Joi.number().positive().required(), // Montant de participation (nombre positif requis)
-        status: Joi
-          .string()
+        status: Joi.string()
           .valid("en cours", "terminée", "annulée")
           .required(),
         participantNotYetReceived: Joi.array().items(Joi.string()).default([]),
@@ -64,16 +62,14 @@ const updateTontineSchema = Joi.object({
   status: Joi.string().valid("active", "terminée", "annulée").optional(),
   createdAt: Joi.date().optional(),
   updatedAt: Joi.date().optional(),
-  tours: Joi
-    .array()
+  tours: Joi.array()
     .items(
       Joi.object({
         tourId: Joi.string().required(),
         startDate: Joi.date().iso().optional(),
         endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
         amount: Joi.number().positive().optional(), // Montant de participation (nombre positif requis)
-        status: Joi
-          .string()
+        status: Joi.string()
           .valid("en cours", "terminée", "annulée")
           .optional(),
         participantNotYetReceived: Joi.array().items(Joi.string()).default([]),
@@ -96,9 +92,12 @@ class TontineModel {
       // Validation des données avec Joi
       const { error, value } = tontineSchema.validate(tontineData);
       if (error) throw new Error(`Validation échouée: ${error.message}`);
-      const creatorDoc = await db.collection(USERS_COLLECTION).doc(tontineData.creatorId).get();
+      const creatorDoc = await db
+        .collection(USERS_COLLECTION)
+        .doc(tontineData.creatorId)
+        .get();
       console.log(creatorDoc);
-      if(!creatorDoc.exists){
+      if (!creatorDoc.exists) {
         throw new Error("Veuillez vous identifier avant de créer une tontine");
       }
 
@@ -150,8 +149,6 @@ class TontineModel {
       const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
       const tontineDoc = await tontineRef.get();
       if (!tontineDoc.exists) throw new Error("Tontine introuvable");
-
-      const userRef = db.collection(USERS_COLLECTION).doc(tontineData.userId)
 
       // Validation des données mises à jour avec Joi
       const { error, value } = updateTontineSchema.validate(tontineData, {
@@ -210,6 +207,11 @@ class TontineModel {
       const tontineDoc = await tontineRef.get();
       if (!tontineDoc.exists) throw new Error("Tontine introuvable");
 
+      // on vérifie si le userID correspond à un id présent dans la firestore et valide
+      const userDoc = await db.collection(USERS_COLLECTION).doc(userId).get();
+      if (!userDoc.exists) {
+        throw new Error("utilisateur introuvable, veuillez entrer un id valide");
+      }
       // Ajouter l'utilisateur à la liste des invités
       await tontineRef.update({
         inviteId: admin.firestore.FieldValue.arrayUnion(userId),
@@ -236,6 +238,11 @@ class TontineModel {
       const tontineDoc = await tontineRef.get();
       if (!tontineDoc.exists) throw new Error("Tontine introuvable");
 
+      // on vérifie si le userID correspond à un id présent dans la firestore et valide
+      const userDoc = await db.collection(USERS_COLLECTION).doc(userId).get();
+      if (!userDoc.exists) {
+        throw new Error("utilisable introuvable, veuillez entrer un id valide");
+      }
       const tontineData = tontineDoc.data();
       if (!tontineData.inviteId.includes(userId)) {
         throw new Error(
