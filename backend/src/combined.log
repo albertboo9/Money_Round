@@ -26,3 +26,12 @@
 {"level":"info","message":"GET /api/tontines/B3aPTdPrIuVmJgXazP0s  undefined "}
 {"level":"info","message":"GET /api/tontines/B3aPTdPrIuVmJgXazP0s  undefined "}
 {"level":"info","message":"GET /api/tontines/B3aPTdPrIuVmJgXazP0s  undefined "}
+{"level":"info","message":"DELETE /api/tontines/create  undefined "}
+{"level":"info","message":"POST /api/tontines/create  undefined "}
+{"level":"info","message":"POST /api/tontines/create  undefined "}
+{"level":"info","message":"POST /api/tontines/create  undefined "}
+{"level":"info","message":"POST /api/tontines/create  undefined "}
+{"level":"info","message":"POST /api/tontines/create  undefined "}
+{"level":"info","message":"POST /api/tontines/create  undefined "}
+{"level":"info","message":"POST /api/tontines/create"}
+{"level":"info","message":"POST /api/tontines/create ::1 "}
