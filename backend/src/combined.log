@@ -35,3 +35,24 @@
 {"level":"info","message":"POST /api/tontines/create  undefined "}
 {"level":"info","message":"POST /api/tontines/create"}
 {"level":"info","message":"POST /api/tontines/create ::1 "}
+{"level":"info","message":"GET /api/tontines/join/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/join/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/join/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/join/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/join/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/join/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/create  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/invite/B3aPTdPrIuVmJgXazP0s  "}
+{"level":"info","message":"POST /api/tontines/join/B3aPTdPrIuVmJgXazP0s  "}

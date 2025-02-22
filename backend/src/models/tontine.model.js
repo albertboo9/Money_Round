@@ -214,8 +214,8 @@ class TontineModel {
       }
       // Ajouter l'utilisateur à la liste des invités
       await tontineRef.update({
-        inviteId: admin.firestore.FieldValue.arrayUnion(userId),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        inviteId: FieldValue.arrayUnion(userId),
+        updatedAt: FieldValue.serverTimestamp(),
       });
     } catch (error) {
       console.error(
@@ -225,6 +225,7 @@ class TontineModel {
       throw new Error("Impossible d'inviter l'utilisateur.");
     }
   }
+  
 
   /**
    * Ajoute un utilisateur à la liste des membres d'une tontine et le retire de la liste des invités.
@@ -252,9 +253,9 @@ class TontineModel {
 
       // Ajouter l'utilisateur à la liste des membres et le retirer de la liste des invités
       await tontineRef.update({
-        membersId: admin.firestore.FieldValue.arrayUnion(userId),
-        inviteId: admin.firestore.FieldValue.arrayRemove(userId),
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        membersId: FieldValue.arrayUnion(userId),
+        inviteId: FieldValue.arrayRemove(userId),
+        updatedAt: FieldValue.serverTimestamp(),
       });
     } catch (error) {
       console.error(
