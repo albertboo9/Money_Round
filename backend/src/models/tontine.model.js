@@ -8,6 +8,7 @@ const Joi = require("joi"); // Importation de Joi pour la validation des donnée
 const { FieldValue } = require("firebase-admin/firestore");
 
 const TONTINE_COLLECTION = "tontines"; // Nom de la collection Firestore dédiée aux tontines
+const USERS_COLLECTION = "users";  // Nom de la collection Firestore dédiée aux tontines
 
 // Définition du schéma de validation des tontines avec Joi
 const tontineSchema = Joi.object({
@@ -95,6 +96,11 @@ class TontineModel {
       // Validation des données avec Joi
       const { error, value } = tontineSchema.validate(tontineData);
       if (error) throw new Error(`Validation échouée: ${error.message}`);
+      const creatorDoc = await db.collection(USERS_COLLECTION).doc(tontineData.creatorId).get();
+      console.log(creatorDoc);
+      if(!creatorDoc.exists){
+        throw new Error("Veuillez vous identifier avant de créer une tontine");
+      }
 
       // Ajout de la tontine à Firestore avec timestamp
       const tontineRef = await db.collection(TONTINE_COLLECTION).add({
@@ -144,6 +150,8 @@ class TontineModel {
       const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
       const tontineDoc = await tontineRef.get();
       if (!tontineDoc.exists) throw new Error("Tontine introuvable");
+
+      const userRef = db.collection(USERS_COLLECTION).doc(tontineData.userId)
 
       // Validation des données mises à jour avec Joi
       const { error, value } = updateTontineSchema.validate(tontineData, {
