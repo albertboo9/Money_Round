@@ -3,11 +3,12 @@ const db = admin.admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
 const { FieldValue} = require('firebase-admin/firestore');
 //const {getAuth} = require("firebase-admin/auth");
-const { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword} = require('firebase/auth');
+const { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification} = require('firebase/auth');
 const auth = getAuth();
 
 
 const USER_COLLECTION = "users"; // Collection Firestore dédiée aux utilisateurs
+const TONTINE_COLLECTION = "tontines"; // Collection Firestore dédiée aux tontines
 
 // Définition du schéma de validation des utilisateurs avec Joi
 const userSchema = Joi.object({
@@ -69,6 +70,28 @@ class UserModel {
         }
     }
 
+    static async sendVerificationEmail(uid) {
+        try {
+            const user = await admin.admin.auth().getUser(uid);
+            const email = user.email;
+
+            const actionCodeSettings = {
+                url: `https://moneyround-aa7a9.firebaseapp.com/verify-email?uid=${uid}`,
+                handleCodeInApp: false, // True si vérification depuis une app mobile
+            };
+
+            const link = await admin.admin.auth().generateEmailVerificationLink(email, actionCodeSettings);
+
+            // Envoyer l'email via un service (ex: Nodemailer, SendGrid...)
+            console.log(`Lien de vérification envoyé : ${link}`);
+
+            return { message: "E-mail de vérification envoyé", link };
+        } catch (error) {
+            console.error("Erreur lors de l'envoi du lien de vérification:", error.message);
+            throw new Error(error.message);
+        }
+    }
+
 
     /**
      * Inscription de l'utilisateur par email et password
@@ -124,6 +147,21 @@ class UserModel {
             console.error("Email ou Mot de passe incorrect:", error.message);
             throw new Error(error.message);
         }
+    }
+
+
+    /**
+     * Déconnexion de l'utilisateur
+     * @param {void} -
+     * @returns {Promise<void>} -  ne retourne rien
+     */
+    static async signOut() {
+        signOut(auth).then(() => {
+            console.log("Utilisateur déconnecté.");
+        })
+            .catch((err) => {
+                console.error(err.message);
+            });
     }
 
     /**
@@ -184,7 +222,7 @@ class UserModel {
     /**
      * Suppression de l'utilisateur
      * @param {string} userId - ID de l'utilisateur à supprimer.
-     * @returns {Promise<Object>} - Id de l'utilisateur supprimé.
+     * @returns {Promise<string>} - Id de l'utilisateur supprimé.
      */
     static async deleteUser(userId) {
         try {
@@ -198,13 +236,42 @@ class UserModel {
 
             // Suppression de l'utilisateur dans Firestore
             await userRef.delete();
+            console.log(`Utilisateur ${userId} supprmé de Firestore`);
 
-            return { id: userDoc.id}; // Retourne l'id de l'utilisateur supprimé
+            return userDoc.id; // Retourne l'id de l'utilisateur supprimé
         } catch (error) {
             console.error("Erreur lors de la suppression de l'utilisateur:", error.message);
-            throw new Error("Impossible de supprimer l'utilisateur");
+            throw new Error(error.message);
         }
     }
+
+
+    /**
+     * Récupération de toutes les tontines d'un utilisateur
+     * @param {string} userId - ID de l'utilisateur
+     * @returns {Promise<Object>} - Un objet contenant les données des tontines de l'utilisateur
+     */
+    static async getTontinesByUserId(userId) {
+        try {
+            const userRef = db.collection(USER_COLLECTION).doc(userId);
+            const userDoc = await userRef.get();
+            if (!userDoc.exists) throw new Error("Utilisateur introuvable");
+
+            const querySnapshot = await db.collection(TONTINE_COLLECTION).where('membersId', 'array-contains', userId).get();
+            const tontines = [];
+            if (querySnapshot) {
+                querySnapshot.forEach(doc => {
+                    tontines.push({ id: doc.id, ...doc.data() });
+                });
+            }
+
+            return tontines; // Retourne les tontines de l'utilisateur
+        } catch (error) {
+            console.error("Erreur lors de la récuperation des tontines de l'utilisateur:", error.message);
+            throw new Error(error.message);
+        }
+    }
+
 }
 
 module.exports = {UserModel, userSchema};

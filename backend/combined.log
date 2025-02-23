@@ -221,3 +221,62 @@
 {"level":"info","message":"POST /api/users/login"}
 {"level":"info","message":"POST /api/users/login"}
 {"level":"info","message":"POST /api/users/login"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/login"}
+{"level":"info","message":"POST /api/users/login"}
+{"level":"info","message":"POST /api/users/login"}
+{"level":"info","message":"POST /api/users/login"}
+{"level":"info","message":"POST /api/users/login"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"DELETE /api/users/EpRLMQStY2b1XxaYtjfBZC8QuoS2"}
+{"level":"info","message":"DELETE /api/users/EpRLMQStY2b1XxaYtjfBZC8QuoS2"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"POST /api/users/login"}
+{"level":"info","message":"POST /api/users/login"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"POST /api/users/logout"}
+{"level":"info","message":"GET /api/users/ecuBlXRSNIYu8HhBNdNfvlkA0I83"}
+{"level":"info","message":"GET /api/users/ecuBlXRSNIYu8HhBNdNfvlkA0I83"}
+{"level":"info","message":"PATCH /api/users/ecuBlXRSNIYu8HhBNdNfvlkA0I83"}
+{"level":"info","message":"PATCH /api/users/ecuBlXRSNIYu8HhBNdNfvlkA0I83"}
+{"level":"info","message":"PATCH /api/users/ecuBlXRSNIYu8HhBNdNfvlkA0I83"}
+{"level":"info","message":"DELETE /api/users/ecuBlXRSNIYu8HhBNdNfvlkA0I83"}
+{"level":"info","message":"DELETE /api/users/ecuBlXRSNIYu8HhBNdNfvlkA0I83"}
+{"level":"info","message":"DELETE /api/users/ecuBlXRSNIYu8HhBNdNfvlkA0I83"}
+{"level":"info","message":"DELETE /api/users/ecuBlXRSNIYu8HhBNdNfvlkA0I83"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"POST /api/users/register"}
+{"level":"info","message":"GET /api/users/Bs5SFyjncxZEcscyuqGDE7xGTyv2/tontines  "}
+{"level":"info","message":"GET /api/users/Bs5SFyjncxZEcscyuqGDE7xGTyv2/tontines  "}
+{"level":"info","message":"GET /api/users/Bs5SFyjncxZEcscyuqGDE7xGTyv2/tontines  "}
+{"level":"info","message":"GET /api/users/Bs5SFyjncxZEcscyuqGDE7xGTyv/tontines  "}
+{"level":"info","message":"GET /api/users/Bs5SFyjncxZEcscyuqGDE7xGTyv/tontines  "}
+{"level":"info","message":"GET /api/users/Bs5SFyjncxZEcscyuqGDE7xGTyv2/tontines  "}
+{"level":"info","message":"GET /api/users/Bs5SFyjncxZEcscyuqGDE7xGTyv2/tontiness  "}
+{"level":"info","message":"GET /api/users/Bs5SFyjncxZEcscyuqGDE7xGTyv2/tontines  "}
+{"level":"info","message":"GET /api/users/Bs5SFyjncxZEcscyuqGDE7xGTyv2/tontines  "}
+{"level":"info","message":"GET /api/users/Bs5SFyjncxZEcscyuqGDE7xGTyv2/tontines  "}
+{"level":"info","message":"GET /api/users/Bs5SFyjncxZEcscyuqGDE7xGTyv2/tontines  "}
