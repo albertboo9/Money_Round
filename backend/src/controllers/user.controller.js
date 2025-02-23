@@ -1,7 +1,6 @@
-const { UserModel, userSchema } = require("../models/user.model");
+const { UserModel } = require("../models/user.model");
 const { v4: uuid4 } = require("uuid");
 const Joi = require("joi");
-const jwt = require("jsonwebtoken");
 
 
 const updateUserSchema = Joi.object({
@@ -56,6 +55,8 @@ exports.registerWithEmailPassword = async (req, res) => {
             return res.status(409).json({error: `Échec d'inscription de l'utilisateur : ${err.message}`});
         }
 
+        //await UserModel.sendVerificationEmail(registeredUserId);
+
         return res.status(200).json({message: "Utilisateur inscrit avec succès", userId: registeredUserId});
 
     }catch (err) {
@@ -76,27 +77,35 @@ exports.signInWithEmailAndPassword = async (req, res) => {
             return res.status(401).json({error: `Email ou Mot de passe incorrect: ${err.message}`});
         }
 
-        return res.status(200).json({message: "Utilisateur connecté avec succès", token: idToken});
+        return res
+            .status(200)
+            .cookie("session", idToken, {httpOnly: true, secure: true})
+            .json({message: "Utilisateur connecté avec succès", token: idToken});
 
     }catch (err) {
         return res.status(401).json({error: `Email ou Mot de passe incorrect: ${err.message}`});
     }
 }
 
+// Déconnexion de l'utilisateur
 exports.signOut = async (req, res) => {
     try {
         await UserModel.signOut();
-        return res.status(200).json({message:"Utilisateur déconnecté avec succès"});
+        return res
+            .status(200)
+            .clearCookie("session")
+            .json({message:"Utilisateur déconnecté avec succès"});
     }catch (err) {
         return res.status(500).json({error: `Impossible de déconnecter l'utilisateur: ${err.message}`});
     }
 }
 
+// On récupère l'utilisateur par son Id
 exports.getUserById = async (req, res) => {
     try {
-        const decodedToken = req.user;
+        //const decodedToken = req.user;
         // Si l'utilisateur n'existe pas encore dans Firestore on l'ajoute
-        await UserModel.syncUser({uid: decodedToken.uid, email: decodedToken.email});
+        //await UserModel.syncUser({uid: decodedToken.uid, email: decodedToken.email});
 
         const userId = req.params.userId;
 
@@ -117,9 +126,9 @@ exports.getUserById = async (req, res) => {
 // Mise à jour de l'utilisateur
 exports.updateUser = async (req, res) => {
     try {
-        const decodedToken = req.user;
+        //const decodedToken = req.user;
         // Si l'utilisateur n'existe pas encore dans Firestore on l'ajoute
-        await UserModel.syncUser({uid: decodedToken.uid, email: decodedToken.email});
+        //await UserModel.syncUser({uid: decodedToken.uid, email: decodedToken.email});
 
         // Validation des données
         const {error, value} = updateUserSchema.validate(req.body);
@@ -140,15 +149,16 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+// Suppression de l'utilisateur
 exports.deleteUser = async (req, res) => {
     try {
-        const decodedToken = req.user;
+        //const decodedToken = req.user;
         // Si l'utilisateur n'existe pas encore dans Firestore on l'ajoute
-        await UserModel.syncUser({uid: decodedToken.uid, email: decodedToken.email});
+        //await UserModel.syncUser({uid: decodedToken.uid, email: decodedToken.email});
 
         const userId = req.params.userId;
         const deletedUser = await UserModel.deleteUser(userId);
-        return res.status(200).json({message: "Utilisateur supprimé", id: deletedUser.id});
+        return res.status(200).json({message: "Utilisateur supprimé", id: deletedUser});
 
     }catch (err) {
         return res.status(500).json({error: `Échec de suppression de l'utilisateur : ${err.message}`,});

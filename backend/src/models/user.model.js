@@ -3,7 +3,7 @@ const db = admin.admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
 const { FieldValue} = require('firebase-admin/firestore');
 //const {getAuth} = require("firebase-admin/auth");
-const { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} = require('firebase/auth');
+const { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification} = require('firebase/auth');
 const auth = getAuth();
 
 
@@ -66,6 +66,28 @@ class UserModel {
         } catch (error) {
             console.error("Erreur lors de la synchronisation de l'utilisateur :", error.message);
             throw new Error("Impossible de synchroniser l'utilisateur.");
+        }
+    }
+
+    static async sendVerificationEmail(uid) {
+        try {
+            const user = await admin.admin.auth().getUser(uid);
+            const email = user.email;
+
+            const actionCodeSettings = {
+                url: `https://moneyround-aa7a9.firebaseapp.com/verify-email?uid=${uid}`,
+                handleCodeInApp: false, // True si vérification depuis une app mobile
+            };
+
+            const link = await admin.admin.auth().generateEmailVerificationLink(email, actionCodeSettings);
+
+            // Envoyer l'email via un service (ex: Nodemailer, SendGrid...)
+            console.log(`Lien de vérification envoyé : ${link}`);
+
+            return { message: "E-mail de vérification envoyé", link };
+        } catch (error) {
+            console.error("Erreur lors de l'envoi du lien de vérification:", error.message);
+            throw new Error(error.message);
         }
     }
 
@@ -199,7 +221,7 @@ class UserModel {
     /**
      * Suppression de l'utilisateur
      * @param {string} userId - ID de l'utilisateur à supprimer.
-     * @returns {Promise<Object>} - Id de l'utilisateur supprimé.
+     * @returns {Promise<string>} - Id de l'utilisateur supprimé.
      */
     static async deleteUser(userId) {
         try {
@@ -213,11 +235,12 @@ class UserModel {
 
             // Suppression de l'utilisateur dans Firestore
             await userRef.delete();
+            console.log(`Utilisateur ${userId} supprmé de Firestore`);
 
-            return { id: userDoc.id}; // Retourne l'id de l'utilisateur supprimé
+            return userDoc.id; // Retourne l'id de l'utilisateur supprimé
         } catch (error) {
             console.error("Erreur lors de la suppression de l'utilisateur:", error.message);
-            throw new Error("Impossible de supprimer l'utilisateur");
+            throw new Error(error.message);
         }
     }
 }
