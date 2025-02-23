@@ -8,6 +8,7 @@ const auth = getAuth();
 
 
 const USER_COLLECTION = "users"; // Collection Firestore dédiée aux utilisateurs
+const TONTINE_COLLECTION = "tontines"; // Collection Firestore dédiée aux tontines
 
 // Définition du schéma de validation des utilisateurs avec Joi
 const userSchema = Joi.object({
@@ -243,6 +244,34 @@ class UserModel {
             throw new Error(error.message);
         }
     }
+
+
+    /**
+     * Récupération de toutes les tontines d'un utilisateur
+     * @param {string} userId - ID de l'utilisateur
+     * @returns {Promise<Object>} - Un objet contenant les données des tontines de l'utilisateur
+     */
+    static async getTontinesByUserId(userId) {
+        try {
+            const userRef = db.collection(USER_COLLECTION).doc(userId);
+            const userDoc = await userRef.get();
+            if (!userDoc.exists) throw new Error("Utilisateur introuvable");
+
+            const querySnapshot = await db.collection(TONTINE_COLLECTION).where('membersId', 'array-contains', userId).get();
+            const tontines = [];
+            if (querySnapshot) {
+                querySnapshot.forEach(doc => {
+                    tontines.push({ id: doc.id, ...doc.data() });
+                });
+            }
+
+            return tontines; // Retourne les tontines de l'utilisateur
+        } catch (error) {
+            console.error("Erreur lors de la récuperation des tontines de l'utilisateur:", error.message);
+            throw new Error(error.message);
+        }
+    }
+
 }
 
 module.exports = {UserModel, userSchema};

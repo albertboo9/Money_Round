@@ -164,3 +164,14 @@ exports.deleteUser = async (req, res) => {
         return res.status(500).json({error: `Échec de suppression de l'utilisateur : ${err.message}`,});
     }
 };
+
+exports.getTontinesByUserId = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const tontines = await UserModel.getTontinesByUserId(userId);
+        return res.status(200).json({message: "Tontines de l'utilisateur", tontines: tontines});
+
+    }catch (error) {
+        return res.status(500).json({error: `Impossible de récupérer les tontines de l'utilisateur : ${error.message}`,});
+    }
+}

@@ -24,5 +24,8 @@ router.patch('/:userId', authMiddleware(), userController.updateUser);
 // Suppression d'un utilisateur
 router.delete('/:userId', authMiddleware(), userController.deleteUser);
 
+// Récupérer toutes les tontines d'un utilisateur
+router.get('/:userId/tontines', authMiddleware(), userController.getTontinesByUserId);
+
 
 module.exports = router;
