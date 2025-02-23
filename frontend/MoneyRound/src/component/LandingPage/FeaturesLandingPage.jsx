@@ -6,11 +6,12 @@ import { advantages } from "../../data";
 import imgFeature from "../../images/landing-page/bro2.svg";
 
 function FeaturesLandingPage(){
+
     return(                
     <section className="feature">
         <div className="box-head-feature">Features</div>
-        <div className="first-text">Why choose MoneyRound ?</div>
-        <div className="second-text">Empowering you to take control of your finances with these top-notch features.</div>
+        <div className="first-text ">Why choose MoneyRound ?</div>
+        <div className="second-text ">Empowering you to take control of your finances with these top-notch features.</div>
         <div className="all-advantages">
             <div className="see-advantages">
                 <div className="first-text">Budjet Tracking</div>

@@ -14,7 +14,7 @@ function WorkLandingPage(){
         </div>
         <div className="step">
             <div className="first-step">
-                nvoinoivneonovnoenrvononrvoneorvnoenrovnoirnvoienovneovnoivnonerovievneovn
+                
             </div>
         </div>
     </section>);

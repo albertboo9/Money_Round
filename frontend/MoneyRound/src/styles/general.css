@@ -6,6 +6,7 @@
     --secondary-color:#b3ed78;
     --hover-color:#269735;
     --third-color:#ebf9ff;
+    --degrade:linear-gradient(45deg,#5ceb70,#5c6df9)
 
 
 }
@@ -21,4 +22,31 @@
 }
 .classic-btn:hover{
     background-color: var(--hover-color);
+}
+/* Annimation pour faire venor le texte a gauche et droite */
+.come-to-left{
+    animation-name: come-to-left-animation;
+}
+.come-to-right{
+    animation-name:come-to-right-annimation
+}
+.come-to-left,.come-to-right{
+    animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+    animation-duration: 1.5s;
+}
+@keyframes come-to-left-animation {
+    from{
+        transform: translateX(100%);
+    }
+    to{
+        transform: translateX(0%);
+    }
+}
+@keyframes come-to-right-annimation {
+    from{
+        transform: translateX(-100%);
+    }
+    to{
+        transform: translateX(0%);
+    }
 }

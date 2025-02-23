@@ -1,16 +1,19 @@
 // Importation de style css
-import "../../styles/LandingPage/Slider.css";
+import "../../styles/LandingPage/slide.css";
 
 // Importation hook et autre
 import { sliderImages } from "../../data";
 import { useEffect, useRef, useState } from "react";
 
-function Slider(){
+function SliderTest(){
     // Creation de l'index 
     const [indexSlide,setIndexSlide]=useState(0)
     const [indexPrev,setIndexPrev]=useState(3)
     const [indexNext,setIndexNext]=useState(1)
+    const allId=[]
+    let id=""
 
+    const timer=10000 // 10 secondes avant le changement de slide
     const eltRef=useRef([])
 
     useEffect(()=>{
@@ -19,7 +22,6 @@ function Slider(){
             element.style.transform="translateX(-9999px)"
         }
         eltRef.current[0].style.opacity="1"
-        
     },[])
 
     // fonction pour allez à la slide suivante
@@ -41,50 +43,18 @@ function Slider(){
         const prevIndex = (indexSlide - 1 + sliderImages.length) % sliderImages.length;
         // Appliquer les animations
         eltRef.current[indexSlide].style.animationName = "current-slide";
-        eltRef.current[prevIndex].style.animationName = "prev-slide"; // Assurez-vous d'avoir une animation pour le slide précédent
+        eltRef.current[prevIndex].style.animationName = "next-slide"; // Assurez-vous d'avoir une animation pour le slide précédent
         // Mettre à jour les états
         setIndexPrev(indexSlide);
         setIndexSlide(prevIndex);
         setIndexNext((prevIndex + 1) % sliderImages.length); // Calculer le prochain index pour la prochaine animation
     
     };
-    document.addEventListener('DOMContentLoaded', () => {
-        const slider = document.getElementById('slider');
-        let startX, currentX = 0;
-        slider.addEventListener('touchstart', (event) => {
-            startX = event.touches[0].clientX; // Position de départ
-        });
-    
-        slider.addEventListener('touchmove', (event) => {
-            currentX = event.touches[0].clientX; // Position actuelle
-            const moveX = currentX - startX; // Calculer le mouvement
-        });
-    
-        slider.addEventListener('touchend', () => {
-            const moveX = currentX - startX; // Calculer le mouvement final
-    
-            if (moveX > 0) {
-                // Swipe vers la droite
-                nextSlide()
-            } else if (moveX < 0) {
-                // Swipe vers la gauche
-                prevSlide()
-            }
-        });
-        const timer=10000 // 10 secondes avant le changement de slide
-        const intervalId=setInterval(()=>{
-            nextSlide()
-            clearInterval(intervalId)
-        },timer)
-        
-    });
-
-
     return (
-    <section className="big-container-slider">
+    <section style={{height:"100vh",width:"100%"}}>
 
     
-    <section className="slider" id="slider" >
+    <section className="slider" >
         <div className="slider-wrapper">
             {sliderImages.map((image, index) => (                   
                 <div className="slider-slide" key={"slide"+index} ref={el=>{eltRef.current[index]=el}}>
@@ -105,7 +75,7 @@ function Slider(){
         <button className="slider-button-next" onClick={nextSlide}>
             <span className="material-icons">arrow_forward_ios</span>
         </button>
-        <button className="slider-button-prev" onClick={prevSlide}>
+        <button className="slider-button-prev">
             <span className="material-icons">arrow_back_ios</span>
         </button>
         {/* Ajout de la pagination */}
@@ -113,4 +83,4 @@ function Slider(){
     </section>
     </section>);
 }
-export default Slider;
+export default SliderTest;
