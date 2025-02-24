@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 
 import axios from 'axios'
 import login from '../assets/login.png'
@@ -9,6 +9,9 @@ import email from '../assets/email.png'
 import montrer from '../assets/montrer.png'
 import pasmontrer from '../assets/oeil.png'
 import '../styles/login.css'
+import {auth, provider, signInWithPopup } from '../firebaseConfig'
+import { getAdditionalUserInfo } from 'firebase/auth'
+import CustomAlert from '../composants/Customalert'
 
 
 const Login = () => {
@@ -19,12 +22,42 @@ const Login = () => {
     const [passwords, setPasswords] = useState("")
     const [showpassword, setShowpassword] = useState(true)
     const [errors, setErrors] = useState({})
+    const [rememberme, setRememberme] = useState(false)
+    //afficher l'alerte
+    const [alert, setAlert] = useState("")
+
+
+    //recuperation des informations dans local storage
+    useEffect(()=>{
+      const savedEmail = localStorage.getItem("savedEmail")
+      const savedPassword = localStorage.getItem("savedPassword")
+      if(savedEmail && savedPassword && rememberme === true && (!emails || !passwords)){
+        setEmails(savedEmail)
+        setPasswords(savedPassword)
+      }
+    })
 
     // fonction pour verifier la validite d'une adrres email
     const validateEmail = (email) =>{
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$/
-        return emailRegex.test(email)
-     }
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$/
+      return emailRegex.test(email)
+    }
+
+    //login avec google
+    const handleLogingoogle = async () =>{
+      try{
+        const result = await signInWithPopup(auth, provider)
+        const userInfo = getAdditionalUserInfo(result)
+        if(!userInfo.isNewUser){
+          console.log("utilisateur connecté:", result.user)
+        } else{
+          setAlert("Veuillez créer votre compte")
+        }
+      }catch(error){
+        setAlert("erreur lors de la connexion:"+error.message)
+      }
+    }
+
     //  fonction lancer lors de la soummission des informations
     const handleSend = (e) => {
         e.preventDefault();
@@ -45,6 +78,12 @@ const Login = () => {
           .catch((error) =>
             console.error("Erreur lors de l'envoi du message :", error)
           );
+        //si remember me est checker alors le mot de passe est sauvegarde dans local storage
+        if(rememberme === true){
+          localStorage.setItem("savedEmail", emails)
+          localStorage.setItem("savedPassword", passwords)
+        }
+        
         //   conditions de validites des differentes informations soumis
           if(!emails.trim()){
             newsErrors.emails = "L' adresse email est obligatoire"
@@ -78,11 +117,13 @@ const Login = () => {
 
             {/* connexion via facebook et google */}
             <div className='convliens'>
-                <button className='google'>
+                <button onClick={handleLogingoogle} className='google'>
                     <img src={google} alt='image de connexion' /> Login with Google
                 </button>
+                {/* affiche une erreur lors de la connexion */}
+                <CustomAlert message={alert} onClose={()=> setAlert("")} />
                 <button className='facebook'>
-                    <img src={facebook} alt='image de connexion' /> Login with Google
+                    <img src={facebook} alt='image de connexion' /> Login with Facebook
                 </button>
             </div>
 
@@ -106,11 +147,11 @@ const Login = () => {
                             </div>
                             <div className='enterEmail'>
                                 <label>Email</label>
-                                <input type='email' placeholder='example@gmail.com' value={emails} onChange={(e) => setEmails(e.target.value)} />
+                                <input type='text' placeholder='example@gmail.com' value={emails} onChange={(e) => setEmails(e.target.value)} />
                             </div>
                         </div>
                         {/* affichage des erreurs */}
-                        {errors.emails && <div className='errors' style={{color: "red"}}>{errors.emails}</div>}
+                        {!validateEmail(emails) && emails.trim()? (<div className='errors' style={{color: "red"}}>l&apos;adresse email est invalide</div>) : validateEmail(emails) && emails.length>0? (<div className='errors' style={{color: "red"}}></div>) : (<div className='errors' style={{color: "red"}}>{errors.emails}</div>)}
                     </div>
                     <div>
                         <div className='password'>
@@ -129,12 +170,12 @@ const Login = () => {
                         </div>
 
                         {/* affichage des erreurs */}
-                        {errors.passwords && <div className='errors' style={{color: "red"}}>{errors.passwords}</div>}
+                        {passwords.length >= 1 ? (<div className='errors' style={{color: "red"}}></div>) : (<div className='errors' style={{color: "red"}}>{errors.passwords}</div>)}
                     </div>
                       
                     <div className='forgotPass'>
                         <label>
-                            <input type='checkbox' /> Remember me
+                            <input type='checkbox' checked={rememberme} onChange={()=> setRememberme(!rememberme)} /> Remember me
                         </label>
                         <a href='#'>Forgot password?</a>
                     </div>

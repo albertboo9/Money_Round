@@ -8,7 +8,7 @@ body{
     flex-direction: row;
     justify-content: space-between;
     width: 100vw;
-    height: 100vh;
+    height: 90vh;
     position: absolute;
     top: 10%;
     left: 0;
@@ -19,8 +19,8 @@ body{
     width: 50%;
 }
 .leftpart img{
-    width: 90%;
-    height: 80%;
+    width: 85%;
+    height: 90%;
 }
 .rightpart{
     /* background-color: orange; */
@@ -40,7 +40,7 @@ body{
     font-size: 20px;
 }
 .rightpart .greetings .nomapp{
-    color: green;
+    color: #5ceb70;
     font-weight: bolder;
     font-size: xx-large;
 }
@@ -60,7 +60,7 @@ body{
     text-align: center;
     box-shadow: 1px 4px 10px  rgb(168, 161, 161) ;
     outline: none;
-    transition: 0.5s ease-in-out;
+    /* transition: 0.5s ease-in-out; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -68,12 +68,12 @@ body{
     column-gap: 20px;
 }
 .rightpart .connexion .convliens .google:hover, .rightpart .connexion .convliens .facebook:hover{
-    transform: scale(1.1);
+    /* transform: scale(1.1); */
     cursor: pointer;
-    border: green;
+    border: #5ceb70;
 }
 .rightpart .connexion .convliens .google img,.rightpart .connexion .convliens .facebook img, .bouton img{
-    height: 60%;
+    height: min-content;
     width: 5%;
 }
 .rightpart .connexion .espace{
@@ -156,7 +156,7 @@ body{
     width: 91%;
 }
 .rightpart .connexion .convmails .forgotPass a{
-    color: green;
+    color: #5ceb70;
 }
 .rightpart .connexion .convmails .submit{
     display: flex;
@@ -166,7 +166,7 @@ body{
     width: 90%;
     height: 40px;
     text-align: center;
-    background-color: green;
+    background-color: #5ceb70;
     color: white;
 }
 .rightpart .connexion .register{
@@ -175,7 +175,7 @@ body{
 
 }
 .rightpart .connexion .register a{
-    color: green;
+    color: #5ceb70;
 }
 .errors{
     height: 10px;

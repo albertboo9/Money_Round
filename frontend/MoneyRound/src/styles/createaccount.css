@@ -12,11 +12,13 @@ body{
     position: absolute;
     top: 0;
     left: 0;
+    color: black;
+    font-weight: bold;
 }
 .left{
    width: 50%;
    padding: 15px 0px 10px 30px;
-   background: linear-gradient(to right, #38a169 10%, #0985f8 70%,#f4f4f4 55%);
+   background: linear-gradient(to right, #5ceb70 10%, #5c6df9 70%,#f4f4f4 55%);
    color: white;
 
 }
@@ -94,6 +96,10 @@ body{
     border: 1px solid black;
     background-color: #f4f4f4;
 }
+.right .creerCompte .formulaire form fieldset legend{
+    color: black;
+    font-weight: 500;
+}
 .right .creerCompte .formulaire form fieldset input{
     width: 100%;
     height: 100%;
@@ -108,7 +114,7 @@ body{
     width: 95%;
     height: 40px;
     text-align: center;
-    background-color: green;
+    background-color: #5ceb70;
     color: white;
 }
 .right .creerCompte .register{
@@ -116,7 +122,7 @@ body{
     justify-content: center;
 }
 .right .creerCompte .register a{
-    color: green;
+    color: #5c6df9;
 }
 .right .espace{
     display: flex;
@@ -140,7 +146,7 @@ body{
 }
 .right .convliens .google, .right .convliens .facebook{
     width: 48%;
-    height: 50px;
+    height: min-content;
     text-align: center;
     box-shadow: 1px 4px 10px  rgb(168, 161, 161) ;
     outline: none;
@@ -167,6 +173,8 @@ body{
     justify-content: start;
     font-style: italic;
     font-size: 15px;
+    /* background-color: #0e502c; */
+    /* color: red; */
 }
 @media(max-width: 1000px){
     .createAccount{
@@ -234,7 +242,7 @@ body{
         width: 100%;
     }
     .right .convliens .google img,.right .convliens .facebook img, .bouton img{
-        height: 50%;
+        height: min-content;
         width: 6%;
     }
 }
