@@ -1,11 +1,21 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const tontineRoutes = require('./routes/tontine.routes'); // Importation des routes
+const userRoutes = require('./routes/user.routes'); // Importation des routes
+const requestLogger = require('./middlewares/requestLogger');
+const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
+
+// utilisation d'un middleware de logging
+app.use(requestLogger);
+
+// utilisation d'un middleware de gestion des erreurs
+app.use(errorHandler);
 
 // Configuration des options CORS
 const corsOptions = {
@@ -15,6 +25,7 @@ const corsOptions = {
   optionsSuccessStatus: 204
 };
 app.use(cors(corsOptions));
+app.use(helmet());
 
 // Utiliser Morgan pour journaliser les requêtes HTTP
 app.use(morgan('combined'));
@@ -37,6 +48,9 @@ app.get('/', (req, res) => {
 
 // Utiliser les routes définies dans tontine.routes.js
 app.use('/api/tontines', tontineRoutes);
+
+// Routes de user.routes.js
+app.use('/api/users', userRoutes);
 
 // Configuration des en-têtes CORS
 app.use((req, res, next) => {
