@@ -15,6 +15,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            margin-bottom: 50px;
         }
         #landingPage .second-view .first-text{
             font-size: 60px;
@@ -53,6 +54,7 @@
 @media screen and (max-width:600px) {
     #landingPage .second-view .first-text{
         width: 100%;
+        font-size: 30px;
     }
     #landingPage .second-view .second-text{
         width: 100%;

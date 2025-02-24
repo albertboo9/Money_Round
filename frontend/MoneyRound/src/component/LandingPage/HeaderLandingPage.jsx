@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "../../images/logo avec nom.svg";
+import logo from "../../images/logo/logo avec nom.svg";
 
 //importation de feuille de style
 import "../../styles/LandingPage/HeaderLandingPage.css";

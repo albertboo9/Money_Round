@@ -10,6 +10,7 @@ import FeaturesLandingPage from "../component/LandingPage/FeaturesLandingPage";
 import RevolutionLandingPage from "../component/LandingPage/RevolutionLandingPage";
 import Footer from "../component/Footer/Footer";
 import WorkLandingPage from "../component/LandingPage/WorkLandingPage";
+import LetStart from "../component/LandingPage/LetStart";
 
 function LandingPage(){
     //Declancher les animations à leur apparition
@@ -55,6 +56,7 @@ function LandingPage(){
                 <FeaturesLandingPage/>
                 <RevolutionLandingPage/>
                 <WorkLandingPage/>
+                <LetStart/>
             </section>
         </main>
         <Footer/>

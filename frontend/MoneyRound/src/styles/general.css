@@ -19,6 +19,7 @@
     cursor:pointer;
     color:white;
     background-color: var(--primary-color);
+    align-items: center;
 }
 .classic-btn:hover{
     background-color: var(--hover-color);

@@ -49,28 +49,6 @@ function Slider(){
     
     };
     document.addEventListener('DOMContentLoaded', () => {
-        const slider = document.getElementById('slider');
-        let startX, currentX = 0;
-        slider.addEventListener('touchstart', (event) => {
-            startX = event.touches[0].clientX; // Position de départ
-        });
-    
-        slider.addEventListener('touchmove', (event) => {
-            currentX = event.touches[0].clientX; // Position actuelle
-            const moveX = currentX - startX; // Calculer le mouvement
-        });
-    
-        slider.addEventListener('touchend', () => {
-            const moveX = currentX - startX; // Calculer le mouvement final
-    
-            if (moveX > 0) {
-                // Swipe vers la droite
-                nextSlide()
-            } else if (moveX < 0) {
-                // Swipe vers la gauche
-                prevSlide()
-            }
-        });
         const timer=10000 // 10 secondes avant le changement de slide
         const intervalId=setInterval(()=>{
             nextSlide()
