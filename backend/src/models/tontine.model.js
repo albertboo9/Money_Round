@@ -50,9 +50,7 @@ const tourShema = Joi.object({
   startDate: Joi.date().iso().required(),
   endDate: Joi.date().iso().greater(Joi.ref("startDate")).required(),
   amount: Joi.number().positive().required(), // Montant de participation (nombre positif requis)
-  status: Joi.string()
-    .valid("en cours", "terminée", "en attente")
-    .required(),
+  status: Joi.string().valid("en cours", "terminée", "en attente").required(),
   participantNotYetReceived: Joi.array().items(Joi.string()).default([]),
   participantReceived: Joi.array().items(Joi.string()).default([]),
 }).strict();
@@ -222,7 +220,9 @@ class TontineModel {
       // on vérifie si le userID correspond à un id présent dans la firestore et valide
       const userDoc = await db.collection(USERS_COLLECTION).doc(userId).get();
       if (!userDoc.exists) {
-        throw new Error("utilisateur introuvable, veuillez entrer un id valide");
+        throw new Error(
+          "utilisateur introuvable, veuillez entrer un id valide"
+        );
       }
       // Ajouter l'utilisateur à la liste des invités
       await tontineRef.update({
@@ -238,15 +238,14 @@ class TontineModel {
     }
   }
 
-
-    /**
+  /**
    * Faire passer un simple utilisateur au rôle d'admin dans une tontine donnée
    * @param {string} tontineId - ID de la tontine.
    * @param {string} userId - ID de l'utilisateur qui passera admin
    * @returns {Promise<void>}
    */
 
-  static async makeAdmin (tontineId, userId) {
+  static async makeAdmin(tontineId, userId) {
     try {
       const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
       const tontineDoc = await tontineRef.get();
@@ -255,13 +254,13 @@ class TontineModel {
       // on vérifie si le userID correspond à un id présent dans la firestore et valide
       const userDoc = await db.collection(USERS_COLLECTION).doc(userId).get();
       if (!userDoc.exists) {
-        throw new Error("utilisateur introuvable, veuillez entrer un id valide");
+        throw new Error(
+          "utilisateur introuvable, veuillez entrer un id valide"
+        );
       }
       const tontineData = tontineDoc.data();
       if (!tontineData.membersId.includes(userId)) {
-        throw new Error(
-          "L'utilisateur n'est pas membre de la tontine"
-        );
+        throw new Error("L'utilisateur n'est pas membre de la tontine");
       }
 
       // Ajouter l'utilisateur à la liste des admins
@@ -317,20 +316,190 @@ class TontineModel {
     }
   }
 
-  /** 
-  *Crée un nouveau tour dans une tontine donnée
-  *@param {string} tontineId - ID de la tontine.
-  *@param {Object} tourData - Données du tour à créer.
-  *@returns {Promise<string>} - ID du tour créé.
-  */
- static async createTour(tontineID, tourData){
-  try{
+  /**
+   * Crée automatiquement les tours pour une tontine.
+   * @param {string} tontineId - ID de la tontine.
+   * @param {Array<Object>} members - Liste des membres.
+   * @param {Object} options - Options pour la création des tours.
+   * @returns {Promise<void>}
+   */
+  static async createTours(tontineId, members, options) {
+    try {
+      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
+      const tontineDoc = await tontineRef.get();
+      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
 
+      const tontineData = tontineDoc.data();
+      const tours = [];
 
-  }catch(error){
+      // Générer les tours en fonction des options
+      let order = members;
+      if (options.order === "random") {
+        order = members.sort(() => Math.random() - 0.5);
+      } else if (options.order === "admin" && options.membresRestants) {
+        order = options.membresRestants;
+      }
 
+      order.forEach((member, index) => {
+        const startDate = new Date(tontineData.dateDebut);
+        startDate.setMonth(startDate.getMonth() + index * options.frequency);
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + options.frequency);
+
+        tours.push({
+          id: uuid4(),
+          statut: index === 0 ? "en cours" : "à venir",
+          membres_restants: members
+            .filter((m) => m.userId !== member.userId)
+            .map((m) => ({
+              userId: m.userId,
+              date_prevue: new Date(startDate).setMonth(
+                startDate.getMonth() + options.frequency
+              ),
+            })),
+          membres_servis: [],
+          periodeCotisation: [
+            {
+              id: uuid4(),
+              beneficiaire: member.userId,
+              date_debut: startDate,
+              date_fin: endDate,
+              contributions: {},
+              statut: "à venir",
+            },
+          ],
+        });
+      });
+
+      // Ajouter les tours à la tontine
+      await tontineRef.update({
+        tours: FieldValue.arrayUnion(...tours),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Erreur lors de la création des tours:", error.message);
+      throw new Error("Impossible de créer les tours.");
+    }
   }
-}
+
+  /**
+   * Enregistre un paiement pour une période de cotisation.
+   * @param {string} tontineId - ID de la tontine.
+   * @param {string} tourId - ID du tour.
+   * @param {string} periodeId - ID de la période de cotisation.
+   * @param {string} userId - ID de l'utilisateur qui effectue le paiement.
+   * @param {number} montant - Montant du paiement.
+   * @returns {Promise<void>}
+   */
+  static async recordPayment(tontineId, tourId, periodeId, userId, montant) {
+    try {
+      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
+      const tontineDoc = await tontineRef.get();
+      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
+
+      const tontineData = tontineDoc.data();
+      const tourIndex = tontineData.tours.findIndex(
+        (tour) => tour.id === tourId
+      );
+      if (tourIndex === -1) throw new Error("Tour introuvable");
+
+      const periodeIndex = tontineData.tours[
+        tourIndex
+      ].periodeCotisation.findIndex((periode) => periode.id === periodeId);
+      if (periodeIndex === -1)
+        throw new Error("Période de cotisation introuvable");
+
+      // Enregistrer le paiement
+      tontineData.tours[tourIndex].periodeCotisation[
+        periodeIndex
+      ].contributions[userId] = montant;
+
+      // Mettre à jour les données dans Firestore
+      await tontineRef.update({
+        tours: tontineData.tours,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+
+      // Enregistrer l'action dans l'historique
+      await db.collection("historiqueActions").add({
+        action: "Paiement validé",
+        userId,
+        date: FieldValue.serverTimestamp(),
+        details: `Cotisation de ${montant}`,
+      });
+    } catch (error) {
+      console.error(
+        "Erreur lors de l'enregistrement du paiement:",
+        error.message
+      );
+      throw new Error("Impossible d'enregistrer le paiement.");
+    }
+  }
+
+  /**
+   * Met à jour le statut des tours et des périodes de cotisation.
+   * @param {string} tontineId - ID de la tontine.
+   * @returns {Promise<void>}
+   */
+  static async updateTourStatus(tontineId) {
+    try {
+      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
+      const tontineDoc = await tontineRef.get();
+      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
+
+      const tontineData = tontineDoc.data();
+      const currentDate = new Date();
+
+      tontineData.tours.forEach((tour) => {
+        if (tour.statut === "en cours") {
+          const currentPeriode = tour.periodeCotisation.find(
+            (periode) => periode.statut === "en cours"
+          );
+          if (
+            currentPeriode &&
+            currentDate > new Date(currentPeriode.date_fin)
+          ) {
+            currentPeriode.statut = "terminé";
+            tour.membres_servis.push({
+              userId: currentPeriode.beneficiaire,
+              date_bouffee: new Date(),
+            });
+            tour.membres_restants = tour.membres_restants.filter(
+              (m) => m.userId !== currentPeriode.beneficiaire
+            );
+
+            if (tour.membres_restants.length > 0) {
+              const nextBeneficiary = tour.membres_restants[0];
+              tour.periodeCotisation.push({
+                id: uuid4(),
+                beneficiaire: nextBeneficiary.userId,
+                date_debut: new Date(),
+                date_fin: new Date(
+                  new Date().setMonth(new Date().getMonth() + 1)
+                ),
+                contributions: {},
+                statut: "en cours",
+              });
+            } else {
+              tour.statut = "terminé";
+            }
+          }
+        }
+      });
+
+      // Mettre à jour les données dans Firestore
+      await tontineRef.update({
+        tours: tontineData.tours,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error(
+        "Erreur lors de la mise à jour du statut des tours:",
+        error.message
+      );
+      throw new Error("Impossible de mettre à jour le statut des tours.");
+    }
+  }
 }
 
 module.exports = { TontineModel, tontineSchema }; // Exportation du modèle pour utilisation externe
