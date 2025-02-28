@@ -4,6 +4,8 @@ const express = require("express");
 const checkTourStatus = require("../middlewares/checkTourStatus");
 const router = express.Router();
 const verifyApiKey = require("../config/verifyApikey");
+const tourCtrl = require("../controllers/tour.controller");
+const verifyUserId = require("../middlewares/verifyUserId");
 
 router.use(verifyApiKey);
 // Créer une nouvelle tontine
@@ -21,7 +23,12 @@ router.delete(
 );
 
 // Récupérer une tontine par son ID
-router.get("/:tontineId", authMiddleware(), checkTourStatus, tontineCtrl.getTontineById);
+router.get(
+  "/:tontineId",
+  authMiddleware(),
+  checkTourStatus,
+  tontineCtrl.getTontineById
+);
 
 // Nommer un administrateur de tontine
 router.put(
@@ -45,6 +52,31 @@ router.post(
   authMiddleware(),
   checkTourStatus,
   tontineCtrl.inviteMember
+);
+
+router.post(
+  "/create/:tontineId",
+  authMiddleware(),
+  checkTourStatus,
+  tourCtrl.createTour
+);
+router.put(
+  "/changeOrder/:tontineId/:tourId",
+  authMiddleware(),
+  checkTourStatus,
+  tourCtrl.changeOrder
+);
+router.post(
+  "/recordPayment/:tontineId/:tourId/:periodeId",
+  authMiddleware(),
+  checkTourStatus,
+  tourCtrl.recordPayment
+);
+router.put(
+  "/updateTourStatus/:tontineId",
+  authMiddleware(),
+  checkTourStatus,
+  tourCtrl.updateTourStatus
 );
 
 module.exports = router;
