@@ -46,6 +46,41 @@ const updateTontineSchema = Joi.object({
     .optional(),
 });
 
+const tourSchema = Joi.object({
+  id: Joi.string().required(),
+  statut: Joi.string().valid("en cours", "terminé", "à venir").required(),
+  membres_restants: Joi.array()
+    .items(
+      Joi.object({
+        userId: Joi.string().required(),
+        date_prevue: Joi.date().iso().required(),
+      })
+    )
+    .default([]),
+  membres_servis: Joi.array()
+    .items(
+      Joi.object({
+        userId: Joi.string().required(),
+        date_bouffee: Joi.date().iso().required(),
+      })
+    )
+    .default([]),
+  periodeCotisation: Joi.array()
+    .items(
+      Joi.object({
+        id: Joi.string().required(),
+        beneficiaire: Joi.string().required(),
+        date_debut: Joi.date().iso().required(),
+        date_fin: Joi.date().iso().greater(Joi.ref("date_debut")).required(),
+        contributions: Joi.object()
+          .pattern(Joi.string(), Joi.number().positive())
+          .default({}),
+        statut: Joi.string().valid("en cours", "terminé", "à venir").required(),
+      })
+    )
+    .default([]),
+});
+
 exports.createTontine = async (req, res) => {
   try {
     // validation des données de la requête
@@ -79,7 +114,7 @@ exports.createTontine = async (req, res) => {
       membersId: [req.user.userId],
       adminId: [req.user.userId],
       inviteId: [],
-      tours:[],
+      tours: [],
       amount: req.body.amount,
       frequency: req.body.frequency,
       startDate: new Date(req.body.startDate), // Conversion en objet Date
@@ -326,5 +361,102 @@ exports.inviteMember = async (req, res) => {
     res.status(500).json({
       error: `Échec de l'invitation de l'utilisateur : ${err.message}`,
     });
+  }
+};
+
+exports.createTour = async (req, res) => {
+  try {
+    // Validation des données de la requête
+    const { error } = tourSchema.validate(req.body);
+    if (error) {
+      return res
+        .status(400)
+        .json({ error: `Données invalides : ${error.details[0].message}` });
+    }
+
+    const tontineId = req.params.tontineId;
+    const tourData = req.body;
+
+    // Création du tour
+    await TontineModel.createTour(tontineId, tourData);
+    res.status(201).json({ message: "Tour créé avec succès" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: `Échec de la création du tour : ${err.message}` });
+  }
+};
+
+exports.changeOrder = async (req, res) => {
+  try {
+    const tontineId = req.params.tontineId;
+    const tourId = req.params.tourId;
+    const newOrder = req.body.newOrder;
+
+    // Validation des données de la requête
+    if (
+      !Array.isArray(newOrder) ||
+      newOrder.some((id) => typeof id !== "string")
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Nouvel ordre des participants invalide" });
+    }
+
+    // Modification de l'ordre des participants
+    await TontineModel.changeOrder(tontineId, tourId, newOrder);
+    res
+      .status(200)
+      .json({ message: "Ordre des participants modifié avec succès" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({
+        error: `Échec de la modification de l'ordre des participants : ${err.message}`,
+      });
+  }
+};
+
+exports.recordPayment = async (req, res) => {
+  try {
+    const tontineId = req.params.tontineId;
+    const tourId = req.params.tourId;
+    const periodeId = req.params.periodeId;
+    const userId = req.user.userId;
+    const montant = req.body.montant;
+
+    // Enregistrement du paiement
+    await TontineModel.recordPayment(
+      tontineId,
+      tourId,
+      periodeId,
+      userId,
+      montant
+    );
+    res.status(200).json({ message: "Paiement enregistré avec succès" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({
+        error: `Échec de l'enregistrement du paiement : ${err.message}`,
+      });
+  }
+};
+
+exports.updateTourStatus = async (req, res) => {
+  try {
+    const tontineId = req.params.tontineId;
+
+    // Mise à jour du statut des tours
+    await TontineModel.updateTourStatus(tontineId);
+    res
+      .status(200)
+      .json({ message: "Statut des tours mis à jour avec succès" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({
+        error: `Échec de la mise à jour du statut des tours : ${err.message}`,
+      });
   }
 };
