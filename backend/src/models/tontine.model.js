@@ -6,7 +6,7 @@ const admin = require("../config/firebase"); // Importation du SDK Firebase Admi
 const db = admin.admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
 const { FieldValue } = require("firebase-admin/firestore");
-
+const { v4: uuid4 } = require("uuid");
 const TONTINE_COLLECTION = "tontines"; // Nom de la collection Firestore dédiée aux tontines
 const USERS_COLLECTION = "users"; // Nom de la collection Firestore dédiée aux tontines
 
@@ -45,15 +45,13 @@ const tontineSchema = Joi.object({
     .optional(),
 }).strict(); // Empêche l'ajout de champs non définis
 
-const tourShema = Joi.object({
-  tourId: Joi.string().required(),
-  startDate: Joi.date().iso().required(),
-  endDate: Joi.date().iso().greater(Joi.ref("startDate")).required(),
-  amount: Joi.number().positive().required(), // Montant de participation (nombre positif requis)
-  status: Joi.string().valid("en cours", "terminée", "en attente").required(),
-  participantNotYetReceived: Joi.array().items(Joi.string()).default([]),
-  participantReceived: Joi.array().items(Joi.string()).default([]),
-}).strict();
+const tourOptionsSchema = Joi.object({
+  order: Joi.string().valid("admin", "random").required(),
+  frequencyType: Joi.string().valid("daily", "weekly", "monthly").required(),
+  frequencyValue: Joi.number().positive().required(),
+  amount: Joi.number().positive().required(),
+  membresRestants: Joi.array().items(Joi.string()).optional(),
+});
 
 const updateTontineSchema = Joi.object({
   name: Joi.string().min(3).max(50).optional(),
@@ -232,39 +230,6 @@ class TontineModel {
 
   /**
    * Ajoute un utilisateur à la liste des invités d'une tontine.
-   * @param {string} tontineId - ID de la tontine.
-   * @param {string} userId - ID de l'utilisateur à inviter.
-   * @returns {Promise<void>}
-   */
-/*   static async inviteMember(tontineId, userId) {
-    try {
-      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
-      const tontineDoc = await tontineRef.get();
-      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
-
-      // on vérifie si le userID correspond à un id présent dans la firestore et valide
-      const userDoc = await db.collection(USERS_COLLECTION).doc(userId).get();
-      if (!userDoc.exists) {
-        throw new Error(
-          "utilisateur introuvable, veuillez entrer un id valide"
-        );
-      }
-      // Ajouter l'utilisateur à la liste des invités
-      await tontineRef.update({
-        inviteId: FieldValue.arrayUnion(userId),
-        updatedAt: FieldValue.serverTimestamp(),
-      });
-    } catch (error) {
-      console.error(
-        "Erreur lors de l'invitation de l'utilisateur:",
-        error.message
-      );
-      throw new Error("Impossible d'inviter l'utilisateur.");
-    }
-  } */
-
-  /**
-   * Ajoute un utilisateur à la liste des invités d'une tontine.
    * @param {string} codeInvitation - Code d'invitation de la tontine.
    * @param {string} userId - ID de l'utilisateur à inviter.
    * @returns {Promise<void>}
@@ -337,45 +302,6 @@ class TontineModel {
 
   /**
    * Ajoute un utilisateur à la liste des membres d'une tontine et le retire de la liste des invités.
-   * @param {string} tontineId - ID de la tontine.
-   * @param {string} userId - ID de l'utilisateur à ajouter.
-   * @returns {Promise<void>}
-   */
-/*   static async joinTontine(tontineId, userId) {
-    try {
-      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
-      const tontineDoc = await tontineRef.get();
-      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
-
-      // on vérifie si le userID correspond à un id présent dans la firestore et valide
-      const userDoc = await db.collection(USERS_COLLECTION).doc(userId).get();
-      if (!userDoc.exists) {
-        throw new Error("utilisable introuvable, veuillez entrer un id valide");
-      }
-      const tontineData = tontineDoc.data();
-      if (!tontineData.inviteId.includes(userId)) {
-        throw new Error(
-          "L'utilisateur n'est pas invité à rejoindre la tontine"
-        );
-      }
-
-      // Ajouter l'utilisateur à la liste des membres et le retirer de la liste des invités
-      await tontineRef.update({
-        membersId: FieldValue.arrayUnion(userId),
-        inviteId: FieldValue.arrayRemove(userId),
-        updatedAt: FieldValue.serverTimestamp(),
-      });
-    } catch (error) {
-      console.error(
-        "Erreur lors de l'ajout de l'utilisateur à la tontine:",
-        error.message
-      );
-      throw new Error("Impossible d'ajouter l'utilisateur à la tontine.");
-    }
-  } */
-
-  /**
-   * Ajoute un utilisateur à la liste des membres d'une tontine et le retire de la liste des invités.
    * @param {string} codeInvitation - Code d'invitation de la tontine.
    * @param {string} userId - ID de l'utilisateur à ajouter.
    * @returns {Promise<void>}
@@ -410,72 +336,6 @@ class TontineModel {
         error.message
       );
       throw new Error("Impossible d'ajouter l'utilisateur à la tontine.");
-    }
-  }
-
-  /**
-   * Crée automatiquement les tours pour une tontine.
-   * @param {string} tontineId - ID de la tontine.
-   * @param {Array<Object>} members - Liste des membres.
-   * @param {Object} options - Options pour la création des tours.
-   * @returns {Promise<void>}
-   */
-  static async createTours(tontineId, members, options) {
-    try {
-      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
-      const tontineDoc = await tontineRef.get();
-      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
-
-      const tontineData = tontineDoc.data();
-      const tours = [];
-
-      // Générer les tours en fonction des options
-      let order = members;
-      if (options.order === "random") {
-        order = members.sort(() => Math.random() - 0.5);
-      } else if (options.order === "admin" && options.membresRestants) {
-        order = options.membresRestants;
-      }
-
-      order.forEach((member, index) => {
-        const startDate = new Date(tontineData.dateDebut);
-        startDate.setMonth(startDate.getMonth() + index * options.frequency);
-        const endDate = new Date(startDate);
-        endDate.setMonth(endDate.getMonth() + options.frequency);
-
-        tours.push({
-          id: uuid4(),
-          statut: index === 0 ? "en cours" : "à venir",
-          membres_restants: members
-            .filter((m) => m.userId !== member.userId)
-            .map((m) => ({
-              userId: m.userId,
-              date_prevue: new Date(startDate).setMonth(
-                startDate.getMonth() + options.frequency
-              ),
-            })),
-          membres_servis: [],
-          periodeCotisation: [
-            {
-              id: uuid4(),
-              beneficiaire: member.userId,
-              date_debut: startDate,
-              date_fin: endDate,
-              contributions: {},
-              statut: "à venir",
-            },
-          ],
-        });
-      });
-
-      // Ajouter les tours à la tontine
-      await tontineRef.update({
-        tours: FieldValue.arrayUnion(...tours),
-        updatedAt: FieldValue.serverTimestamp(),
-      });
-    } catch (error) {
-      console.error("Erreur lors de la création des tours:", error.message);
-      throw new Error("Impossible de créer les tours.");
     }
   }
 
@@ -595,6 +455,146 @@ class TontineModel {
         error.message
       );
       throw new Error("Impossible de mettre à jour le statut des tours.");
+    }
+  }
+
+  /**
+   * Crée un tour pour une tontine et génère automatiquement les périodes de cotisation.
+   * @param {string} tontineId - ID de la tontine.
+   * @param {Object} options - Options pour la création du tour.
+   * @returns {Promise<void>}
+   */
+  static async createTour(tontineId, options) {
+    try {
+      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
+      const tontineDoc = await tontineRef.get();
+      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
+
+      const tontineData = tontineDoc.data();
+      const members = tontineData.membersId;
+      const tours = tontineData.tours || [];
+
+      // Générer les périodes de cotisation pour le tour
+      let order = members;
+      if (options.order === "random") {
+        order = members.sort(() => Math.random() - 0.5);
+      } else if (options.order === "admin" && options.membresRestants) {
+        order = options.membresRestants;
+      }
+
+      const startDate = new Date();
+      const tour = {
+        id: uuid4(),
+        statut: "en cours",
+        membres_restants: order.map((userId, index) => ({
+          userId,
+          date_prevue: this.calculateNextDate(
+            startDate,
+            options.frequencyType,
+            options.frequencyValue,
+            index
+          ),
+        })),
+        membres_servis: [],
+        periodeCotisation: order.map((userId, index) => ({
+          id: uuid4(),
+          beneficiaire: userId,
+          date_debut: this.calculateNextDate(
+            startDate,
+            options.frequencyType,
+            options.frequencyValue,
+            index
+          ),
+          date_fin: this.calculateNextDate(
+            startDate,
+            options.frequencyType,
+            options.frequencyValue,
+            index + 1
+          ),
+          contributions: {},
+          statut: index === 0 ? "en cours" : "à venir",
+          amount: options.amount,
+        })),
+      };
+
+      tours.push(tour);
+
+      // Ajouter le tour à la tontine
+      await tontineRef.update({
+        tours,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Erreur lors de la création du tour:", error.message);
+      throw new Error("Impossible de créer le tour.");
+    }
+  }
+
+  /**
+   * Calcule la prochaine date en fonction du type et de la valeur de la fréquence.
+   * @param {Date} startDate - Date de début.
+   * @param {string} frequencyType - Type de fréquence ("daily", "weekly", "monthly").
+   * @param {number} frequencyValue - Valeur de la fréquence.
+   * @param {number} index - Index de la période.
+   * @returns {Date} - Prochaine date calculée.
+   */
+  static calculateNextDate(startDate, frequencyType, frequencyValue, index) {
+    const nextDate = new Date(startDate);
+    switch (frequencyType) {
+      case "daily":
+        nextDate.setDate(nextDate.getDate() + frequencyValue * index);
+        break;
+      case "weekly":
+        nextDate.setDate(
+          nextDate.getDate() +
+            ((frequencyValue - nextDate.getDay() + 7 * index) % 7)
+        );
+        break;
+      case "monthly":
+        nextDate.setMonth(nextDate.getMonth() + index);
+        nextDate.setDate(frequencyValue);
+        break;
+      default:
+        throw new Error("Type de fréquence non valide");
+    }
+    return nextDate;
+  }
+
+  /**
+   * Met à jour les dates des périodes de cotisation d'un tour.
+   * @param {string} tontineId - ID de la tontine.
+   * @param {string} tourId - ID du tour.
+   * @param {Array<Object>} updatedPeriods - Liste des périodes de cotisation mises à jour.
+   * @returns {Promise<void>}
+   */
+  static async updateCotisationPeriods(tontineId, tourId, updatedPeriods) {
+    try {
+      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
+      const tontineDoc = await tontineRef.get();
+      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
+
+      const tontineData = tontineDoc.data();
+      const tourIndex = tontineData.tours.findIndex(
+        (tour) => tour.id === tourId
+      );
+      if (tourIndex === -1) throw new Error("Tour introuvable");
+
+      // Mettre à jour les périodes de cotisation
+      tontineData.tours[tourIndex].periodeCotisation = updatedPeriods;
+
+      // Mettre à jour les données dans Firestore
+      await tontineRef.update({
+        tours: tontineData.tours,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error(
+        "Erreur lors de la mise à jour des périodes de cotisation:",
+        error.message
+      );
+      throw new Error(
+        "Impossible de mettre à jour les périodes de cotisation."
+      );
     }
   }
 }

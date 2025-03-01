@@ -46,40 +46,14 @@ const updateTontineSchema = Joi.object({
     .optional(),
 });
 
-const tourSchema = Joi.object({
-  id: Joi.string().required(),
-  statut: Joi.string().valid("en cours", "terminé", "à venir").required(),
-  membres_restants: Joi.array()
-    .items(
-      Joi.object({
-        userId: Joi.string().required(),
-        date_prevue: Joi.date().iso().required(),
-      })
-    )
-    .default([]),
-  membres_servis: Joi.array()
-    .items(
-      Joi.object({
-        userId: Joi.string().required(),
-        date_bouffee: Joi.date().iso().required(),
-      })
-    )
-    .default([]),
-  periodeCotisation: Joi.array()
-    .items(
-      Joi.object({
-        id: Joi.string().required(),
-        beneficiaire: Joi.string().required(),
-        date_debut: Joi.date().iso().required(),
-        date_fin: Joi.date().iso().greater(Joi.ref("date_debut")).required(),
-        contributions: Joi.object()
-          .pattern(Joi.string(), Joi.number().positive())
-          .default({}),
-        statut: Joi.string().valid("en cours", "terminé", "à venir").required(),
-      })
-    )
-    .default([]),
+const tourOptionsSchema = Joi.object({
+  order: Joi.string().valid("admin", "random").required(),
+  frequencyType: Joi.string().valid("daily", "weekly", "monthly").required(),
+  frequencyValue: Joi.number().positive().required(),
+  amount: Joi.number().positive().required(),
+  membresRestants: Joi.array().items(Joi.string()).optional(),
 });
+
 
 exports.createTontine = async (req, res) => {
   try {
@@ -370,7 +344,7 @@ exports.inviteMember = async (req, res) => {
 exports.createTour = async (req, res) => {
   try {
     // Validation des données de la requête
-    const { error } = tourSchema.validate(req.body);
+    const { error } = tourOptionsSchema.validate(req.body);
     if (error) {
       return res
         .status(400)
