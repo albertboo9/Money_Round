@@ -530,7 +530,7 @@ class TontineModel {
     }
   }
 
-  /**
+/**
    * Calcule la prochaine date en fonction du type et de la valeur de la fréquence.
    * @param {Date} startDate - Date de début.
    * @param {string} frequencyType - Type de fréquence ("daily", "weekly", "monthly").
@@ -538,27 +538,24 @@ class TontineModel {
    * @param {number} index - Index de la période.
    * @returns {Date} - Prochaine date calculée.
    */
-  static calculateNextDate(startDate, frequencyType, frequencyValue, index) {
-    const nextDate = new Date(startDate);
-    switch (frequencyType) {
-      case "daily":
-        nextDate.setDate(nextDate.getDate() + frequencyValue * index);
-        break;
-      case "weekly":
-        nextDate.setDate(
-          nextDate.getDate() +
-            ((frequencyValue - nextDate.getDay() + 7 * index) % 7)
-        );
-        break;
-      case "monthly":
-        nextDate.setMonth(nextDate.getMonth() + index);
-        nextDate.setDate(frequencyValue);
-        break;
-      default:
-        throw new Error("Type de fréquence non valide");
-    }
-    return nextDate;
+static calculateNextDate(startDate, frequencyType, frequencyValue, index) {
+  const nextDate = new Date(startDate);
+  switch (frequencyType) {
+    case "daily":
+      nextDate.setDate(nextDate.getDate() + frequencyValue * index);
+      break;
+    case "weekly":
+      nextDate.setDate(nextDate.getDate() + (frequencyValue + 7 * index));
+      break;
+    case "monthly":
+      nextDate.setMonth(nextDate.getMonth() + index);
+      nextDate.setDate(frequencyValue);
+      break;
+    default:
+      throw new Error("Type de fréquence non valide");
   }
+  return nextDate;
+}
 
   /**
    * Met à jour les dates des périodes de cotisation d'un tour.
