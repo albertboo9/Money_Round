@@ -40,7 +40,7 @@ router.put(
 
 // Rejoindre une tontine
 router.post(
-  "/join/:tontineId",
+  "/join",
   authMiddleware(),
   checkTourStatus,
   tontineCtrl.joinTontine
