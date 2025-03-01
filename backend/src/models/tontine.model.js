@@ -149,6 +149,31 @@ class TontineModel {
   }
 
   /**
+   * Récupère une tontine par son code d'invitation.
+   * @param {string} codeInvitation - Code d'invitation de la tontine.
+   * @returns {Promise<Object>} - Données de la tontine.
+   */
+  static async getTontineByCode(codeInvitation) {
+    try {
+      const tontineQuery = await db
+        .collection(TONTINE_COLLECTION)
+        .where("codeInvitation", "==", codeInvitation)
+        .get();
+
+      if (tontineQuery.empty) throw new Error("Tontine introuvable");
+
+      const tontineDoc = tontineQuery.docs[0];
+      return { id: tontineDoc.id, ...tontineDoc.data() }; // Retourne les données de la tontine
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération de la tontine par code d'invitation:",
+        error.message
+      );
+      throw new Error("Impossible de récupérer la tontine.");
+    }
+  }
+
+  /**
    * Met à jour une tontine existante.
    * @param {string} tontineId - ID de la tontine à mettre à jour.
    * @param {Object} tontineData - Nouvelles données de la tontine.
@@ -211,7 +236,7 @@ class TontineModel {
    * @param {string} userId - ID de l'utilisateur à inviter.
    * @returns {Promise<void>}
    */
-  static async inviteMember(tontineId, userId) {
+/*   static async inviteMember(tontineId, userId) {
     try {
       const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
       const tontineDoc = await tontineRef.get();
@@ -224,6 +249,39 @@ class TontineModel {
           "utilisateur introuvable, veuillez entrer un id valide"
         );
       }
+      // Ajouter l'utilisateur à la liste des invités
+      await tontineRef.update({
+        inviteId: FieldValue.arrayUnion(userId),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error(
+        "Erreur lors de l'invitation de l'utilisateur:",
+        error.message
+      );
+      throw new Error("Impossible d'inviter l'utilisateur.");
+    }
+  } */
+
+  /**
+   * Ajoute un utilisateur à la liste des invités d'une tontine.
+   * @param {string} codeInvitation - Code d'invitation de la tontine.
+   * @param {string} userId - ID de l'utilisateur à inviter.
+   * @returns {Promise<void>}
+   */
+  static async inviteMember(codeInvitation, userId) {
+    try {
+      const tontineData = await this.getTontineByCode(codeInvitation);
+      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineData.id);
+
+      // on vérifie si le userID correspond à un id présent dans la firestore et valide
+      const userDoc = await db.collection(USERS_COLLECTION).doc(userId).get();
+      if (!userDoc.exists) {
+        throw new Error(
+          "utilisateur introuvable, veuillez entrer un id valide"
+        );
+      }
+
       // Ajouter l'utilisateur à la liste des invités
       await tontineRef.update({
         inviteId: FieldValue.arrayUnion(userId),
@@ -283,7 +341,7 @@ class TontineModel {
    * @param {string} userId - ID de l'utilisateur à ajouter.
    * @returns {Promise<void>}
    */
-  static async joinTontine(tontineId, userId) {
+/*   static async joinTontine(tontineId, userId) {
     try {
       const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
       const tontineDoc = await tontineRef.get();
@@ -295,6 +353,45 @@ class TontineModel {
         throw new Error("utilisable introuvable, veuillez entrer un id valide");
       }
       const tontineData = tontineDoc.data();
+      if (!tontineData.inviteId.includes(userId)) {
+        throw new Error(
+          "L'utilisateur n'est pas invité à rejoindre la tontine"
+        );
+      }
+
+      // Ajouter l'utilisateur à la liste des membres et le retirer de la liste des invités
+      await tontineRef.update({
+        membersId: FieldValue.arrayUnion(userId),
+        inviteId: FieldValue.arrayRemove(userId),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error(
+        "Erreur lors de l'ajout de l'utilisateur à la tontine:",
+        error.message
+      );
+      throw new Error("Impossible d'ajouter l'utilisateur à la tontine.");
+    }
+  } */
+
+  /**
+   * Ajoute un utilisateur à la liste des membres d'une tontine et le retire de la liste des invités.
+   * @param {string} codeInvitation - Code d'invitation de la tontine.
+   * @param {string} userId - ID de l'utilisateur à ajouter.
+   * @returns {Promise<void>}
+   */
+  static async joinTontine(codeInvitation, userId) {
+    try {
+      const tontineData = await this.getTontineByCode(codeInvitation);
+      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineData.id);
+
+      // on vérifie si le userID correspond à un id présent dans la firestore et valide
+      const userDoc = await db.collection(USERS_COLLECTION).doc(userId).get();
+      if (!userDoc.exists) {
+        throw new Error(
+          "utilisateur introuvable, veuillez entrer un id valide"
+        );
+      }
       if (!tontineData.inviteId.includes(userId)) {
         throw new Error(
           "L'utilisateur n'est pas invité à rejoindre la tontine"

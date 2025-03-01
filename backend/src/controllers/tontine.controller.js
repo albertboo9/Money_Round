@@ -298,13 +298,14 @@ exports.makeAdmin = async (req, res) => {
 
 exports.joinTontine = async (req, res) => {
   try {
-    const tontineId = req.params.tontineId;
+    //const tontineId = req.params.tontineId;
     const userId = req.user.userId; // ID de l'utilisateur qui effectue la requête
-    console.log("L'ID de la tontine est " + tontineId);
+    const codeInvitation = req.body.codeInvitation; 
+    console.log("L'ID de la tontine est " + codeInvitation);
     console.log("L'ID de l'utilisateur qui rejoint est " + userId);
 
     // Vérification de l'existence de la tontine
-    const tontineDoc = await TontineModel.getTontineById(tontineId);
+    const tontineDoc = await TontineModel.getTontineByCode(codeInvitation);
     if (!tontineDoc) {
       return res.status(404).json({ error: "Tontine introuvable" });
     }
@@ -318,7 +319,7 @@ exports.joinTontine = async (req, res) => {
     }
 
     // Ajout de l'utilisateur à la tontine
-    await TontineModel.joinTontine(tontineId, userId);
+    await TontineModel.joinTontine(codeInvitation, userId);
     res
       .status(200)
       .json({ message: "Utilisateur ajouté à la tontine avec succès" });
@@ -333,6 +334,7 @@ exports.inviteMember = async (req, res) => {
   try {
     const tontineId = req.params.tontineId;
     const userIdToInvite = req.body.userId; // ID de l'utilisateur à inviter
+    //const codeInvitation = req.body.codeInvitation // code d'invitation unique
     const requestingUserId = req.user.userId; // ID de l'utilisateur qui effectue la requête
     console.log("L'ID de la tontine est " + tontineId);
     console.log("L'ID de l'utilisateur à inviter est " + userIdToInvite);
@@ -342,6 +344,7 @@ exports.inviteMember = async (req, res) => {
 
     // Vérification de l'existence de la tontine
     const tontineDoc = await TontineModel.getTontineById(tontineId);
+    const codeInvitation = tontineDoc.codeInvitation;
     if (!tontineDoc) {
       return res.status(404).json({ error: "Tontine introuvable" });
     }
@@ -355,7 +358,7 @@ exports.inviteMember = async (req, res) => {
     }
 
     // Invitation de l'utilisateur
-    await TontineModel.inviteMember(tontineId, userIdToInvite);
+    await TontineModel.inviteMember(codeInvitation, userIdToInvite);
     res.status(200).json({ message: "Utilisateur invité avec succès" });
   } catch (err) {
     res.status(500).json({
