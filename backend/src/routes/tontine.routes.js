@@ -4,8 +4,6 @@ const express = require("express");
 const checkTourStatus = require("../middlewares/checkTourStatus");
 const router = express.Router();
 const verifyApiKey = require("../config/verifyApikey");
-const tourCtrl = require("../controllers/tour.controller");
-const verifyUserId = require("../middlewares/verifyUserId");
 
 router.use(verifyApiKey);
 // Créer une nouvelle tontine
@@ -55,28 +53,28 @@ router.post(
 );
 
 router.post(
-  "/create/:tontineId",
+  "/createTour/:tontineId",
   authMiddleware(),
   checkTourStatus,
-  tourCtrl.createTour
+  tontineCtrl.createTour
 );
-router.put(
+/* router.put(
   "/changeOrder/:tontineId/:tourId",
   authMiddleware(),
   checkTourStatus,
   tourCtrl.changeOrder
-);
-router.post(
+); */
+/* router.post(
   "/recordPayment/:tontineId/:tourId/:periodeId",
   authMiddleware(),
   checkTourStatus,
   tourCtrl.recordPayment
-);
-router.put(
+); */
+/* router.put(
   "/updateTourStatus/:tontineId",
   authMiddleware(),
   checkTourStatus,
   tourCtrl.updateTourStatus
-);
+); */
 
 module.exports = router;

@@ -21,7 +21,7 @@ const checkTourStatus = async (req, res, next) => {
       return res.status(400).json({ error: "Aucun champ 'tours' trouvé dans la tontine ou 'tours' n'est pas un tableau" });
     }
 
-    const ongoingTour = tontineData.tours.some(tour => tour.status === "en cours");
+    const ongoingTour = tontineData.tours.some(tour => tour.statut === "en cours");
     if (ongoingTour) {
       console.log("Un tour est en cours:", ongoingTour);
       return res.status(400).json({ error: "Un tour est en cours, modification non autorisée" });
