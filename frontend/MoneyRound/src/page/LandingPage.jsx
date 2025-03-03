@@ -11,7 +11,7 @@ import RevolutionLandingPage from "../component/LandingPage/RevolutionLandingPag
 import Footer from "../component/Footer/Footer";
 import WorkLandingPage from "../component/LandingPage/WorkLandingPage";
 import LetStart from "../component/LandingPage/LetStart";
-
+ 
 function LandingPage(){
     //Declancher les animations à leur apparition
     document.addEventListener("DOMContentLoaded", () => {
@@ -46,7 +46,7 @@ function LandingPage(){
     
     
     return (<>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
+       
         <HeaderLandingPage/>
         <main id="landingPage">
             <Slider></Slider>
