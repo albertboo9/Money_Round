@@ -31,7 +31,7 @@ const resetPasswordSchema = Joi.object({
     email: Joi.string().email().required()
 })
 
-const updatePassword = Joi.object({
+const updatePasswordSchema = Joi.object({
     oobCode: Joi.string().required(),
     newPassword: Joi.string()
         .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
@@ -40,6 +40,7 @@ const updatePassword = Joi.object({
             'string.pattern.base': 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.',
         })
 })
+
 
 /*exports.syncUser = async (req, res) => {
     try {
@@ -221,7 +222,7 @@ exports.resetPassword = async (req, res) => {
 exports.updatePassword = async (req, res) => {
     try {
         // Validation des données
-        const {error, value} = resetPasswordSchema.validate(req.body);
+        const {error, value} = updatePasswordSchema.validate(req.body);
         if (error) {
             return res.status(400).json({error: `Donnés invalides : ${error.details[0].message}` });
         }
