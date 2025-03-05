@@ -11,6 +11,8 @@ const updateUserSchema = Joi.object({
 });
 
 const registerWithEmailPasswordSchema = Joi.object({
+    fullName: Joi.string().min(3).max(50).required(),
+    phoneNumber: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string()
         .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
@@ -24,6 +26,21 @@ const signInWithEmailAndPasswordSchema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().required()
 });
+
+const resetPasswordSchema = Joi.object({
+    email: Joi.string().email().required()
+})
+
+const updatePasswordSchema = Joi.object({
+    oobCode: Joi.string().required(),
+    newPassword: Joi.string()
+        .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+        .required()
+        .messages({
+            'string.pattern.base': 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.',
+        })
+})
+
 
 /*exports.syncUser = async (req, res) => {
     try {
@@ -50,12 +67,11 @@ exports.registerWithEmailPassword = async (req, res) => {
         if (error) {
             return res.status(400).json({error: `Données invalides : ${error.details[0].message}` });
         }
+
         const registeredUserId = await UserModel.registerWithEmailPassword(value);
         if (!registeredUserId) {
             return res.status(409).json({error: `Échec d'inscription de l'utilisateur : ${err.message}`});
         }
-
-        //await UserModel.sendVerificationEmail(registeredUserId);
 
         return res.status(200).json({message: "Utilisateur inscrit avec succès", userId: registeredUserId});
 
@@ -173,5 +189,48 @@ exports.getTontinesByUserId = async (req, res) => {
 
     }catch (error) {
         return res.status(500).json({error: `Impossible de récupérer les tontines de l'utilisateur : ${error.message}`,});
+    }
+}
+
+exports.getNotificationsByUserId = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const notifications = await UserModel.getNotificationsByUserId(userId);
+        return res.status(200).json({message: "Notifications de l'utilisateur", tontines: notifications});
+
+    }catch (error) {
+        return res.status(500).json({error: `Impossible de récupérer les notifications de l'utilisateur : ${error.message}`,});
+    }
+}
+
+exports.resetPassword = async (req, res) => {
+    try {
+        // Validation des données
+        const {error, value} = resetPasswordSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({error: `Email invalide : ${error.details[0].message}` });
+        }
+
+        await UserModel.resetPassword(value);
+        res.status(200).json({ message: 'Le mail de réinitialisation a été envoyé' });
+
+    }catch (error) {
+        return res.status(500).json({error: `Échec: ${err.message}`});
+    }
+}
+
+exports.updatePassword = async (req, res) => {
+    try {
+        // Validation des données
+        const {error, value} = updatePasswordSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({error: `Donnés invalides : ${error.details[0].message}` });
+        }
+
+        const userId = await UserModel.resetPassword(value);
+        res.status(200).json({ message: `Mot de passe mis à jour avec succès: ${userId}` });
+
+    }catch (error) {
+        return res.status(500).json({error: `Échec: ${err.message}`});
     }
 }

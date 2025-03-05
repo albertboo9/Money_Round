@@ -99,7 +99,7 @@ class UserModel {
      * @returns {Promise<string>} - retourne l'ID de l'utilisateur inscrit.
      */
     static async registerWithEmailPassword(registerData) {
-        const { email, password } = registerData;
+        const { fullName, phoneNumber, email, password } = registerData;
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
@@ -108,8 +108,8 @@ class UserModel {
             const userRef = db.collection(USER_COLLECTION).doc(user.uid);
             await userRef.set({
                 email: user.email,
-                fullName: null,
-                phoneNumber: null,
+                fullName: fullName,
+                phoneNumber: phoneNumber,
                 profilePicture: null,
                 amount: 0,
                 inscriptionDate: FieldValue.serverTimestamp(),
@@ -118,6 +118,16 @@ class UserModel {
                 isBlocked: false,
             });
             console.log("Utilisateur ajouté dans Firestore", userRef.id);
+
+            // Configure ActionCodeSettings for email verification
+            const actionCodeSettings = {
+                url: 'https://moneyround-aa7a9.firebaseapp.com', // URL de redirection de l'utilisateur apres la vérification
+                handleCodeInApp: false
+            };
+
+            // Envoie de l'email de vérification
+            await sendEmailVerification(user, actionCodeSettings);
+            console.log("Email de vérification envoyé à l'utilisateur");
 
             return user.uid; // Retourne l'ID de l'utilisateur inscrit
 
@@ -188,6 +198,7 @@ class UserModel {
     /**
      * Mets à jour les données de l'utilisateur
      * @param {string} userId - ID de l'utilisateur à récupérer.
+     * @param {Object} userData - Les nouvelles données de l'utilisateur
      * @returns {Promise<Object>} - Données mises à jour de l'utilisateur.
      */
     static async updateUser(userId, userData) {
@@ -268,6 +279,74 @@ class UserModel {
             return tontines; // Retourne les tontines de l'utilisateur
         } catch (error) {
             console.error("Erreur lors de la récuperation des tontines de l'utilisateur:", error.message);
+            throw new Error(error.message);
+        }
+    }
+
+
+    /**
+     * Récupération de toutes les notifications d'un utilisateur
+     * @param {string} userId - ID de l'utilisateur
+     * @returns {Promise<Object>} - Un objet contenant les notifications de l'utilisateur
+     */
+    static async getNotificationsByUserId(userId) {
+        try {
+            const userRef = db.collection(USER_COLLECTION).doc(userId);
+            const userDoc = await userRef.get();
+            if (!userDoc.exists) throw new Error("Utilisateur introuvable");
+
+            const querySnapshot = await db.collection(TONTINE_COLLECTION).where('usersId', 'array-contains', userId).get();
+            const notifications = [];
+            if (querySnapshot) {
+                querySnapshot.forEach(doc => {
+                    notifications.push({ id: doc.id, ...doc.data() });
+                });
+            }
+
+            return notifications; // Retourne les notifications de l'utilisateur
+        } catch (error) {
+            console.error("Erreur lors de la récuperation des notifications de l'utilisateur:", error.message);
+            throw new Error(error.message);
+        }
+    }
+
+
+    /**
+     * Reinitialisation du mot de passe d'un utilisateur
+     * @param {string} email - l'email de l'utilisateur
+     * @returns {Promise<void>} - Ne retourne rien
+     */
+    static async resetPassword(email) {
+        try {
+            const auth = admin.admin.auth();
+            // Send password reset email
+            await auth.generatePasswordResetLink(email, {
+                url: 'https://moneyround-aa7a9.firebaseapp.com', // URL de redirection
+            });
+            console.log('Email de réinitialisation envoyé');
+
+        }catch(error) {
+            console.error("Erreur lors de la réinitialisation du mot passe de l'utilisateur:", error.message);
+            throw new Error(error.message);
+        }
+    }
+
+
+    /**
+     * Mise à jour du mot de passe d'un utilisateur
+     * @param {string} oobCode - le code oob qui se trouve dans l'url de réinitialisation du mot de passe
+     * @param {string} newPassword - le nouveau mot de passe de l'utilisateur
+     * @returns {Promise<string>} - retourne l'id de l'utilisateur
+     */
+    static async updatePassword(oobCode, newPassword) {
+        try {
+            const auth = admin.admin.auth();
+            const user = await auth.confirmPasswordReset(oobCode, newPassword);
+            console.log('Mot de passe mis à jour', user.uid);
+            return user.uid;
+
+        }catch(error) {
+            console.error("Erreur lors de la mise à jour du mot passe de l'utilisateur:", error.message);
             throw new Error(error.message);
         }
     }

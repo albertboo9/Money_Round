@@ -27,5 +27,14 @@ router.delete('/:userId', authMiddleware(), userController.deleteUser);
 // Récupérer toutes les tontines d'un utilisateur
 router.get('/:userId/tontines', authMiddleware(), userController.getTontinesByUserId);
 
+// Récupérer toutes les notifications d'un utilisateur
+router.get('/:userId/notifications', authMiddleware(), userController.getNotificationsByUserId);
+
+// Réinitialiser le mot de passe d'un utilisateur via un lien par mail
+router.post('/resetPassword', userController.resetPassword);
+
+// Mettre a jour le mot de passe d'un utilisateur
+router.post('/updatePassword', userController.updatePassword);
+
 
 module.exports = router;
