@@ -179,4 +179,4 @@ const Createaccount = () => {
   )
 }
 
-export default Createaccount
+export default Createaccount;

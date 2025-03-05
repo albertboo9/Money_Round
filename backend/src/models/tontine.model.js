@@ -47,7 +47,17 @@ const tontineSchema = Joi.object({
 
 const tourOptionsSchema = Joi.object({
   order: Joi.string().valid("admin", "random").required(),
-  frequencyType: Joi.string().valid("daily", "weekly", "monthly").required(),
+  frequencyType: Joi.string()
+    .valid(
+      "daily",
+      "weekly",
+      "monthly",
+      "specificDay",
+      "lastSunday",
+      "biweekly",
+      "firstMonday"
+    )
+    .required(),
   frequencyValue: Joi.number().positive().required(),
   amount: Joi.number().positive().required(),
   membresRestants: Joi.array().items(Joi.string()).optional(),
@@ -377,13 +387,13 @@ class TontineModel {
         updatedAt: FieldValue.serverTimestamp(),
       });
 
-      // Enregistrer l'action dans l'historique
+      /*       // Enregistrer l'action dans l'historique
       await db.collection("historiqueActions").add({
         action: "Paiement validé",
         userId,
         date: FieldValue.serverTimestamp(),
         details: `Cotisation de ${montant}`,
-      });
+      }); */
     } catch (error) {
       console.error(
         "Erreur lors de l'enregistrement du paiement:",
@@ -530,32 +540,57 @@ class TontineModel {
     }
   }
 
-/**
+  /**
    * Calcule la prochaine date en fonction du type et de la valeur de la fréquence.
    * @param {Date} startDate - Date de début.
-   * @param {string} frequencyType - Type de fréquence ("daily", "weekly", "monthly").
+   * @param {string} frequencyType - Type de fréquence ("daily", "weekly", "monthly", "specificDay", "lastSunday", "biweekly", "firstMonday").
    * @param {number} frequencyValue - Valeur de la fréquence.
    * @param {number} index - Index de la période.
    * @returns {Date} - Prochaine date calculée.
    */
-static calculateNextDate(startDate, frequencyType, frequencyValue, index) {
-  const nextDate = new Date(startDate);
-  switch (frequencyType) {
-    case "daily":
-      nextDate.setDate(nextDate.getDate() + frequencyValue * index);
-      break;
-    case "weekly":
-      nextDate.setDate(nextDate.getDate() + (frequencyValue + 7 * index));
-      break;
-    case "monthly":
-      nextDate.setMonth(nextDate.getMonth() + index);
-      nextDate.setDate(frequencyValue);
-      break;
-    default:
-      throw new Error("Type de fréquence non valide");
+  static calculateNextDate(startDate, frequencyType, frequencyValue, index) {
+    const nextDate = new Date(startDate);
+    switch (frequencyType) {
+      case "daily":
+        nextDate.setDate(nextDate.getDate() + frequencyValue * index);
+        break;
+      case "weekly":
+        nextDate.setDate(nextDate.getDate() + (frequencyValue + 7 * index));
+        break;
+      case "biweekly":
+        nextDate.setDate(nextDate.getDate() + 14 * index);
+        break;
+      case "monthly":
+        nextDate.setMonth(nextDate.getMonth() + index);
+        nextDate.setDate(frequencyValue);
+        break;
+      case "specificDay":
+        nextDate.setMonth(nextDate.getMonth() + index);
+        nextDate.setDate(frequencyValue);
+        break;
+      case "lastSunday":
+        nextDate.setMonth(nextDate.getMonth() + index);
+        nextDate.setDate(1);
+        const lastDay = new Date(
+          nextDate.getFullYear(),
+          nextDate.getMonth() + 1,
+          0
+        );
+        const lastSunday = lastDay.getDate() - lastDay.getDay();
+        nextDate.setDate(lastSunday);
+        break;
+      case "firstMonday":
+        nextDate.setMonth(nextDate.getMonth() + index);
+        nextDate.setDate(1);
+        while (nextDate.getDay() !== 1) {
+          nextDate.setDate(nextDate.getDate() + 1);
+        }
+        break;
+      default:
+        throw new Error("Type de fréquence non valide");
+    }
+    return nextDate;
   }
-  return nextDate;
-}
 
   /**
    * Met à jour les dates des périodes de cotisation d'un tour.
@@ -596,4 +631,4 @@ static calculateNextDate(startDate, frequencyType, frequencyValue, index) {
   }
 }
 
-module.exports = { TontineModel, tontineSchema }; // Exportation du modèle pour utilisation externe
+module.exports = { TontineModel, tontineSchema, tourOptionsSchema }; // Exportation du modèle pour utilisation externe
