@@ -1,0 +1,84 @@
+#landingPage .second-view .revolution .box-head-revolution{
+    background-color:black;
+    align-self: center;
+    width: auto;
+    height: auto;
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    margin-bottom: 30px;
+    color: white;
+}
+#landingPage .second-view .revolution .before-after{
+    width: 80%;
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    gap:5%;
+    padding: 50px;
+    flex-wrap: wrap;
+    border-radius: 50px;
+    margin-bottom: 30px;
+    }
+    #landingPage .second-view .revolution .before-after > div{
+        border-radius: 20px;
+    }
+    #landingPage .second-view .revolution .before-after .head-before-after{
+        font-size: 35px;
+        text-align: left;
+    }
+    #landingPage .second-view .revolution .before-after .view-element{
+        display: flex;
+        flex: column;
+        justify-content: flex-start;
+        border-radius: 30px;
+        border: 1px solid;
+        border-color: var(--medium-grey);
+        }
+        #landingPage .second-view .revolution .before-after .view-element div{
+            border-bottom: 1px solid;
+            border-bottom-color: var(--medium-grey);
+            padding-bottom: 20px;
+        }
+        #landingPage .second-view .revolution .before-after .before,#landingPage .second-view .revolution .before-after .after{
+            padding: 40px;
+            text-align: left;
+        }
+    #landingPage .second-view .revolution .before-after .all-content{
+        border: solid 1px rgb(46, 46, 46);
+        border-radius: 20px;
+        margin-top: 20px
+        }
+        #landingPage .second-view .revolution .before-after .all-content >:last-child{
+            border-bottom: none;
+        }
+        #landingPage .second-view .revolution .before-after .all-content div{
+            padding-left: 20px;
+            display: flex;
+            align-items: center; /* Pour s'assurer que tout sois parfaitement algné au milieu mais on a autaumatiquen besoin de flex */
+            border-bottom: solid 1px rgb(46, 46, 46);
+            height: 70px;
+        }
+    #landingPage .second-view .revolution .before-after .before{
+        color: white;
+        background-color: black;
+        align-self: baseline;
+        width: 400px;
+        height: auto;
+        }
+            #landingPage .second-view .revolution .before-after .before  .all-content span{
+                color: red;
+            }
+    #landingPage .second-view .revolution .before-after .after{
+        background-color: whitesmoke;
+        width: 400px;
+        }
+        #landingPage .second-view .revolution .before-after .after  .all-content span{
+            color: var(--primary-color);
+        }
+        #landingPage .second-view .revolution .before-after .after button{
+            align-items: center;
+            margin-top: 20px;
+            width: 100%;
+            justify-content: center;
+        }

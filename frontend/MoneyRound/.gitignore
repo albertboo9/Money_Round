@@ -1,3 +1,24 @@
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 # Ignorer le dossier node_modules (très lourd)
 node_modules/
 
@@ -8,6 +29,7 @@ node_modules/
 .env.production
 
 # Ignorer les fichiers logs et de cache
+>>>>>>> c3ddb584ddd7fb74e2170d6c4053480bdc56cd15
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -23,3 +45,4 @@ Thumbs.db
 # Ignorer les fichiers de dépendances locales
 package-lock.json
 yarn.lock
+>>>>>>> c3ddb584ddd7fb74e2170d6c4053480bdc56cd15

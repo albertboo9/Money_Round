@@ -1,0 +1,58 @@
+footer{
+    background-color: black;
+    color: white;
+    width: auto;
+    height: auto;
+    padding: 70px 15% 20px 50px;
+    box-sizing: border-box;
+    }
+    footer div{
+        flex-wrap: wrap;
+    }
+    footer > div{
+        display: flex; /*Important pour le l'aspect responsive de la page*/
+    }
+    footer .head-footer{
+        justify-content: space-between;
+        margin-bottom: 10%;
+            }
+            footer .head-footer > div > span{
+                font-size: 40px;
+        }
+        footer .head-footer button{
+            width: auto;
+            align-self: center;
+            height: auto;
+            display: flex; /* Pour permettre que tout les element du boutton soit centre verticalement*/
+            vertical-align: middle;
+            font-size: 18px;
+            padding: 10px 20px;
+        }
+    footer .body-footer > div > span{
+        font-size: 30px;
+    }
+    footer .body-footer{
+        justify-content: space-between;
+        margin-bottom: 40px;
+        }
+        footer .body-footer .subscribe{
+            width: 300px;
+            }
+            footer .body-footer .subscribe form{
+                display: flex;
+                }
+                footer .body-footer .subscribe form input{
+                    height: 30px;
+                    width: 80%;
+                }
+                footer .body-footer .subscribe form button{
+                    border-radius: 0px;
+                }
+
+    footer .end-footer{
+        text-align: center; 
+        }
+        footer .end-footer span{
+            color:var(--primary-color);
+        }
+

@@ -1,0 +1,48 @@
+#landingPage{
+    background-color: var(--small-grey);
+    }
+    #landingPage .second-view{
+        width: 100%;
+        background-color: var(--third-color);
+        margin-top: 150px;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+        padding-top: 20px;
+        }   
+        #landingPage .second-view section{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+        #landingPage .second-view button{
+            height: 40px;
+            width: auto;
+            align-self: center;
+            box-sizing: border-box;
+            font-size: 25px;
+            padding: 30px 20px 30px 20px;
+            display: flex;
+            vertical-align: middle;
+            color:black;
+            margin-bottom: 30px;
+            }
+            #landingPage .second-view button div{
+                align-self: center;
+            }
+            #landingPage .second-view button span{
+                margin-left: 5px;
+                align-self: center;
+        }
+
+@media screen and (max-width:600px) {
+    #landingPage .second-view .first-text{
+        width: 100%;
+        font-size: 30px;
+    }
+    #landingPage .second-view .second-text{
+        width: 100%;
+    }
+}

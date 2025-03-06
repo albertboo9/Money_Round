@@ -1,0 +1,79 @@
+.how-work .help-start{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0px 5%;
+    }
+    .how-work .help-start .first-text{
+        font-size: 35px !important;
+        width: 400px;
+        text-align: left;
+    }
+    .how-work .help-start button{
+        align-items: center;
+        color: white;
+        font-size: 25px !important;
+    }
+.how-work .step {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    }
+    .how-work .step >div {
+        width: 300px;
+        height: 300px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        padding: 30px;
+        border-radius: 30px;
+        margin-bottom: 15px;
+        }
+        .how-work .step >div .head{
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            align-items: center;
+            margin-bottom: 30px;
+            }
+            .how-work .step >div .head .icon,.how-work .step >div .head .number{
+                background: var(--degrade);
+                display: grid;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                }
+                .how-work .step >div .head span{
+                    margin: auto;
+                }
+            .how-work .step >div .head .line{
+                border-top: 1px dashed black;
+                width: 60%;
+            }
+            .how-work .step >div div{
+                text-align: left;
+            }
+            .how-work .step >div .label{
+                font-size: 30px;
+                margin-bottom: 20px;
+            }
+            .how-work .step >div .content{
+                font-size: 20px;
+                color: gray;
+                margin-bottom: 20px;
+            }
+            .how-work .step >div .classic-btn{
+                align-items: center;
+                color: white !important;
+                font-size: 16px !important;
+                padding: 10px !important;
+            }
+    .how-work .step .first-step{
+        background-image: url(../../images/landing-page/first_step.svg);
+    }
+    .how-work .step .second-step{
+        background-image: url(../../images/landing-page/second_step.svg);
+    }
+    .how-work .step .third-step{
+        background-image: url(../../images/landing-page/second_step.svg);
+    }

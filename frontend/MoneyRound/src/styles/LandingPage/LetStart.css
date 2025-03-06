@@ -1,0 +1,44 @@
+/* L'utilisation des !important peut âraitre execif mais il le faut pour imporser certaine propriete  */
+.lets-start{
+    align-self: center;
+    display: flex;
+    justify-content: space-between !important;
+    flex-direction: row !important;
+    padding: 20px 5%;
+    width: 80%;
+    border-radius: 30px;
+    border: 1px solid ;
+    border-color: var(--primary-color);
+    }
+    .lets-start >div{
+        width: 50%;
+        }
+        .lets-start >div .first-text{
+            color: var(--primary-color);
+        }
+        .lets-start >div .all-btn{
+            display: flex;
+            margin-top: 40px;
+            }
+            .lets-start >div .all-btn .classic-btn{
+                font-size: 20px !important;
+                margin-left: 30px;
+                border: 1px solid;
+                border-color: var(--primary-color);
+            }
+    .lets-start img{
+        width: 30%;
+    }
+
+@media screen and (max-width:900px) {
+    .lets-start >div{
+        width: 100%;
+        padding: 10px 0px;
+        }
+        .lets-start >div .all-btn .classic-btn{
+            font-size: 16px !important;
+        }
+    .lets-start img{
+        display: none;
+    }
+}
