@@ -1,3 +1,4 @@
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -18,8 +19,29 @@
 .env.test.local
 .env.production.local
 
+# Ignorer le dossier node_modules (très lourd)
+node_modules/
+
+# Ignorer les fichiers d'environnement contenant des clés secrètes
+.env
+.env.local
+.env.development
+.env.production
+
+# Ignorer les fichiers logs et de cache
+>>>>>>> c3ddb584ddd7fb74e2170d6c4053480bdc56cd15
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Ignorer les fichiers de Firebase (s'ils ne sont pas nécessaires pour le repo)
+firebase-debug.log
+.firebase/
 
+# Ignorer les fichiers générés par l'OS
+.DS_Store
+Thumbs.db
+
+# Ignorer les fichiers de dépendances locales
+package-lock.json
+yarn.lock
