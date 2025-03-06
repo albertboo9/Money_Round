@@ -45,4 +45,3 @@ Thumbs.db
 # Ignorer les fichiers de dépendances locales
 package-lock.json
 yarn.lock
->>>>>>> c3ddb584ddd7fb74e2170d6c4053480bdc56cd15
