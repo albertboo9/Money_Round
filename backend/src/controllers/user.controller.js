@@ -41,6 +41,12 @@ const updatePasswordSchema = Joi.object({
         })
 })
 
+const noteMemberSchema = Joi.object({
+    memberId: Joi.string().required(),
+    note: Joi.number().min(1).max(5).required(),
+    comment: Joi.string().optional()
+});
+
 
 /*exports.syncUser = async (req, res) => {
     try {
@@ -196,7 +202,7 @@ exports.getNotificationsByUserId = async (req, res) => {
     try {
         const userId = req.params.userId;
         const notifications = await UserModel.getNotificationsByUserId(userId);
-        return res.status(200).json({message: "Notifications de l'utilisateur", tontines: notifications});
+        return res.status(200).json({message: "Notifications de l'utilisateur", notifications: notifications});
 
     }catch (error) {
         return res.status(500).json({error: `Impossible de récupérer les notifications de l'utilisateur : ${error.message}`,});
@@ -227,10 +233,29 @@ exports.updatePassword = async (req, res) => {
             return res.status(400).json({error: `Donnés invalides : ${error.details[0].message}` });
         }
 
-        const userId = await UserModel.resetPassword(value);
+        const {oobCode, newPassword} = value;
+        const userId = await UserModel.updatePassword(oobCode, newPassword);
         res.status(200).json({ message: `Mot de passe mis à jour avec succès: ${userId}` });
 
     }catch (error) {
         return res.status(500).json({error: `Échec: ${err.message}`});
+    }
+}
+
+exports.noteMember = async  (req, res) => {
+    try {
+        // Validation des données
+        const {error, value} = noteMemberSchema.validate(req.body);
+        if (error) {
+            return res.status(400).json({error: `Donnés invalides : ${error.details[0].message}` });
+        }
+
+        const userId = req.params.userId;
+        const {memberId, note, comment} = value;
+        const evaluation = await UserModel.noteMember(memberId, note, comment, userId);
+        return res.status(201).json({message: 'Note envoyée avec succès', data: evaluation});
+
+    }catch (error) {
+        return res.status(500).json({error: `Échec: ${error.message}`});
     }
 }
