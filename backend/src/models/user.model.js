@@ -9,6 +9,7 @@ const auth = getAuth();
 
 const USER_COLLECTION = "users"; // Collection Firestore dédiée aux utilisateurs
 const TONTINE_COLLECTION = "tontines"; // Collection Firestore dédiée aux tontines
+const NOTIFICATION_COLLECTION = "notifications"; // Collection Firestore dédiée aux notifications
 
 // Définition du schéma de validation des utilisateurs avec Joi
 const userSchema = Joi.object({
@@ -20,9 +21,30 @@ const userSchema = Joi.object({
     phoneNumber: Joi.string().required(),  // Numero de telephone de l'utilisateur
     inscriptionDate: Joi.date().optional(), // Date d'inscription (valeur par défaut: date actuelle)
     updatedAt: Joi.date().optional(), // Date de mise à jour (valeur par défaut: date actuelle)
+    /*tontines: Joi.array().items(
+        Joi.object({
+            tontineId: Joi.string().required(),
+            status: Joi.string()              // Le statut de la tontine ('Exclus' pour le cas où l'utilisateur a été expulsé de la tontine)
+                .valid("En Cours", "Reussie", "Exclus").required()
+        })
+    ).optional(),*/
+    score: Joi.number().min(1).max(5).required(),     // Représente la moyenne des évaluations reçues des autres membres
+    evaluations: Joi.object({
+        evaluation: Joi.array().items(
+            Joi.object({
+                memberId: Joi.string().required(),
+                note: Joi.number().min(1).max(5).required(), // Note entre 1 et 5 (requis)
+                comment: Joi.string().optional(),    // Commentaire (optionel)
+                date: Joi.date().required()
+            })
+        ),
+        average: Joi.number().min(1).max(5).required()
+    }).optional(),
+    reputation: Joi.string()
+        .valid("Membre Neutre", "Membre Risqué", "Membre Fiable", "Membre Premium").required(),     // Représente la réputation de l'utilisateur
     isActive: Joi.boolean().optional(),
     isBlocked: Joi.boolean().optional(),
-}).strict(); // Empêche l'ajout de champs non définis
+}).strict();   // Empêche l'ajout de champs non définis
 
 
 class UserModel {
@@ -114,6 +136,11 @@ class UserModel {
                 amount: 0,
                 inscriptionDate: FieldValue.serverTimestamp(),
                 updatedAt: FieldValue.serverTimestamp(),
+                score: 3,
+                evaluations: {
+                    evaluation: [],
+                    average: 3
+                },
                 isActive: true,
                 isBlocked: false,
             });
@@ -295,7 +322,7 @@ class UserModel {
             const userDoc = await userRef.get();
             if (!userDoc.exists) throw new Error("Utilisateur introuvable");
 
-            const querySnapshot = await db.collection(TONTINE_COLLECTION).where('usersId', 'array-contains', userId).get();
+            const querySnapshot = await db.collection(NOTIFICATION_COLLECTION).where('usersId', 'array-contains', userId).get();
             const notifications = [];
             if (querySnapshot) {
                 querySnapshot.forEach(doc => {
@@ -347,6 +374,52 @@ class UserModel {
 
         }catch(error) {
             console.error("Erreur lors de la mise à jour du mot passe de l'utilisateur:", error.message);
+            throw new Error(error.message);
+        }
+    }
+
+
+    /**
+     * Noter un membre dans une tontine
+     * @param {string} memberId - l'id du membre qui donne la note
+     * @param {number} note - la note donnée
+     * @param {string} comment - le commentaire
+     * @param {string} userId - l'id de l'utilisateur qui reçoit la note
+     * @returns {Promise<Object>} - retourne l'id de l'utilisateur et la note reçue
+     */
+    static async noteMember(memberId, note, comment, userId) {
+        try {
+            const memberRef = db.collection(USER_COLLECTION).doc(memberId);
+            const memberDoc = await memberRef.get();
+            if (!memberDoc.exists) throw new Error("Le membre qui essaie d'envoyer la note est introuvable");
+
+            const userRef = db.collection(USER_COLLECTION).doc(userId);
+            const userDoc = await userRef.get();
+            if (!userDoc.exists) throw new Error("L'utilisateur qui doit recevoir la note est introuvable");
+
+            const userData = userDoc.data();
+            const newEvaluations = [
+                ...userData.evaluations.evaluation || [],
+                {memberId: memberId, note: note, comment: comment, date: new Date()}
+            ];
+
+            // On calcule la nouvelle moyenne
+            const newAverage = newEvaluations.reduce((acc, val) => acc + val.note, 0) / newEvaluations.length;
+
+            // Mise à jour du document
+            await userRef.update({
+                evaluations: {
+                    evaluation: newEvaluations,
+                    average: newAverage
+                }
+            });
+
+            // Todo: Mise à jour du score de l'utilisateur
+
+            return {userId: userId, evaluation: {memberId: memberId, note: note, comment: comment}};
+
+        }catch(error) {
+            console.error("Impossible de noter l'utilisateur:", error.message);
             throw new Error(error.message);
         }
     }
