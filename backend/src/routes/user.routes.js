@@ -37,7 +37,10 @@ router.post('/resetPassword', userController.resetPassword);
 router.post('/updatePassword', userController.updatePassword);
 
 // Noter un membre
-router.post('/:userId/noteMember', authMiddleware(), userController.noteMember);
+router.post('/noteMember', authMiddleware(), userController.noteMember);
+
+// Recuperation des evaluations reçues par un utilisateur
+router.get('/:userId/evaluations', authMiddleware(), userController.getEvaluationsByUserId);
 
 
 module.exports = router;
