@@ -45,4 +45,7 @@ export default defineConfig({
       type: 'module',
     },
   })],
+  server:{
+    host: '0.0.0.0'
+  }
 })
