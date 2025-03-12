@@ -1,5 +1,6 @@
 const { UserModel } = require("../models/user.model");
 const {TrustSystemModel} = require('../models/trustSystem.model');
+const TrustSystemService = require('../services/trustSystem.service');
 const { v4: uuid4 } = require("uuid");
 const Joi = require("joi");
 
@@ -256,6 +257,9 @@ exports.noteMember = async  (req, res) => {
         if (memberId === userId) return res.status(400).json({error: "Un utilisateur ne peut pas se noter lui-meme"});
 
         const evaluation = await TrustSystemModel.noteMember(memberId, note, comment, userId);
+        // Mise à jour du score et de la réputation de l'utilisateur
+        await TrustSystemService.calculateUserScore(memberId);
+
         return res.status(201).json({message: 'Note envoyée avec succès', evaluation: evaluation});
 
     }catch (error) {

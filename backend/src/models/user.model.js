@@ -5,7 +5,6 @@ const { FieldValue} = require('firebase-admin/firestore');
 //const {getAuth} = require("firebase-admin/auth");
 const { getAuth , createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification} = require('firebase/auth');
 const auth = getAuth();
-const TrustSystemService = require('../services/trustSystem.service');
 
 
 const USER_COLLECTION = "users"; // Collection Firestore dédiée aux utilisateurs

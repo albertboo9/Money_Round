@@ -23,10 +23,14 @@ class TrustSystemModel {
                 .where('evaluatedMemberId', '==', userId)
                 .get();
 
-            return evaluationsSnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+            const evaluations = [];
+            if (evaluationsSnapshot) {
+                evaluationsSnapshot.docs.map((doc) => {
+                    evaluations.push({ id: doc.id, ...doc.data()});
+                });
+            }
+
+            return evaluations;
 
         }catch (error) {
             console.error("Impossible de recuperer les evaluations reçues de l'utilisateur:", error.message);
@@ -89,10 +93,7 @@ class TrustSystemModel {
                 createdAt: new Date(),
                 updatedAt: new Date()
             });
-
-
-            // Mise à jour du score et de la réputation de l'utilisateur
-            //await TrustSystemService.calculateUserScore(userId);
+            console.log("Note envoyée: ", {userId: userId, evaluatedMemberId: memberId, note: note, comment: comment});
 
             return {userId: userId, evaluatedMemberId: memberId, note: note, comment: comment};
 

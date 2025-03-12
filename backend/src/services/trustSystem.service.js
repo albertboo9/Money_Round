@@ -7,9 +7,12 @@ class TrustSystemService {
     // Calcul et mise à jour du score et de la réputation de l'utilisateur
     async calculateUserScore (userId)  {
         try {
-            const evaluationsSnapshot = await db.collection('evaluations')
-                .where('memberId', '==', userId)
-                .get();
+            const evaluations = await TrustSystemModel.getEvaluationsByUserId(userId);
+            console.log("Evaluations de l'utilisateur: ", evaluations);
+            let evaluationsAverage;
+            if (evaluations.length !== 0) {
+                evaluationsAverage = evaluations.reduce((acc, evaluation) => acc + evaluation.note, 0) / evaluations.length;
+            }else evaluationsAverage = 3;
             console.log(`La moyenne des notations de l'utilisateur est ${evaluationsAverage}`);
 
             const tontines = await UserModel.getTontinesByUserId(userId);
@@ -20,16 +23,16 @@ class TrustSystemService {
             let successfulTontines = 0;
             let successfulTontinesAverage;
 
-            if (tontines) {
+            if (tontines.length !== 0) {
                 tontines.map((tontine) => {
-                    console.log("Tontine: ", tontine);
+                    //console.log("Tontine: ", tontine);
                     if (tontine.status === "terminée") successfulTontines += 1;
 
                     tontine.tours.map((tour) => {
                         tour.periodeCotisation.map((periodeCotisation) => {
-                            console.log("Periode de cotisation: ", periodeCotisation);
+                            //console.log("Periode de cotisation: ", periodeCotisation);
                             const date_fin = periodeCotisation.date_fin;
-                            console.log("Date de fin: ", date_fin);
+                            //console.log("Date de fin: ", date_fin);
                             if (periodeCotisation.contributions) {
                                 const userContribution = periodeCotisation.contributions.find((contribtution) => contribtution.memberId === userId);
 
