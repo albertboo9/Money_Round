@@ -10,6 +10,43 @@ const { v4: uuid4 } = require("uuid");
 const TONTINE_COLLECTION = "tontines"; // Nom de la collection Firestore dédiée aux tontines
 const USERS_COLLECTION = "users"; // Nom de la collection Firestore dédiée aux tontines
 
+const contributionSchema = Joi.object({
+  transactionId: Joi.string().required(),
+  userId: Joi.string().required(),
+  montant: Joi.number().positive().required(),
+  date: Joi.date().iso().required(),
+  typeTransaction: Joi.string().valid("contribution", "retrait").required(),
+  methodePaiement: Joi.string()
+    .valid("carte de crédit", "MoMo", "OM", "Virement bancaire")
+    .required(),
+  statutTransaction: Joi.string()
+    .valid("réussie", "échouée", "en attente")
+    .required(),
+});
+
+const periodeCotisationSchema = Joi.object({
+  id: Joi.string().required(),
+  beneficiaire: Joi.string().required(),
+  date_debut: Joi.date().iso().required(),
+  date_fin: Joi.date().iso().greater(Joi.ref("date_debut")).required(),
+  contributions: Joi.object()
+    .pattern(Joi.string(), Joi.array().items(contributionSchema))
+    .default({}),
+  statut: Joi.string().valid("en cours", "à venir", "terminé").required(),
+  amount: Joi.number().positive().required(),
+});
+
+const tourSchema = Joi.object({
+  tourId: Joi.string().required(),
+  startDate: Joi.date().iso().required(),
+  endDate: Joi.date().iso().greater(Joi.ref("startDate")).required(),
+  amount: Joi.number().positive().required(),
+  status: Joi.string().valid("en cours", "terminée", "annulée").required(),
+  participantNotYetReceived: Joi.array().items(Joi.string()).default([]),
+  participantReceived: Joi.array().items(Joi.string()).default([]),
+  periodeCotisation: Joi.array().items(periodeCotisationSchema).required(),
+});
+
 // Définition du schéma de validation des tontines avec Joi
 const tontineSchema = Joi.object({
   name: Joi.string().min(3).max(50).required(), // Nom de la tontine (3 à 50 caractères, requis)
@@ -28,21 +65,7 @@ const tontineSchema = Joi.object({
   status: Joi.string().valid("active", "terminée", "annulée").default("active"), // Statut de la tontine (valeurs prédéfinies, défaut: active)
   createdAt: Joi.date().optional(), // Date de création (valeur par défaut: date actuelle)
   updatedAt: Joi.date().optional(), // Date de mise à jour (valeur par défaut: date actuelle)
-  tours: Joi.array()
-    .items(
-      Joi.object({
-        tourId: Joi.string().required(),
-        startDate: Joi.date().iso().required(),
-        endDate: Joi.date().iso().greater(Joi.ref("startDate")).required(),
-        amount: Joi.number().positive().required(), // Montant de participation (nombre positif requis)
-        status: Joi.string()
-          .valid("en cours", "terminée", "annulée")
-          .required(),
-        participantNotYetReceived: Joi.array().items(Joi.string()).default([]),
-        participantReceived: Joi.array().items(Joi.string()).default([]),
-      })
-    )
-    .optional(),
+  tours: Joi.array().items(tourSchema).optional(),
 }).strict(); // Empêche l'ajout de champs non définis
 
 const tourOptionsSchema = Joi.object({
@@ -96,7 +119,6 @@ const updateTontineSchema = Joi.object({
     )
     .optional(),
 }).strict();
-
 //let date = new Date();
 
 class TontineModel {
@@ -583,9 +605,21 @@ class TontineModel {
    * @param {string} periodeId - ID de la période de cotisation.
    * @param {string} userId - ID de l'utilisateur qui effectue le paiement.
    * @param {number} montant - Montant du paiement.
+   * @param {string} typeTransaction - Type de transaction (par exemple, "contribution", "retrait").
+   * @param {string} methodePaiement - Méthode de paiement utilisée (par exemple, "carte de crédit", "virement bancaire").
+   * @param {string} statutTransaction - Statut de la transaction (par exemple, "réussie", "échouée", "en attente").
    * @returns {Promise<void>}
    */
-  static async recordPayment(tontineId, tourId, periodeId, userId, montant) {
+  static async recordPayment(
+    tontineId,
+    tourId,
+    periodeId,
+    userId,
+    montant,
+    typeTransaction,
+    methodePaiement,
+    statutTransaction
+  ) {
     try {
       const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
       const tontineDoc = await tontineRef.get();
@@ -606,13 +640,27 @@ class TontineModel {
       // Enregistrer le paiement
       const periode =
         tontineData.tours[tourIndex].periodeCotisation[periodeIndex];
-      if (!periode.contributions) periode.contributions = {};
-      if (!periode.contributions[userId]) periode.contributions[userId] = 0;
-      periode.contributions[userId] += montant;
+      if (!periode.contributions) periode.contributions = [];
+
+      const transaction = {
+        transactionId: uuid4(),
+        userId,
+        montant,
+        date: new Date(),
+        typeTransaction,
+        methodePaiement,
+        statutTransaction,
+      };
+
+      periode.contributions.push(transaction);
+
+      // Mettre à jour le montant total de la tontine
+      tontineData.amount += montant;
 
       // Mettre à jour les données dans Firestore
       await tontineRef.update({
         tours: tontineData.tours,
+        amount: tontineData.amount,
         updatedAt: FieldValue.serverTimestamp(),
       });
     } catch (error) {
@@ -623,6 +671,13 @@ class TontineModel {
       throw new Error("Impossible d'enregistrer le paiement.");
     }
   }
+
 }
 
-module.exports = { TontineModel, tontineSchema, tourOptionsSchema }; // Exportation du modèle pour utilisation externe
+module.exports = {
+  TontineModel,
+  tontineSchema,
+  tourOptionsSchema,
+  contributionSchema,
+  periodeCotisationSchema,
+}; // Exportation du modèle pour utilisation externe

@@ -15,7 +15,7 @@ async function hashApiKey(apiKey) {
   async function createApiKeyAndAppName(){
 try{
     const apiKey = generateApiKey();
-    const appName = 'MyApp-' + Date.now(); // Exemple simple pour un nom unique
+    const appName = 'MOneyRound-' + Date.now(); // Exemple simple pour un nom unique
 
     // Hachage de la clé API
     const hashedApiKey = await hashApiKey(apiKey);
