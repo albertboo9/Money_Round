@@ -350,60 +350,6 @@ class TontineModel {
   }
 
   /**
-   * Enregistre un paiement pour une période de cotisation.
-   * @param {string} tontineId - ID de la tontine.
-   * @param {string} tourId - ID du tour.
-   * @param {string} periodeId - ID de la période de cotisation.
-   * @param {string} userId - ID de l'utilisateur qui effectue le paiement.
-   * @param {number} montant - Montant du paiement.
-   * @returns {Promise<void>}
-   */
-  static async recordPayment(tontineId, tourId, periodeId, userId, montant) {
-    try {
-      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
-      const tontineDoc = await tontineRef.get();
-      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
-
-      const tontineData = tontineDoc.data();
-      const tourIndex = tontineData.tours.findIndex(
-        (tour) => tour.id === tourId
-      );
-      if (tourIndex === -1) throw new Error("Tour introuvable");
-
-      const periodeIndex = tontineData.tours[
-        tourIndex
-      ].periodeCotisation.findIndex((periode) => periode.id === periodeId);
-      if (periodeIndex === -1)
-        throw new Error("Période de cotisation introuvable");
-
-      // Enregistrer le paiement
-      tontineData.tours[tourIndex].periodeCotisation[
-        periodeIndex
-      ].contributions[userId] = montant;
-
-      // Mettre à jour les données dans Firestore
-      await tontineRef.update({
-        tours: tontineData.tours,
-        updatedAt: FieldValue.serverTimestamp(),
-      });
-
-      /*       // Enregistrer l'action dans l'historique
-      await db.collection("historiqueActions").add({
-        action: "Paiement validé",
-        userId,
-        date: FieldValue.serverTimestamp(),
-        details: `Cotisation de ${montant}`,
-      }); */
-    } catch (error) {
-      console.error(
-        "Erreur lors de l'enregistrement du paiement:",
-        error.message
-      );
-      throw new Error("Impossible d'enregistrer le paiement.");
-    }
-  }
-
-  /**
    * Met à jour le statut des tours et des périodes de cotisation.
    * @param {string} tontineId - ID de la tontine.
    * @returns {Promise<void>}
@@ -627,6 +573,54 @@ class TontineModel {
       throw new Error(
         "Impossible de mettre à jour les périodes de cotisation."
       );
+    }
+  }
+
+  /**
+   * Enregistre un paiement pour une période de cotisation.
+   * @param {string} tontineId - ID de la tontine.
+   * @param {string} tourId - ID du tour.
+   * @param {string} periodeId - ID de la période de cotisation.
+   * @param {string} userId - ID de l'utilisateur qui effectue le paiement.
+   * @param {number} montant - Montant du paiement.
+   * @returns {Promise<void>}
+   */
+  static async recordPayment(tontineId, tourId, periodeId, userId, montant) {
+    try {
+      const tontineRef = db.collection(TONTINE_COLLECTION).doc(tontineId);
+      const tontineDoc = await tontineRef.get();
+      if (!tontineDoc.exists) throw new Error("Tontine introuvable");
+
+      const tontineData = tontineDoc.data();
+      const tourIndex = tontineData.tours.findIndex(
+        (tour) => tour.id === tourId
+      );
+      if (tourIndex === -1) throw new Error("Tour introuvable");
+
+      const periodeIndex = tontineData.tours[
+        tourIndex
+      ].periodeCotisation.findIndex((periode) => periode.id === periodeId);
+      if (periodeIndex === -1)
+        throw new Error("Période de cotisation introuvable");
+
+      // Enregistrer le paiement
+      const periode =
+        tontineData.tours[tourIndex].periodeCotisation[periodeIndex];
+      if (!periode.contributions) periode.contributions = {};
+      if (!periode.contributions[userId]) periode.contributions[userId] = 0;
+      periode.contributions[userId] += montant;
+
+      // Mettre à jour les données dans Firestore
+      await tontineRef.update({
+        tours: tontineData.tours,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    } catch (error) {
+      console.error(
+        "Erreur lors de l'enregistrement du paiement:",
+        error.message
+      );
+      throw new Error("Impossible d'enregistrer le paiement.");
     }
   }
 }
