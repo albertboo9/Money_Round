@@ -46,6 +46,20 @@ const updateTontineSchema = Joi.object({
     .optional(),
 });
 
+const contributionSchema = Joi.object({
+  transactionId: Joi.string().required(),
+  userId: Joi.string().required(),
+  montant: Joi.number().positive().required(),
+  date: Joi.date().iso().required(),
+  typeTransaction: Joi.string().valid("contribution", "retrait").required(),
+  methodePaiement: Joi.string()
+    .valid("carte de crédit", "MoMo", "OM", "Virement bancaire")
+    .required(),
+  statutTransaction: Joi.string()
+    .valid("réussie", "échouée", "en attente")
+    .required(),
+});
+
 const tourOptionsSchema = Joi.object({
   order: Joi.string().valid("admin", "random").required(),
   frequencyType: Joi.string().valid("daily", "weekly", "monthly").required(),
@@ -53,7 +67,6 @@ const tourOptionsSchema = Joi.object({
   amount: Joi.number().positive().required(),
   membresRestants: Joi.array().items(Joi.string()).optional(),
 });
-
 
 exports.createTontine = async (req, res) => {
   try {
@@ -274,7 +287,7 @@ exports.joinTontine = async (req, res) => {
   try {
     //const tontineId = req.params.tontineId;
     const userId = req.user.userId; // ID de l'utilisateur qui effectue la requête
-    const codeInvitation = req.body.codeInvitation; 
+    const codeInvitation = req.body.codeInvitation;
     console.log("L'ID de la tontine est " + codeInvitation);
     console.log("L'ID de l'utilisateur qui rejoint est " + userId);
 
@@ -386,11 +399,9 @@ exports.changeOrder = async (req, res) => {
       .status(200)
       .json({ message: "Ordre des participants modifié avec succès" });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        error: `Échec de la modification de l'ordre des participants : ${err.message}`,
-      });
+    res.status(500).json({
+      error: `Échec de la modification de l'ordre des participants : ${err.message}`,
+    });
   }
 };
 
@@ -399,8 +410,25 @@ exports.recordPayment = async (req, res) => {
     const tontineId = req.params.tontineId;
     const tourId = req.params.tourId;
     const periodeId = req.params.periodeId;
-    const userId = req.user.userId;
-    const montant = req.body.montant;
+    const userId = req.user.userId; // Assurez-vous que l'utilisateur est authentifié et que son ID est disponible
+    const { montant, typeTransaction, methodePaiement, statutTransaction } =
+      req.body;
+
+    // Validation des données de la requête
+    const { error } = contributionSchema.validate({
+      transactionId: uuid4(),
+      userId,
+      montant,
+      date: new Date(),
+      typeTransaction,
+      methodePaiement,
+      statutTransaction,
+    });
+    if (error) {
+      return res
+        .status(400)
+        .json({ error: `Données invalides : ${error.details[0].message}` });
+    }
 
     // Enregistrement du paiement
     await TontineModel.recordPayment(
@@ -408,15 +436,16 @@ exports.recordPayment = async (req, res) => {
       tourId,
       periodeId,
       userId,
-      montant
+      montant,
+      typeTransaction,
+      methodePaiement,
+      statutTransaction
     );
     res.status(200).json({ message: "Paiement enregistré avec succès" });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        error: `Échec de l'enregistrement du paiement : ${err.message}`,
-      });
+    res.status(500).json({
+      error: `Échec de l'enregistrement du paiement : ${err.message}`,
+    });
   }
 };
 
@@ -430,10 +459,10 @@ exports.updateTourStatus = async (req, res) => {
       .status(200)
       .json({ message: "Statut des tours mis à jour avec succès" });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        error: `Échec de la mise à jour du statut des tours : ${err.message}`,
-      });
+    res.status(500).json({
+      error: `Échec de la mise à jour du statut des tours : ${err.message}`,
+    });
   }
 };
+
+

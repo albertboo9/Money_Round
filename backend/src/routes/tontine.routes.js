@@ -64,12 +64,11 @@ router.post(
   checkTourStatus,
   tourCtrl.changeOrder
 ); */
-/* router.post(
+router.post(
   "/recordPayment/:tontineId/:tourId/:periodeId",
   authMiddleware(),
-  checkTourStatus,
-  tourCtrl.recordPayment
-); */
+  tontineCtrl.recordPayment
+);
 /* router.put(
   "/updateTourStatus/:tontineId",
   authMiddleware(),
