@@ -4,6 +4,7 @@ import logo from "../../images/logo/logo avec nom.svg";
 //importation de feuille de style
 import "../../styles/LandingPage/HeaderLandingPage.css";
 import "../../styles/general.css";
+import "../../styles/theme.css"
 
 function HeaderLandingPage() {
   // fonction pour reconnaitre le thème
@@ -11,14 +12,14 @@ function HeaderLandingPage() {
     const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
     if (darkThemeMq.matches) {
       // Theme sombre reconnu.
-      return "brigthness_7"
+      return "light_mode"
     } else {
       // Theme clair reconnu
       return "dark_mode"
     }
   }
   const [iconTheme,setIconTheme]=useState(defineTheme())
-
+ 
   return (
     <header id="headerLandingPage">
         <img src={logo} alt="Logo" />

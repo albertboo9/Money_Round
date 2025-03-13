@@ -1,15 +1,4 @@
-:root{
-    --strong-grey:rgb(82, 82, 82);
-    --medium-grey:#dcdcdc;
-    --small-grey:#f5f5f5;
-    --primary-color:#5ceb70;
-    --secondary-color:#b3ed78;
-    --hover-color:#269735;
-    --third-color:#ebf9ff;
-    --degrade:linear-gradient(45deg,#5ceb70,#5c6df9);
-    --other-color:#5c6df9;
 
-}
 *,*:link,*::placeholder{
     font-family: "berlin sans fb";
 }
@@ -22,7 +11,7 @@
     align-items: center;
 }
 .classic-btn:hover{
-    background-color: var(--hover-color);
+    filter: brightness(0.5); 
 }
 main .second-view .first-text{
     font-size: 60px;

@@ -71,12 +71,13 @@
             margin-left: 5px;
             align-self: center;
           }
+
     .slider .slider-button-next, .slider .slider-button-prev {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
       cursor: pointer;
-      color:#5c6df9;
+      color:transparent;
       background-color: transparent;
       border: none;
       font-size: 40px;
@@ -90,6 +91,29 @@
     .slider .slider-button-prev {
       left: 0px;
     }
+    .slider-pagination{
+      display: flex;
+      flex-direction: row;
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      }
+      .slider-pagination .other-index,.slider-pagination .current-index{
+        vertical-align: middle;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        margin-right: 5px;
+        cursor: pointer;
+        background-color: #5c6df9;
+      }
+      .slider-pagination .other-index{
+        filter: brightness(0.1);
+      }
+      .slider-pagination .curent-index{
+        background-color: var(--secondary-color);
+      }
   
   @keyframes current-slide {
     from{

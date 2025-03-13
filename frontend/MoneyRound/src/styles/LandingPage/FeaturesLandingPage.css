@@ -7,6 +7,7 @@
     padding: 10px 20px;
     border-radius: 50px;
     margin-bottom: 30px;
+    color: black;/* important lorsque le theme passera en dark */
 }
 #landingPage .second-view .feature .first-text{
     align-self: center;
@@ -31,9 +32,9 @@
         display: flex;
         flex-direction: column;
         transform: translateY(30%);
+        
         }
         #landingPage .second-view .feature  .all-advantages .see-advantages .second-text{
-            color: black;
             width: 100%;
             text-align: left;
         }
@@ -52,7 +53,7 @@
         #landingPage .second-view .feature .all-advantages .img-advantage img{
             width: 100%;
         }
-/* Remarquez bien que j'ai pluto défini le comportement face a un grand ecran */
+/* Remarquez bien que j'ai plutot défini le comportement face a un grand ecran */
 @media screen and (min-width:1000px) {
     #landingPage .second-view .feature .first-text{
         width: 40%;
@@ -63,6 +64,8 @@
 @media screen and (max-width:600px) {
     #landingPage .second-view .feature  .all-advantages {
         display: flex;
+        border-radius: 0px;
+        width: auto;
         } 
         #landingPage .second-view .feature .all-advantages .img-advantage{
             display: none;
@@ -74,5 +77,21 @@
         transform: translateX(0%);
     }
 }
+
+@media (prefers-color-scheme: dark) {
+    
+    #landingPage .second-view .feature  .all-advantages{
+        background-color: #5c737e;
+        }
+        #landingPage .second-view .feature  .all-advantages .see-advantages{
+            color: white !important;
+            }
+            #landingPage .second-view .feature  .all-advantages .see-advantages .second-text{
+                color: white !important;
+            }
+    
+}
+
+
 
         

@@ -65,6 +65,7 @@
         align-self: baseline;
         width: 400px;
         height: auto;
+        margin-bottom: 5px;
         }
             #landingPage .second-view .revolution .before-after .before  .all-content span{
                 color: red;
@@ -72,6 +73,7 @@
     #landingPage .second-view .revolution .before-after .after{
         background-color: whitesmoke;
         width: 400px;
+        color: black;/* important lorsque le theme passera en dark */
         }
         #landingPage .second-view .revolution .before-after .after  .all-content span{
             color: var(--primary-color);
@@ -82,3 +84,9 @@
             width: 100%;
             justify-content: center;
         }
+
+@media screen and (max-width:600px){
+    #landingPage .second-view .revolution .box-head-revolution{
+        padding: 0px;
+    }
+}
