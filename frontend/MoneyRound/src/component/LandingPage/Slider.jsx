@@ -41,7 +41,34 @@ function Slider(){
             btnext.style.color="transparent"
             btnprev.style.color="transparent"
         })
-
+        // gestion du swipe sur telephone
+        const slideSection=document.querySelector(".big-container-slider")
+        let debutX =false
+        slideSection.addEventListener('touchstart', (e) => {
+            debutX = e.touches[0].clientX;
+            console.log("Debut")
+          });
+          slideSection.addEventListener('touchmove', (e) => {
+            if (!debutX) return;
+          
+            const diffX = debutX - e.touches[0].clientX;
+            console.log("Continuation")
+          });
+        
+          slideSection.addEventListener('touchend', (e) => {
+            console.log("Fin")
+            if (!debutX) return;
+        
+            const finX = e.changedTouches[0].clientX;
+            const diffX = debutX - finX;
+        
+            if (diffX > 50 ) {
+            nextSlide() // Balayage vers la droite (diapositive suivante)
+            } else if (diffX < -50 ) {
+            prevSlide() // Balayage vers la gauche (diapositive précédente)
+            }
+            debutX = null;
+        });
     },[])
 
 
