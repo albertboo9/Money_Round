@@ -36,5 +36,8 @@ router.post('/resetPassword', userController.resetPassword);
 // Mettre a jour le mot de passe d'un utilisateur
 router.post('/updatePassword', userController.updatePassword);
 
+// Noter un membre
+router.post('/:userId/noteMember', authMiddleware(), userController.noteMember);
+
 
 module.exports = router;
