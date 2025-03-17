@@ -1,6 +1,6 @@
 // importation de feuille de style
 import "../styles/general.css";
-import "../styles/Contact/Contact.css";
+import "../styles/contact/Contact.css";
 
 // importation de composant 
 import HeaderLandingPage from "../component/LandingPage/HeaderLandingPage";
