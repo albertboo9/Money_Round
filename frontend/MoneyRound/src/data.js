@@ -1,3 +1,4 @@
+
 // Ce fichier sera supprimé car il ne permet que la simplification du code des pages et ne sera plus utiles lors de la connexion avec la BD
 // Importation d'image
 import slide1 from "./images/slider/slide1.webp";

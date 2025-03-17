@@ -1,17 +1,16 @@
 #contactPage{
     background-color: var(--small-grey);
+    overflow: hidden;
+    padding: 10px;
     }
 /* Ca peut paraitre etre de la recopie par rapport a la landing page mais c'est pour eviter les conflit */
     #contactPage .second-view{
         width: 100%;
-        background-color: var(--third-color);
-        margin-top: 150px;
         display: flex;
         flex-direction: column;
         text-align: center;
         justify-content: center;
         padding-top: 20px;
-        padding-left: 5%;
         padding-right: 5%;
         }   
         #contactPage .second-view section{
@@ -22,11 +21,22 @@
             flex-direction: column;
             justify-content: center;
         }
-        #contactPage .second-view .title-contact .small-title{
-            color: var(--other-color);
-            font-size: 20px;
-            margin-bottom: 20px;
+        #contactPage .second-view .title-contact .second-text{
+            color: var(--secondary-color) !important;
+            font-size: 30px !important;
         }
         #contactPage .second-view .title-contact .big-title{
             font-size: 30px;
         }
+        
+        
+@media (prefers-color-scheme: dark){
+    #contactPage{
+        background-color: var(--background-color);
+        
+    }
+    #contactPage .first-text{
+        color: white;
+    }
+
+}

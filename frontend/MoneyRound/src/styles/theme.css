@@ -1,0 +1,42 @@
+/* theme claire */
+:root{
+    --primary-color:#5ceb70;
+    --secondary-color:#5c6df9;
+    --accent-color:#269735;
+    --background-color:white;
+    --text-color:black;
+    --hover-color:#269735; 
+    --error-color: #f0693d;
+    --success-color:#5ceb70;
+    --active-color:#b3ed78;
+    /* A partir d'ici ce sont des couleur qui varie mais qui ne sont pas forcement de base */
+    --presentation-blue:#ebf9ff;
+}
+
+/* theme sombre */
+
+@media (prefers-color-scheme: dark) {
+    :root{
+        --primary-color:#5ceb70;
+        --secondary-color:#5c6df9;
+        --accent-color:#269735;
+        --background-color:#525252;
+        --text-color:white;
+        --hover-color:#269735; 
+        --error-color: #ce5e38;
+        --success-color:#269735;
+        --active-color:#b3ed78;
+            /* A partir d'ici ce sont des couleur qui varie mais qui ne sont pas forcement de base */
+        --presentation-blue:#737d81;
+
+    }
+}
+/* Autre couleur (notez que ces couleurs ne varient pas peu importe le thème */
+:root{
+    --strong-grey:#525252;
+    --medium-grey:#dcdcdc; 
+    --small-grey:#f5f5f5;
+    
+    --degrade:linear-gradient(45deg,#5ceb70,#5c6df9);
+
+}
