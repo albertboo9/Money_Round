@@ -1,5 +1,5 @@
 //importation de feuille de style
-import "../../styles/Contact/InfoForm.css";
+import "../../styles/contact/InfoForm.css";
 
 
 function InfoForm(){
