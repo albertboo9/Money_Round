@@ -1,6 +1,6 @@
-const admin = require("../config/firebase");
+const admins = require("../config/firebase");
 
-const db = admin.admin.firestore();
+const db = admins.admin.firestore();
 const NOTIFICATIONS_COLLECTION = "notifications";
 
 class NotificationModel {

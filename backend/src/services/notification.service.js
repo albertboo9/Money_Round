@@ -10,7 +10,7 @@ class NotificationService {
   async sendNotification(
     notifId,
     // userid  les utilisateurs qui doivent recevoir la notif
-    type,
+    //type,
     //firebase token
     title,
     body
@@ -63,7 +63,7 @@ class NotificationService {
       //message
 
       const messageOption = {
-        from: "feukengbrunel555@gmail.com",
+        from: "moneyround237@gmail.com",
         to: to,
         subject: subject,
         text: text,
