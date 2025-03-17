@@ -1,0 +1,63 @@
+.info-form{
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    }
+
+    .info-form .information{
+        width: 30%;
+        }
+        
+        .info-form .information *{
+            text-align: left; 
+        }
+        /* !important permet la reecriture de certaine valeur de first et second text  */
+        .info-form .information .first-text{
+            font-size: 40px !important;
+            margin-bottom: 10px !important;
+            }
+            .info-form .information .first-text span{
+                font-size: 40px !important;
+            }
+        .info-form .information .second-text{
+            font-size: 18px !important;
+        }
+    .info-form form{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 60%;
+        }
+        .info-form form >input{
+            width: 100%;
+            height: 50px;
+            border-radius: 10px;
+            border: none;
+            padding-right: 10px;
+        }
+        .info-form form >input::placeholder{
+            font-size: 25px;
+            color: var(--medium-grey);
+            text-align: right;   
+        }
+        .info-form form button{
+            width: auto;
+            align-self: flex-end;
+            padding: 10px;
+            font-size: 25px;
+        }
+@media screen and (max-width:600px) {
+    .info-form .information{
+        display: none;
+    }
+    .info-form form{
+        width: 100%;
+        justify-content:center;
+
+    }
+    .info-form form >input{
+        margin-bottom: 10px;
+    }
+
+}
+

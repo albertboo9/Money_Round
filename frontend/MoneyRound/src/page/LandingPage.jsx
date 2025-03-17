@@ -21,7 +21,9 @@ function LandingPage(){
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('come-to-left');
-                    observer1.unobserve(entry.target); // Arrêter d'observer l'élément après la première apparition
+                }
+                else{
+                    entry.target.classList.remove('come-to-left');
                 }
             });
         });
@@ -29,7 +31,9 @@ function LandingPage(){
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('come-to-right');
-                    observer2.unobserve(entry.target); // Arrêter d'observer l'élément après la première apparition
+                }
+                else{
+                    entry.target.classList.remove('come-to-right');
                 }
             });
         });    

@@ -19,8 +19,58 @@ function Slider(){
             element.style.transform="translateX(-9999px)"
         }
         eltRef.current[0].style.opacity="1"
+        const btnext=document.querySelector('.slider-button-next')
+        const btnprev=document.querySelector('.slider-button-prev')
         
+        //survol du boutton suivant
+        btnext.addEventListener('mouseover',()=>{
+            btnext.style.color="var(--secondary-color)"
+            btnprev.style.color="var(--secondary-color)"
+        })
+        btnext.addEventListener('mouseout',()=>{
+            btnext.style.color="transparent"
+            btnprev.style.color="transparent"
+        })
+
+        //survol du boutton precedent
+        btnprev.addEventListener('mouseover',()=>{
+            btnext.style.color="var(--secondary-color)"
+            btnprev.style.color="var(--secondary-color)"
+        })
+        btnprev.addEventListener('mouseout',()=>{
+            btnext.style.color="transparent"
+            btnprev.style.color="transparent"
+        })
+        // gestion du swipe sur telephone
+        const slideSection=document.querySelector(".big-container-slider")
+        let debutX =false
+        slideSection.addEventListener('touchstart', (e) => {
+            debutX = e.touches[0].clientX;
+            console.log("Debut")
+          });
+          slideSection.addEventListener('touchmove', (e) => {
+            if (!debutX) return;
+          
+            const diffX = debutX - e.touches[0].clientX;
+            console.log("Continuation")
+          });
+        
+          slideSection.addEventListener('touchend', (e) => {
+            console.log("Fin")
+            if (!debutX) return;
+        
+            const finX = e.changedTouches[0].clientX;
+            const diffX = debutX - finX;
+        
+            if (diffX > 50 ) {
+            nextSlide() // Balayage vers la droite (diapositive suivante)
+            } else if (diffX < -50 ) {
+            prevSlide() // Balayage vers la gauche (diapositive précédente)
+            }
+            debutX = null;
+        });
     },[])
+
 
     // fonction pour allez à la slide suivante
     const nextSlide = () => {
@@ -29,7 +79,7 @@ function Slider(){
         
         // Appliquer les animations
         eltRef.current[indexSlide].style.animationName = "current-slide";
-        eltRef.current[nextIndex].style.animationName = "next-slide";
+        eltRef.current[indexNext].style.animationName = "next-slide";
     
         // Mettre à jour les états
         setIndexPrev(indexSlide);
@@ -48,16 +98,36 @@ function Slider(){
         setIndexNext((prevIndex + 1) % sliderImages.length); // Calculer le prochain index pour la prochaine animation
     
     };
-    document.addEventListener('DOMContentLoaded', () => {
-        const timer=10000 // 10 secondes avant le changement de slide
-        const intervalId=setInterval(()=>{
-            nextSlide()
-            clearInterval(intervalId)
-        },timer)
+
+    // Gestion du defilement automatiquement
+    const timer=10000 // 10 secondes avant le changement de slide
+    const intervalId=setInterval(()=>{
+        nextSlide()
+        clearInterval(intervalId)
+    },timer)
         
-    });
 
 
+    // gestion des boutton pour le changement de slide
+    const anySlide = (slideIndex) => {
+        if (slideIndex < 0 || slideIndex >= sliderImages.length || slideIndex === indexSlide) {
+          return; // Index invalide ou slide déjà affichée
+        }
+      
+        // Appliquer l'animation de sortie à la slide actuelle
+        eltRef.current[indexSlide].style.animationName = "current-slide";
+      
+        // Calculer l'index de la prochaine slide
+        const nextIndex = (slideIndex + 1) % sliderImages.length;
+      
+        // Appliquer l'animation d'entrée à la nouvelle slide
+        eltRef.current[slideIndex].style.animationName = "next-slide";
+      
+        // Mettre à jour les états
+        setIndexPrev(indexSlide);
+        setIndexSlide(slideIndex);
+        setIndexNext(nextIndex);
+      };
     return (
     <section className="big-container-slider">
 
@@ -87,7 +157,19 @@ function Slider(){
             <span className="material-icons">arrow_back_ios</span>
         </button>
         {/* Ajout de la pagination */}
-        {/* <div className="slider-pagination"></div> */}
+        <div className="slider-pagination">
+            {sliderImages.map((image, i) => {
+            if (i === indexSlide) {
+                return (
+                    <nav key={i} className="current-index" onClick={() => anySlide(i)}></nav>
+                );
+            } else {
+                return (
+                    <nav key={i} className="other-index" onClick={() => anySlide(i)}></nav>
+                );
+            }
+        })}
+        </div>
     </section>
     </section>);
 }

@@ -1,10 +1,11 @@
 #landingPage{
-    background-color: var(--small-grey);
+    background-color: var(--background-color);
+    color: var(--text-color);
     }
     #landingPage .second-view{
         width: 100%;
-        background-color: var(--third-color);
-        margin-top: 150px;
+        background-color: var(--presentation-blue);
+        margin-top: 100px;
         display: flex;
         flex-direction: column;
         text-align: center;
@@ -44,5 +45,11 @@
     }
     #landingPage .second-view .second-text{
         width: 100%;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    #landingPage .second-view .second-text {
+        color: black;
     }
 }
