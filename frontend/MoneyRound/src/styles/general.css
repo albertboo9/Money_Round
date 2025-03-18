@@ -1,4 +1,8 @@
 
+html, body {
+    overflow-x: hidden;
+  }
+  
 *,*:link,*::placeholder{
     font-family: "berlin sans fb";
 }

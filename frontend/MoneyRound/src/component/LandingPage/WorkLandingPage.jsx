@@ -2,6 +2,25 @@ import { motion } from "framer-motion";
 import "../../styles/LandingPage/WorkLandingPage.css";
 
 function WorkLandingPage() {
+  // Définition des variantes d'animation
+  const leftVariant = {
+    hidden: { opacity: 0, x: -100 },
+    visible: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -100 }
+  };
+
+  const fadeVariant = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.9 }
+  };
+
+  const rightVariant = {
+    hidden: { opacity: 0, x: 100 },
+    visible: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: 100 }
+  };
+
   return (
     <section className="how-work">
       <div className="first-text">How It Works</div>
@@ -15,14 +34,16 @@ function WorkLandingPage() {
         <button className="classic-btn">Get started</button>
       </div>
       <div className="step">
-        {/** Étape 1 */}
+        {/** Étape 1 - Entre et sort par la gauche */}
         <motion.div
           className="first-step step-card"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          variants={leftVariant}
+          initial="hidden"
+          whileInView="visible"
+          exit="exit"
+          viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          whileHover={{ scale: 1.05}}
+          whileHover={{ scale: 1.05 }}
         >
           <div className="head">
             <div className="icon">
@@ -39,14 +60,16 @@ function WorkLandingPage() {
           <div className="border-animation"></div>
         </motion.div>
 
-        {/** Étape 2 */}
+        {/** Étape 2 - Fade-in et Fade-out naturel */}
         <motion.div
           className="second-step step-card"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          variants={fadeVariant}
+          initial="hidden"
+          whileInView="visible"
+          exit="exit"
+          viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-          whileHover={{ scale: 1.05}}
+          whileHover={{ scale: 1.05 }}
         >
           <div className="head">
             <div className="icon">
@@ -62,14 +85,16 @@ function WorkLandingPage() {
           <div className="border-animation"></div>
         </motion.div>
 
-        {/** Étape 3 */}
+        {/** Étape 3 - Entre et sort par la droite */}
         <motion.div
           className="third-step step-card"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          variants={rightVariant}
+          initial="hidden"
+          whileInView="visible"
+          exit="exit"
+          viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
-          whileHover={{ scale: 1.05}}
+          whileHover={{ scale: 1.05 }}
         >
           <div className="head">
             <div className="icon">
@@ -88,4 +113,5 @@ function WorkLandingPage() {
     </section>
   );
 }
-export default WorkLandingPage
+
+export default WorkLandingPage;

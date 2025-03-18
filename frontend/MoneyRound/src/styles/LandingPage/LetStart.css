@@ -5,7 +5,9 @@
     justify-content: space-between !important;
     flex-direction: row !important;
     padding: 20px 5%;
-    width: 80%;
+    width: 89%;
+    margin-left: 5px;
+    margin-right: 5px;
     border-radius: 30px;
     border: 1px solid ;
     border-color: var(--primary-color);
@@ -42,3 +44,5 @@
         display: none;
     }
 }
+
+
