@@ -60,9 +60,6 @@ function RevolutionLandingPage() {
                             </div>
                         ))} 
                     </div>
-                    <button className="classic-btn">
-                        Get Started for Free
-                    </button>
                 </motion.div>  
             </div>
         </section>
