@@ -26,20 +26,20 @@
       }
       .slider .slider-wrapper .slider-slide img {
         width: 100%;
-        height: 100%;
+        height: 90%;
         object-fit: cover;
         object-position: top; 
         filter: brightness(0.5); 
       }
       .slider .slider-wrapper .slider-slide .info-slider {
         position: absolute;
-        top: 50%;
+        top: 10%;
         left: 10%;
         transform: translateY(-50%);
         display: flex;
         flex-direction: column;
         width: 100%;
-        color: white;
+        color: rgba(255, 255, 255, 0.82);
         
         }
         .slider .slider-wrapper .slider-slide .info-slider .title {
