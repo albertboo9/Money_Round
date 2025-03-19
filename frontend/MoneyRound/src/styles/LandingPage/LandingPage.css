@@ -1,55 +1,63 @@
-#landingPage{
-    background-color: var(--background-color);
-    color: var(--text-color);
-    }
-    #landingPage .second-view{
-        width: 100%;
-        background-color: var(--presentation-blue);
-        margin-top: 100px;
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        justify-content: center;
-        padding-top: 20px;
-        }   
-        #landingPage .second-view section{
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            margin-bottom: 50px;
-        }
-        #landingPage .second-view button{
-            height: 40px;
-            width: auto;
-            align-self: center;
-            box-sizing: border-box;
-            font-size: 25px;
-            padding: 30px 20px 30px 20px;
-            display: flex;
-            vertical-align: middle;
-            color:black;
-            margin-bottom: 30px;
-            }
-            #landingPage .second-view button div{
-                align-self: center;
-            }
-            #landingPage .second-view button span{
-                margin-left: 5px;
-                align-self: center;
-        }
+#landingPage {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-@media screen and (max-width:600px) {
-    #landingPage .second-view .first-text{
-        width: 100%;
-        font-size: 30px;
-    }
-    #landingPage .second-view .second-text{
-        width: 100%;
-    }
+#landingPage .second-view {
+  width: 100%;
+  background-color: var(--presentation-blue);
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+#landingPage .second-view section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+#landingPage .second-view button {
+  height: 40px;
+  width: auto;
+  align-self: center;
+  box-sizing: border-box;
+  font-size: 1.5rem;
+  padding: 1.5rem 1rem;
+  display: flex;
+  vertical-align: middle;
+  color: black;
+  margin-bottom: 30px;
+}
+
+#landingPage .second-view button div {
+  align-self: center;
+}
+
+#landingPage .second-view button span {
+  margin-left: 5px;
+  align-self: center;
+}
+
+@media screen and (max-width: 600px) {
+  #landingPage .second-view .first-text {
+    width: 100%;
+    font-size: 1.875rem; /* 30px */
+  }
+  #landingPage .second-view .second-text {
+    width: 100%;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
-    #landingPage .second-view .second-text {
-        color: black;
-    }
+  #landingPage .second-view .second-text {
+    color: black;
+  }
 }
