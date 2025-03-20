@@ -1,4 +1,6 @@
 const { UserModel } = require("../models/user.model");
+const {TrustSystemModel} = require('../models/trustSystem.model');
+const TrustSystemService = require('../services/trustSystem.service');
 const { v4: uuid4 } = require("uuid");
 const Joi = require("joi");
 
@@ -250,10 +252,26 @@ exports.noteMember = async  (req, res) => {
             return res.status(400).json({error: `Donnés invalides : ${error.details[0].message}` });
         }
 
-        const userId = req.params.userId;
+        const userId = req.user.userId;
         const {memberId, note, comment} = value;
-        const evaluation = await UserModel.noteMember(memberId, note, comment, userId);
-        return res.status(201).json({message: 'Note envoyée avec succès', data: evaluation});
+        if (memberId === userId) return res.status(400).json({error: "Un utilisateur ne peut pas se noter lui-meme"});
+
+        const evaluation = await TrustSystemModel.noteMember(memberId, note, comment, userId);
+        // Mise à jour du score et de la réputation de l'utilisateur
+        await TrustSystemService.calculateUserScore(memberId);
+
+        return res.status(201).json({message: 'Note envoyée avec succès', evaluation: evaluation});
+
+    }catch (error) {
+        return res.status(500).json({error: `Échec: ${error.message}`});
+    }
+}
+
+exports.getEvaluationsByUserId = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const evaluations = await TrustSystemModel.getEvaluationsByUserId(userId);
+        return res.status(200).json({message: 'Evaluations récupérées', evaluations: evaluations});
 
     }catch (error) {
         return res.status(500).json({error: `Échec: ${error.message}`});
