@@ -1,4 +1,6 @@
-const admin = require("../config/firebase"); // Importation du SDK Firebase Admin
+const admin = require("../config/firebase");
+const {UserModel} = require("./user.model");
+const {use} = require("bcrypt/promises"); // Importation du SDK Firebase Admin
 const db = admin.admin.firestore(); // Initialisation de Firestore
 
 
@@ -102,6 +104,33 @@ class TrustSystemModel {
             throw new Error(error.message);
         }
     }
+
+
+    /**
+     * Augmanter les points d'experience de l'utilisateur
+     * @param {string} userId - l'id de l'utilisateur
+     * @param {number} xp - le nombre de xp à ajouter
+     * @returns {Promise<void>} - ne retourne rien
+     */
+    static async increaseUserXP(userId, xp) {
+        try {
+            const userRef = db.collection(USER_COLLECTION).doc(userId);
+            const userDoc = await userRef.get();
+            if (!userDoc.exists) throw new Error("Utilisateur introuvable");
+            const currentXP = userDoc.data().xp;
+
+            // Mise à jour du score et de la réputation dans Firestore
+            await userRef.update({
+                xp: currentXP + xp
+            });
+            console.log(`${userId} a gagné ${xp} xp`);
+
+        }catch (error) {
+            console.error("Impossible d'augmenter les points d'experience de l'utilisateur: ", error.message);
+            throw new Error(error.message);
+        }
+    }
+
 }
 
 

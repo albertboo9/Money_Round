@@ -42,6 +42,9 @@ const userSchema = Joi.object({
     }).optional(),
     reputation: Joi.string()
         .valid("Membre Neutre", "Membre Risqué", "Membre Fiable", "Membre Premium").required(),     // Représente la réputation de l'utilisateur
+    xp: Joi.number().integer(),   // Les points d'experience de l'utilisateur
+    badges: Joi.array().items(Joi.string()
+        .valid("Membre d’Or", "Super Parrain", "Élite de MoneyRound")).default([]),  // les badges de l'utilisateur
     isActive: Joi.boolean().optional(),
     isBlocked: Joi.boolean().optional(),
 }).strict();   // Empêche l'ajout de champs non définis
@@ -143,6 +146,8 @@ class UserModel {
                     average: 3
                 },
                 reputation: "Membre Neutre",
+                xp: 0,
+                badges: [],
                 isActive: true,
                 isBlocked: false,
             });

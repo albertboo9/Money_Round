@@ -82,6 +82,34 @@ class TrustSystemService {
             throw new Error(error.message);
         }
     }
+
+    // Augmentation des xp de l'utilisateur lorsqu'il effectue un paiement à temps
+    async increaseXPOnTimePayment(userId) {
+        try {
+            await TrustSystemModel.increaseUserXP(userId, 10);
+        }catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    // Augmentation des xp de l'utilisateur lorsqu'il invite un nouveau membre dans une tontine
+    async increaseXPOnMemberInvitation(userId) {
+        try {
+            await TrustSystemModel.increaseUserXP(userId, 20);
+        }catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
+    // Augmentation des xp de l'utilisateur lorsqu'il termine une tontine
+    async increaseXPOnSuccessfulTontine(userId) {
+        try {
+            await TrustSystemModel.increaseUserXP(userId, 50);
+        }catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
 }
 
 
