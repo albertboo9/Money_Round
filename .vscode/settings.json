@@ -1,3 +1,5 @@
 {
-  "cSpell.words": ["Modèle", "Montant"]
+  "cSpell.words": ["Modèle", "Montant"],
+  "editor.wordWrap": "on",
+  "editor.fontSize": 11
 }
