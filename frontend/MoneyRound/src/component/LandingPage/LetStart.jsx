@@ -43,7 +43,7 @@ function LetStart() {
         whileInView={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -50 }}
         viewport={{ once: false, amount: 0.3 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6, ease: "easeIn" }}
       />
     </section>
   );
