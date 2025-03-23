@@ -21,7 +21,8 @@ const registerWithEmailPasswordSchema = Joi.object({
         .required()
         .messages({
             'string.pattern.base': 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.',
-        })
+        }),
+    inviteCode: Joi.string().max(8).optional()
 });
 
 const signInWithEmailAndPasswordSchema = Joi.object({

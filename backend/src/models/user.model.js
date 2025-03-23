@@ -45,10 +45,22 @@ const userSchema = Joi.object({
     xp: Joi.number().integer(),   // Les points d'experience de l'utilisateur
     badges: Joi.array().items(Joi.string()
         .valid("Membre d’Or", "Super Parrain", "Élite de MoneyRound")).default([]),  // les badges de l'utilisateur
+    recommendedBy: Joi.string().optional(),
+    inviteCode: Joi.string().max(8).required(),
+    invitedUsers: Joi.number().integer().default(0),  // Nombre d'utilisateurs invités sur la platforme
     isActive: Joi.boolean().optional(),
     isBlocked: Joi.boolean().optional(),
 }).strict();   // Empêche l'ajout de champs non définis
 
+
+const generateInviteCode = (length) => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < length; i++) {
+        code += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return code;
+}
 
 
 class UserModel {
@@ -125,8 +137,15 @@ class UserModel {
      * @returns {Promise<string>} - retourne l'ID de l'utilisateur inscrit.
      */
     static async registerWithEmailPassword(registerData) {
-        const { fullName, phoneNumber, email, password } = registerData;
+        const { fullName, phoneNumber, email, password, inviteCode } = registerData;
         try {
+            // On recupere l'id du parrain à partir de code d'invitation
+            let parrainId;
+            if (inviteCode) {
+                parrainId = await UserModel.getUserIdByInviteCode(inviteCode);
+                if (!parrainId) throw new Error(`Code d'invitation invalide`);
+            }
+
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             console.log("Utilisateur inscrit avec succès :", user.uid);
@@ -148,20 +167,25 @@ class UserModel {
                 reputation: "Membre Neutre",
                 xp: 0,
                 badges: [],
+                recommendedBy: parrainId || '',
+                inviteCode: generateInviteCode(8),
+                invitedUsers: 0,
                 isActive: true,
                 isBlocked: false,
             });
             console.log("Utilisateur ajouté dans Firestore", userRef.id);
 
+            if (parrainId) await this.updateInvitedUsers(parrainId);
+
             // Configure ActionCodeSettings for email verification
-            const actionCodeSettings = {
+            /*const actionCodeSettings = {
                 url: 'https://moneyround-aa7a9.firebaseapp.com', // URL de redirection de l'utilisateur apres la vérification
                 handleCodeInApp: false
-            };
+            };*/
 
             // Envoie de l'email de vérification
-            await sendEmailVerification(user, actionCodeSettings);
-            console.log("Email de vérification envoyé à l'utilisateur");
+            //await sendEmailVerification(user, actionCodeSettings);
+            //console.log("Email de vérification envoyé à l'utilisateur");
 
             return user.uid; // Retourne l'ID de l'utilisateur inscrit
 
@@ -382,6 +406,56 @@ class UserModel {
         }catch(error) {
             console.error("Erreur lors de la mise à jour du mot passe de l'utilisateur:", error.message);
             throw new Error(error.message);
+        }
+    }
+
+
+    /**
+     * Recuperation de l'id d'un utilisateur à partir de son code d'invitation unique
+     * @param {string} inviteCode - le code d'invitation
+     * @returns {Promise<string>} - retourne l'id de l'utilisateur
+     */
+    static async getUserIdByInviteCode(inviteCode ) {
+        try {
+            const snapshot = await db.collection(USER_COLLECTION).where('inviteCode', '==', inviteCode).get();
+            if (snapshot.empty) throw new Error(`Code d'invitation incorrect`);
+            let userId;
+
+            snapshot.forEach(doc => {
+                userId = doc.id;
+            });
+            console.log(`Le code d'invitation ${inviteCode} est celui de ${userId}`);
+            return userId;
+
+        }catch(error) {
+            console.error("Erreur avec le code d'invitation: ", error.message);
+            throw new Error(error.message);
+        }
+    }
+
+
+    /**
+     * Mets à jour le nombre de personnes invitées par l'utilisateur
+     * @param {string} userId - Id de l'utilisateur
+     * @returns {Promise<void>} - Ne retourne rien
+     */
+    static async updateInvitedUsers(userId) {
+        try {
+            const userRef = db.collection(USER_COLLECTION).doc(userId);
+            const userDoc = await userRef.get();
+            if (!userDoc.exists) throw new Error("Utilisateur introuvable");
+            const invitedUsers = userDoc.data().invitedUsers + 1;
+
+            // Mise à jour dans Firestore
+            await userRef.update({
+                invitedUsers: invitedUsers,
+                updatedAt: new Date() // Mise à jour de la date de modification
+            });
+            console.log(`Au total ${invitedUsers} personnes ont été invitées par ${userId}`);
+
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour du nombre de personnes invitées par l'utilisateur:", error.message);
+            throw new Error("Impossible de mettre à jour le nombre de personnes invitées par l'utilisateur");
         }
     }
 
