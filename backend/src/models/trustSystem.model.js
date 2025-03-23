@@ -1,6 +1,4 @@
-const admin = require("../config/firebase");
-const {UserModel} = require("./user.model");
-const {use} = require("bcrypt/promises"); // Importation du SDK Firebase Admin
+const admin = require("../config/firebase"); // Importation du SDK Firebase Admin
 const db = admin.admin.firestore(); // Initialisation de Firestore
 
 
@@ -57,7 +55,8 @@ class TrustSystemModel {
             // Mise à jour du score et de la réputation dans Firestore
             await userRef.update({
                 reputation: newReputation,
-                score: newScore
+                score: newScore,
+                updatedAt: new Date()
             });
             console.log("Score et réputation mis à jour avec succès", newScore, newReputation);
 
@@ -121,12 +120,43 @@ class TrustSystemModel {
 
             // Mise à jour du score et de la réputation dans Firestore
             await userRef.update({
-                xp: currentXP + xp
+                xp: currentXP + xp,
+                updatedAt: new Date()
             });
             console.log(`${userId} a gagné ${xp} xp`);
 
         }catch (error) {
             console.error("Impossible d'augmenter les points d'experience de l'utilisateur: ", error.message);
+            throw new Error(error.message);
+        }
+    }
+
+
+    /**
+     * Mise à jour des badges de l'utilisateur
+     * @param {string} userId - l'id de l'utilisateur
+     * @param {string} badge - le badge à ajouter
+     * @returns {Promise<void>} - ne retourne rien
+     */
+    static async updateUserBadges(userId, badge) {
+        try {
+            const userRef = db.collection(USER_COLLECTION).doc(userId);
+            const userDoc = await userRef.get();
+            if (!userDoc.exists) throw new Error("Utilisateur introuvable");
+            const userBadges = userDoc.data().badges;
+
+            // Mise à jour des badges
+            if (!userBadges.includes(badge)) {
+                userBadges.push(badge);
+                await userRef.update({
+                    badges: userBadges,
+                    updatedAt: new Date()
+                });
+                console.log(`${userId} a obtenu le badge ${badge}`);
+            }
+
+        }catch (error) {
+            console.error("Impossible de mettre à jour les badges de l'utilisateur: ", error.message);
             throw new Error(error.message);
         }
     }

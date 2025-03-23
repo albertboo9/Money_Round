@@ -110,6 +110,15 @@ class TrustSystemService {
         }
     }
 
+    // Mise à jour des badges de l'utilisateur lorsqu'il termine une tontine
+    async updateUserBadgesOnInvitedUser(userId) {
+        try {
+            await TrustSystemModel.updateUserBadges(userId, 'Super Parrain');
+        }catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
 }
 
 
