@@ -5,13 +5,15 @@ const payContribution = async (req, res) => {
   try {
     const { tontineId, tourId, periodeId, amount } = req.body;
     const userId = req.user.userId;
+    const userWalletId = req.user.walletId;
 
-    const transaction = await transactionService.payContribution(
+    const transaction = await transactionService.processTransaction(
       userId,
       tontineId,
       tourId,
       periodeId,
-      amount
+      amount,
+      userWalletId
     );
     res.status(201).json({ message: "Paiement effectué avec succès", transaction });
   } catch (error) {

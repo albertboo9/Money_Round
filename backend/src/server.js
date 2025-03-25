@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
+const transactionRoutes = require('./routes/transaction.routes'); // Importation des routes
 const tontineRoutes = require('./routes/tontine.routes'); // Importation des routes
 const userRoutes = require('./routes/user.routes'); // Importation des routes
 const requestLogger = require('./middlewares/requestLogger');
@@ -51,6 +52,9 @@ app.use('/api/tontines', tontineRoutes);
 
 // Routes de user.routes.js
 app.use('/api/users', userRoutes);
+
+//Routes de transaction.routes.js
+app.use('/api/transactions', transactionRoutes);
 
 // Configuration des en-têtes CORS
 app.use((req, res, next) => {

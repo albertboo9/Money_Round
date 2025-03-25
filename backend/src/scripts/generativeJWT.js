@@ -7,6 +7,7 @@ const payload = {
   fullName: 'Doe',
   email: 'test@gmail.com',
   phoneNumber: +2376899444,
+  walletId:"Oyd62hOQPc74ajsgIoDl"
   // Ajoutez d'autres informations nécessaires
 };
 
