@@ -26,17 +26,16 @@ const transactionSchema = Joi.object({
   userId: Joi.string().optional(),
 });
 
-// Schéma de validation pour les portefeuilles
+// models/wallet.js
 const walletSchema = Joi.object({
-  walletId: Joi.string().required(),
-  ownerId: Joi.string().required(),
-  type: Joi.string().valid("user", "tontine", "locked").required(),
-  balance: Joi.number().min(0).required(),
-  currency: Joi.string().valid("XAF").required(),
-  createdAt: Joi.date().iso().required(),
-  updatedAt: Joi.date().iso().required(),
-  transactions: Joi.array().items(transactionSchema).required(),
-  passwordHash: Joi.string().required(),
+  id: Joi.string().required(), // Identifiant unique du wallet
+  ownerId: Joi.string().required(), // ID du propriétaire (utilisateur ou tontine)
+  type: Joi.string().valid("user", "tontine").required(), // Type de wallet
+  balance: Joi.number().min(0).default(0), // Solde du wallet
+  contributions: Joi.array().items(Joi.string()).default([]), // IDs des contributions
+  transactionHistory: Joi.array().items(Joi.string()).default([]), // Historique des transactions
+  createdAt: Joi.date().default(() => new Date()),
+  updatedAt: Joi.date().default(() => new Date())
 });
 
 class BaseWallet {
