@@ -58,10 +58,10 @@ const processTransaction = async (
         throw new Error("Période fermée");
 
       // Étape 2 : Vérifier si l'utilisateur appartient à la tontine
-      /* const isUserMember = tontineData.membersId.some((membre) => membre.id === payerId);
-      if (!isUserMember) throw new Error("Utilisateur non membre de la tontine"); */
+      if(!tontineData.membersId.includes(payerId)){
+        throw new Error("n'étant pas membre de la tontine, vous n'avez pas accès à ce tour")
+      }
 
-      // Étape 3 : Vérifier si le paiement existe déjà pour cette période
       const paiementExistant = periode.contributions.some(
         (c) => c.userId === payerId
       );
@@ -121,6 +121,7 @@ const processTransaction = async (
         updatedAt: new Date(),
       });
 
+
       // Étape 10 : Mettre à jour la tontine avec la nouvelle contribution
       t.update(tontineRef, {
         tours: tontineData.tours.map((t) => {
@@ -146,7 +147,13 @@ const processTransaction = async (
         updatedAt: new Date(),
       });
 
-      // Étape 11 : Enregistrer les nouvelles entrées
+      // Étape 11 augmente les fonds collectés par la tontine
+      t.update(tontineRef, {
+        amount: tontineData.amount + montant,
+        updatedAt: new Date(),
+      })
+
+      // Étape 12 : Enregistrer les nouvelles entrées
       t.set(contributionsRef.doc(contributionId), newContribution);
       t.set(transactionRef.doc(transactionId), newTransaction);
 
