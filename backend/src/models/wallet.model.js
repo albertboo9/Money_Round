@@ -28,7 +28,6 @@ const transactionSchema = Joi.object({
 
 // models/wallet.js
 const walletSchema = Joi.object({
-  id: Joi.string().required(), // Identifiant unique du wallet
   ownerId: Joi.string().required(), // ID du propriétaire (utilisateur ou tontine)
   type: Joi.string().valid("user", "tontine").required(), // Type de wallet
   balance: Joi.number().min(0).default(0), // Solde du wallet
@@ -43,10 +42,9 @@ class BaseWallet {
     this.ownerId = ownerId; // Identifiant du propriétaire du portefeuille
     this.type = type; // Type de portefeuille ("user", "tontine", "locked")
     this.balance = 0; // Solde initial du portefeuille
-    this.transactions = []; // Liste des transactions du portefeuille
+    this.transactionHistory = []; // Liste des transactions du portefeuille
     this.createdAt = new Date(); // Date de création du portefeuille
     this.updatedAt = new Date(); // Date de dernière mise à jour du portefeuille
-    this.passwordHash = password ? bcrypt.hashSync(password, 10) : null; // Hachage du mot de passe (optionnel pour les tontines)
   }
 
   // Vérifie si le mot de passe fourni correspond au mot de passe haché

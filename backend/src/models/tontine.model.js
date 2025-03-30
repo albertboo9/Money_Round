@@ -55,13 +55,10 @@ const tontineSchema = Joi.object({
   description: Joi.string().max(255).optional(), // Description (max 255 caractères, optionnelle)
   creatorId: Joi.string().required(), // ID du créateur (requis)
   codeInvitation: Joi.string().required(), // Code d'invitation (requis)
-  amount: Joi.number().positive().required(), // montant économisé par la tontine
+  amount: Joi.number().required(), // montant économisé par la tontine
   membersId: Joi.array().items(Joi.string()).default([]), // Liste des membres (par défaut vide)
   adminId: Joi.array().items(Joi.string()).default([]), // Liste des admins (par défaut vide)
   inviteId: Joi.array().items(Joi.string()).default([]), // Liste des utilisateurs invités à réjoindre la tontine (par défaut vide)
-  frequency: Joi.string()
-    .valid("quotidien", "hebdomadaire", "mensuel", "annuel")
-    .required(), // Fréquence des paiements (valeurs prédéfinies, requis)
   startDate: Joi.date().iso().required(), // Date de début (format ISO, requise)
   endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(), // Date de fin (optionnelle, doit être après startDate)
   status: Joi.string().valid("active", "terminée", "annulée").default("active"), // Statut de la tontine (valeurs prédéfinies, défaut: active)
@@ -93,13 +90,10 @@ const updateTontineSchema = Joi.object({
   description: Joi.string().max(255).optional(),
   creatorId: Joi.string().optional(),
   codeInvitation: Joi.string().optional(),
-  amount: Joi.number().positive().optional(), // montant économisé par la tontine
+  amount: Joi.number().optional(), // montant économisé par la tontine
   membersId: Joi.array().items(Joi.string()).optional(),
   adminId: Joi.array().items(Joi.string()).optional(),
   inviteId: Joi.array().items(Joi.string()).optional(),
-  frequency: Joi.string()
-    .valid("quotidien", "hebdomadaire", "mensuel", "annuel")
-    .optional(),
   startDate: Joi.date().iso().optional(),
   endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
   status: Joi.string().valid("active", "terminée", "annulée").optional(),
