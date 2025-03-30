@@ -11,10 +11,6 @@ const Joi = require("joi");
 const createTontineSchema = Joi.object({
   name: Joi.string().min(3).max(50).required(),
   description: Joi.string().max(255).optional(),
-  amount: Joi.number().positive().required(),
-  frequency: Joi.string()
-    .valid("quotidien", "hebdomadaire", "mensuel", "annuel")
-    .required(),
   startDate: Joi.date().iso().required(),
   endDate: Joi.date().iso().greater(Joi.ref("startDate")).optional(),
 });
@@ -102,8 +98,7 @@ exports.createTontine = async (req, res) => {
       adminId: [req.user.userId],
       inviteId: [],
       tours: [],
-      amount: req.body.amount,
-      frequency: req.body.frequency,
+      amount: 0,
       startDate: new Date(req.body.startDate), // Conversion en objet Date
       endDate: req.body.endDate ? new Date(req.body.endDate) : null, // Conversion en objet Date si endDate est fourni
       status: "active",
