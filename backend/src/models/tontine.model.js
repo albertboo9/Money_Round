@@ -3,6 +3,7 @@
  */
 
 const admin = require("../config/firebase"); // Importation du SDK Firebase Admin
+const { TontineWallet } = require("../models/wallet.model");
 const db = admin.admin.firestore(); // Initialisation de Firestore
 const Joi = require("joi"); // Importation de Joi pour la validation des données
 const { FieldValue } = require("firebase-admin/firestore");
@@ -50,6 +51,7 @@ const tourSchema = Joi.object({
 // Définition du schéma de validation des tontines avec Joi
 const tontineSchema = Joi.object({
   name: Joi.string().min(3).max(50).required(), // Nom de la tontine (3 à 50 caractères, requis)
+  walletId: Joi.string().optional(), // ID du portefeuille associé (requis)
   description: Joi.string().max(255).optional(), // Description (max 255 caractères, optionnelle)
   creatorId: Joi.string().required(), // ID du créateur (requis)
   codeInvitation: Joi.string().required(), // Code d'invitation (requis)
@@ -147,7 +149,13 @@ class TontineModel {
         createdAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
       });
+      const wallet = new TontineWallet(tontineRef.id, "tontine", null)
+      const walletId = wallet.save(),
 
+      tRef = db.collection(TONTINE_COLLECTION).doc(tontineRef.id);
+      tRef.update({
+        walletId: walletId,
+      })
       return tontineRef.id; // Retourne l'ID de la tontine créée
     } catch (error) {
       console.error("Erreur lors de la création de la tontine:", error.message);

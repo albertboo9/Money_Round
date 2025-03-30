@@ -40,19 +40,24 @@ const walletSchema = Joi.object({
 
 class BaseWallet {
   constructor(ownerId, type, password) {
-    this.walletId = uuidv4(); // Génération d'un identifiant unique pour le portefeuille
     this.ownerId = ownerId; // Identifiant du propriétaire du portefeuille
     this.type = type; // Type de portefeuille ("user", "tontine", "locked")
     this.balance = 0; // Solde initial du portefeuille
-    this.currency = "XAF"; // Devise du portefeuille
+    this.transactions = []; // Liste des transactions du portefeuille
     this.createdAt = new Date(); // Date de création du portefeuille
     this.updatedAt = new Date(); // Date de dernière mise à jour du portefeuille
-    this.transactions = []; // Liste des transactions du portefeuille
-    this.passwordHash = bcrypt.hashSync(password, 10); // Hachage du mot de passe
+    this.passwordHash = password ? bcrypt.hashSync(password, 10) : null; // Hachage du mot de passe (optionnel pour les tontines)
   }
 
   // Vérifie si le mot de passe fourni correspond au mot de passe haché
   verifyPassword(password) {
+    if (!this.passwordHash) throw new Error("Ce wallet n'a pas de mot de passe.");
+    return bcrypt.compareSync(password, this.passwordHash);
+  }
+
+  // Vérifie si le mot de passe fourni correspond au mot de passe haché
+  verifyPassword(password) {
+    if (!this.passwordHash) throw new Error("Ce wallet n'a pas de mot de passe.");
     return bcrypt.compareSync(password, this.passwordHash);
   }
 
@@ -60,10 +65,11 @@ class BaseWallet {
   async save() {
     const { error } = walletSchema.validate(this);
     if (error) throw new Error(`Validation échouée: ${error.message}`);
-    await db
-      .collection("wallets")
-      .doc(this.walletId)
-      .set(JSON.parse(JSON.stringify(this)));
+
+    const walletRef = db.collection("wallets").doc(); // Crée un nouveau document avec un ID généré automatiquement
+    await walletRef.set(JSON.parse(JSON.stringify(this))); // Sauvegarde les données dans Firestore
+    this.walletId = walletRef.id; // Associe l'ID généré par Firestore au wallet
+    return this.walletId; // Retourne l'ID du wallet
   }
 
   // Trouve un portefeuille par son identifiant
@@ -71,6 +77,13 @@ class BaseWallet {
     const walletRef = await db.collection("wallets").doc(walletId).get();
     if (!walletRef.exists) return null;
     return Object.assign(new BaseWallet(), walletRef.data());
+  }
+
+  // Crée un wallet pour un utilisateur ou une tontine
+  static async createWallet(ownerId, type, password = null) {
+    const wallet = new BaseWallet(ownerId, type, password);
+    const walletId = await wallet.save();
+    return walletId; // Retourne l'ID du wallet
   }
 }
 
