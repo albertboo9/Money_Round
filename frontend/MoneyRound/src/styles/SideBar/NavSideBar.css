@@ -1,0 +1,19 @@
+.nav-side-bar{
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    }
+    .nav-side-bar span{
+        font-size: 25px !important;
+    }
+
+    .nav-side-bar .message{
+        align-self: flex-start;
+        margin-left: 50px;
+        background-color: white;
+        box-shadow: 1px 1px 10px 1px gray;
+        padding: 5px 10px;
+        border-bottom-right-radius: 7px;
+        border-top-right-radius: 7px;
+        color: black !important;
+    }

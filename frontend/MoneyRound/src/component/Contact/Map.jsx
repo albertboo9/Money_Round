@@ -1,5 +1,5 @@
 //importation de feuille de style
-import "../../styles/contact/Map.css";
+import "../../styles/Contact/Map.css";
 
 import React from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";

@@ -49,6 +49,7 @@
         }
         #headerLandingPage .head-right span:hover{
             color:var(--hover-color) ;
+            
         }
 
 @media screen and (max-width:600px) {
