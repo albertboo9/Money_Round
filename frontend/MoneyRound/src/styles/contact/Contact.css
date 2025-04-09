@@ -1,17 +1,19 @@
-
 #contactPage{
     background-color: var(--small-grey);
     overflow: hidden;
     padding: 10px;
     }
+
 /* Ca peut paraitre etre de la recopie par rapport a la landing page mais c'est pour eviter les conflit */
     #contactPage .second-view{
+        width: 100%;
         display: flex;
         flex-direction: column;
         text-align: center;
         justify-content: center;
         padding-top: 20px;
         padding-right: 5%;
+
         }   
         #contactPage .second-view section{
             margin-bottom: 50px;
@@ -23,7 +25,7 @@
         }
         #contactPage .second-view .title-contact .second-text{
             color: var(--secondary-color) !important;
-            font-size: 30px !important;
+
         }
         #contactPage .second-view .title-contact .big-title{
             font-size: 30px;

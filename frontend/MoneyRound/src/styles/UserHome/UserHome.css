@@ -1,0 +1,7 @@
+#userHome .box-user-information{
+    box-shadow: 1px 1px 10px 1px gray;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

@@ -13,6 +13,7 @@
     align-items: center;
     animation-timing-function: ease-out;
     animation-duration: 0.7s;
+    position: fixed;
     }
     #sideBar .menu-icon{
         cursor: pointer;

@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Juliet Oma",
+      "email": "julie@yahoo.com",
+      "number": "08100000000"
+    },
+    {
+      "id": "2",
+      "name": "James Williams",
+      "email": "jameswilly@gmail.com",
+      "number": "08111111111"
+    }
+  ],
+  "comment": [
+    {
+      "id": "b7d9",
+      "name": "Emmanuel",
+      "mail": "emmanuelseujip@gmail.com",
+      "subject": "Plainte",
+      "message": "J'aimerais signalé que je n'arrive pas à me connecter au site"
+    },
+    {
+      "id": "2177",
+      "name": "Albert",
+      "mail": "test@gmail.com",
+      "subject": "Plainte",
+      "message": "J'aimerais signalé que je n'arrive pas à me connecter au site"
+    }
+  ]
+}
