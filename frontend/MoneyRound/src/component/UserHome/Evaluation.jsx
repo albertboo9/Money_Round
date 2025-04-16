@@ -1,9 +1,13 @@
+//Importation de feuilles de styles 
+import "../../styles/UserHome/Evaluation.css";
+
 //importion d'image
 import certificate from "../../images/iconic/iconamoon_certificate-badge-fill.svg";
 import fire from "../../images/iconic/noto_fire.svg";
-import trophy from "../../images/iconic/noto_fire.svg";
-import star from "../../images/iconic/Star 13.svg.svg";
-import starFull from "../../images/iconic/Star 8.svg.svg";
+import star from "../../images/iconic/Star 13.svg";
+import starFull from "../../images/iconic/Star 8.svg";
+import trophy from "../../images/iconic/noto_trophy.svg";
+
 function Evaluation({note,ranking}){
     const noteInt=parseInt(note)
     const numStar=parseInt(noteInt/20)
@@ -25,7 +29,7 @@ function Evaluation({note,ranking}){
                 Score de reputation
             </div>
             <div className="body-evaluation"> 
-                <img src={star} alt="" />
+                <img src={star} alt=""  />
                 {note+"/100"}
             </div>
             <div className="end-evaluation">
@@ -34,8 +38,8 @@ function Evaluation({note,ranking}){
                 })}
             </div>
         </div>
-        <div className="box-user-information">
-        <div className="title-evaluation">
+        <div className="box-user-information" >
+            <div className="title-evaluation">
                 <img src={certificate} alt="" />
                 Badges gagnés
             </div>
@@ -46,7 +50,17 @@ function Evaluation({note,ranking}){
                 <img src={trophy} alt="" />
             </div>
         </div>
-        <div className="box-user-information"></div>
+        <div className="box-user-information">
+        <div className="title-evaluation">
+                Classement
+            </div>
+            <div className="body-evaluation"> 
+                {ranking+" /100"}
+            </div>
+            <div className="end-evaluation">
+                Membre
+            </div>
+        </div>
     </section>
     );
 }

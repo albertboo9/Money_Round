@@ -1,0 +1,12 @@
+.evaluation{
+    display: flex;
+    justify-content: space-around;
+    }
+    .evaluation .box-user-information{
+        width: 300px;
+        padding: 10px;
+        }
+        .evaluation .box-user-information .body-evaluation{
+            color: var(--primary-color);
+            font-size: 30px;
+        }
