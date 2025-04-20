@@ -1,0 +1,85 @@
+:root{
+    --small-size:50px;
+    --large-size:150px;
+}
+
+
+.small-sidebar,.large-sidebar{
+    background-color: var(--accent-color);
+    height: 100%;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation-timing-function: ease-out;
+    animation-duration: 0.7s;
+    position: fixed;
+    z-index: 100000;
+    top: 0px;
+    }
+    #sideBar .menu-icon{
+        cursor: pointer;
+        margin-bottom: 50px;
+        transition-property: opacity;
+        transition-duration: 0.7s;
+        transition-timing-function: ease-out;
+    }
+    #sideBar .end{
+        position: absolute;
+        bottom: 5px;
+    }
+.small-sidebar{
+        width: var(--small-size);
+    }
+    .small-sidebar span{
+        cursor: pointer;
+    }
+    .small-sidebar .menu-icon-large{
+        display: none;
+    }
+
+.large-sidebar{
+        width: var(--large-size);
+    }
+    .large-sidebar img{
+        align-self: flex-start;
+        margin-left: 10px;
+        margin-top: 10px;
+        width: 50px;
+        height: 50px;
+    }
+    .large-sidebar .menu-icon-large{
+        position: absolute;
+        top: 5px;
+        left: calc(var(--large-size) - 30px);
+        cursor: pointer;
+    }
+    .large-sidebar .menu-icon{
+        opacity: .0;
+        cursor: default;
+    }
+    .large-sidebar .nav-side-bar span{
+        margin-right: 10px;
+    }
+
+
+/* Malgre qu'on peut utiliser un reverse que d'ecrire 2 keyframe ca reste important d'avoir les 2 key frame pour le js */
+@keyframes open-sidebar {
+    from{
+        width: var(--small-size);
+    }
+    to{
+        width: var(--large-size);
+    }
+
+}
+@keyframes close-sidebar {
+    from{
+        width: var(--large-size);
+    }
+    to{
+        width: var(--small-size);
+    }
+
+}
+    
