@@ -144,10 +144,10 @@ class TontineModel {
         updatedAt: FieldValue.serverTimestamp(),
       });
       const wallet = new TontineWallet(tontineRef.id, "tontine", null)
-      const walletId = wallet.save(),
+      const walletId = await wallet.save()
 
-      tRef = db.collection(TONTINE_COLLECTION).doc(tontineRef.id);
-      tRef.update({
+      /* tRef = db.collection(TONTINE_COLLECTION).doc(tontineRef.id); */
+      await tontineRef.update({
         walletId: walletId,
       })
       return tontineRef.id; // Retourne l'ID de la tontine créée
