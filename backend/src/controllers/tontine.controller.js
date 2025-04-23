@@ -115,12 +115,20 @@ exports.createTontine = async (req, res) => {
 
     //création de la tontine
     await TontineModel.createTontine(tontineData);
-
+    //app notification
     await NotificationService.sendNotification(
+      "notif_" + uuid4(),
       //userid ....
+      "creation Tontine",
       //firebase token
       "Nouvelle Tontine Créée",
       `Votre tontine "${tontineData.name}" a été créée avec succès.`
+    );
+    //email notification
+   await NotificationService.sendEmailnotification(
+      "feukengbrunel555@gmail.com",
+      "Bienvenue à MoneyRound",
+      "tontine creer avec succee"
     );
 
     res

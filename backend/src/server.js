@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const transactionRoutes = require('./routes/transaction.routes'); // Importation des routes
 const tontineRoutes = require('./routes/tontine.routes'); // Importation des routes
+const chatsRoute=require('./routes/chats.routes');
 const userRoutes = require('./routes/user.routes'); // Importation des routes
 const requestLogger = require('./middlewares/requestLogger');
 const errorHandler = require('./middlewares/errorHandler');
@@ -50,12 +51,20 @@ app.get('/', (req, res) => {
 // Utiliser les routes définies dans tontine.routes.js
 app.use('/api/tontines', tontineRoutes);
 
+
+
+
+//Routes de transaction.routes.js
+app.use('/api/transactions', transactionRoutes);
+
 // Routes de user.routes.js
 app.use('/api/users', userRoutes);
 
 //Routes de transaction.routes.js
 app.use('/api/transactions', transactionRoutes);
 
+//utiliser les routes définies dans chats.routes.js
+app.use('/api/chats', chatsRoute);
 // Configuration des en-têtes CORS
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
