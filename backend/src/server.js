@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const tontineRoutes = require('./routes/tontine.routes'); // Importation des routes
-
+const chatsRoute=require('./routes/chats.routes')
 const app = express();
 
 // Configuration des options CORS
@@ -38,6 +38,8 @@ app.get('/', (req, res) => {
 // Utiliser les routes définies dans tontine.routes.js
 app.use('/api/tontines', tontineRoutes);
 
+//utiliser les routes définies dans chats.routes.js
+app.use('/api/chats', chatsRoute);
 // Configuration des en-têtes CORS
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
