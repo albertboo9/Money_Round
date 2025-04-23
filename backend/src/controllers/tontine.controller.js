@@ -125,7 +125,7 @@ exports.createTontine = async (req, res) => {
       `Votre tontine "${tontineData.name}" a été créée avec succès.`
     );
     //email notification
-   await NotificationService.sendEmailnotification(
+    await NotificationService.sendEmailnotification(
       "feukengbrunel555@gmail.com",
       "Bienvenue à MoneyRound",
       "tontine creer avec succee"
@@ -467,5 +467,3 @@ exports.updateTourStatus = async (req, res) => {
     });
   }
 };
-
-
