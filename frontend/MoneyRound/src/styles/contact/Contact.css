@@ -2,7 +2,8 @@
     background-color: var(--small-grey);
     overflow: hidden;
     padding: 10px;
-    }
+    width: 100%;
+    };
 
 /* Ca peut paraitre etre de la recopie par rapport a la landing page mais c'est pour eviter les conflit */
     #contactPage .second-view{

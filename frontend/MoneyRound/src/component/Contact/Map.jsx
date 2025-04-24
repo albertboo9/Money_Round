@@ -1,17 +1,21 @@
 //importation de feuille de style
-import "../../styles/Contact/Map.css";
+import "../../styles/contact/Map.css";
 
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
+import marketIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import marketIcon from 'leaflet/dist/images/marker-icon.png';
+import marketShadow from 'leaflet/dist/images/marker-shadow.png';
+
 // Fixer l'icône du marqueur
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-    iconUrl: require('leaflet/dist/images/marker-icon.png'),
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+    iconRetinaUrl: marketIcon2x,
+    iconUrl: marketIcon,
+    shadowUrl: marketShadow,
 });
 
 function MapComponent() {
