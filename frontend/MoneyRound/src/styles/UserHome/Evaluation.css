@@ -3,8 +3,7 @@
     justify-content: space-around;
     }
     .evaluation .box-user-information{
-        width: 300px;
-        padding: 10px;
+        align-items: center;
         }
         .evaluation .box-user-information .body-evaluation{
             color: var(--primary-color);

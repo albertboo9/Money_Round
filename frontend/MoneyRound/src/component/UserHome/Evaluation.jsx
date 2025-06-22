@@ -8,11 +8,17 @@ import star from "../../images/iconic/Star 13.svg";
 import starFull from "../../images/iconic/Star 8.svg";
 import trophy from "../../images/iconic/noto_trophy.svg";
 
-function Evaluation({note,ranking}){
+//importation de hook et autre 
+import { useState } from "react";
+function Evaluation({note,ranking,solde,inTontine}){
     const noteInt=parseInt(note)
     const numStar=parseInt(noteInt/20)
     const starArray=[]
     let x=0
+    const [isBlur,setIsBlur]=useState(true)
+    let viewIco=""
+    let blurStyle={filter:"blur(0.4)"}
+    const total= parseFloat(solde)+parseFloat(inTontine)
     for (let i = 0; i < numStar; i++) {
         starArray.push(starFull)
         x++
@@ -23,6 +29,19 @@ function Evaluation({note,ranking}){
     }
     return (
     <section className="evaluation">
+        <div className="box-user-information">
+            <div className="title-evaluation">
+                <div>Solde</div>
+                <div className="material-icons"></div>
+            </div>
+            <div className="body-evaluation" > 
+                {solde}
+            </div>
+            <div className="end-evaluation">
+                En tontine: <span>{inTontine} </span>
+                Tolal: <span>{total} </span>
+            </div>
+        </div>
         <div className="box-user-information">
             <div className="title-evaluation">
                 <img src={fire} alt="" />

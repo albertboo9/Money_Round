@@ -1,29 +1,42 @@
-#headerHome{
-    width: 100%;
+#headerHome {
+    width: calc(100% - var(--small-size));
     height: 70px;
     background-color: var(--background-color);
     z-index: 1000;
     display: flex;
     align-items: center;
-    border-radius: 0px 0px 10px 10px;
+    justify-content: space-between;
     box-shadow: 1px 1px 10px 1px gray;
     position: sticky;
-    top:0px
+    top: 0px;
+    margin-left: var(--small-size);
     }
-
+    #headerHome .head-salutation{
+        font-size: 20px;
+        transform: translateX(5px);
+    }
     #headerHome .search-bar{
         width: 40%;
-        transform: translateX(60%);
         display: flex;
         align-items: center;
         height: 40px;
         }
+        #headerHome .search-bar form{
+            width: 100%;
+        }
+        #headerHome .search-bar form>div{
+            width: 100%;
+            display: grid;
+            grid-template-columns: auto;
+        }
         #headerHome .search-bar input{
             border-radius:7px 0px 0px 7px ;
-            vertical-align: middle;
-            width: 400px;
+            width: 100%;
             height: 35px;
             text-align: right;
+            border: solid 1px var(--primary-color);
+            grid-row:1 ;
+            grid-column: 1;
         }
         #headerHome .search-bar button{
             width: 35px;
@@ -33,18 +46,22 @@
             cursor: pointer;
             border: none;
             border-radius:0px 7px 7px 0px ;
-            vertical-align: middle;
-        }
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            grid-row:1 ;
+            grid-column: 2;
+            }
     #headerHome .user-place-header{
-        position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+            transform: translateX(-20px);
         }  
         #headerHome .user-place-header span{
             color: var(--primary-color);
             font-size: 40px;
-        } 
+        }
+        #headerHome .user-place-header .notif{
+            transform: translateX(-20px);
+        }
 @media screen and (prefers-color-scheme: dark){
     #headerHome{
         color: var(--text-color);

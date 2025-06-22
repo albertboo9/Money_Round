@@ -1,10 +1,13 @@
-
+:root{
+    --small-size:50px;
+    --large-size:150px;
+}
 html, body {
     overflow-x: hidden;
   }
   
 *,*:link,*::placeholder{
-    font-family: "berlin sans fb";
+    font-family: "satoshi";
 }
 .classic-btn{
     border:none;

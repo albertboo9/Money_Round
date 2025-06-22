@@ -7,7 +7,8 @@
         border-radius: 7px;
         display: flex;
         flex-direction: column;
-        align-items: center;
+        padding: 10px;
+        width: auto;
         }
         #userHome .box-user-information .title-evaluation{
             display: flex;

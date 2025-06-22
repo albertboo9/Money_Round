@@ -1,8 +1,3 @@
-:root{
-    --small-size:50px;
-    --large-size:150px;
-}
-
 
 .small-sidebar,.large-sidebar{
     background-color: var(--accent-color);

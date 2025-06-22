@@ -8,12 +8,27 @@
     }
 
     .nav-side-bar .message{
-        align-self: flex-start;
-        margin-left: 50px;
+        position: absolute;
+        height: 40px;
+        width: 100px;
+        margin-left: 37px;
+        padding-left: 5px;
         background-color: white;
         box-shadow: 1px 1px 10px 1px gray;
-        padding: 5px 10px;
         border-bottom-right-radius: 7px;
         border-top-right-radius: 7px;
         color: black !important;
+        align-items: center;
+        font-size:18px;
+        animation-duration: 0.2s;
+        animation-timing-function: ease-in;
     }
+
+@keyframes navSurvolAnnim {
+    from{
+        transform: translateY(-10px);
+    }
+    to{
+        transform: translateY(0px);
+    }
+}
