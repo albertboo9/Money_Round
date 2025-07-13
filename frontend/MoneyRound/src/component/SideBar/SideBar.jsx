@@ -1,44 +1,54 @@
-//importation de feuille de style
-import "../../styles/SideBar/SideBar.css";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { FaBars } from "react-icons/fa";
+import { menuItems } from "../data";
+import NavItem from "./NavItem";
+import { Tooltip } from "react-tooltip";
 
-//importation des composants
-import { useRef, useState } from "react";
-import NavSideBar from "./NavSideBar";
-import logo from "../../images/logo/logo sans nom.svg";
+const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div         style={{
+          background: "var(--background-color)",
+          color: "var(--text-color)",
+        }} >
+      <motion.div
+        initial={{ width: 60 }}
+        animate={{ width: isOpen ? 240 : 60 }}
+        transition={{ duration: 0.4 }}
+        // On force ici l'utilisation des variables CSS personnalisées
+        className="p-4 flex flex-col gap-6 h-screen bg-[var(--background-color)] text-[var(--text-color)]"
+        style={{
+          background: "var(--background-color)",
+          color: "var(--text-color)",
+        }}
+      >
+        <button
+          className="text-xl mb-4"
+          style={{ color: "var(--text-color)" }}
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
+          <FaBars />
+        </button>
+        <nav
+          className={`flex flex-col gap-11 h-full overflow-y-auto ${
+            !isOpen && "no-scrollbar"
+          }`}
+        >
+          {menuItems.map((item, index) => (
+            <NavItem
+              key={index}
+              icon={item.icon}
+              text={item.text}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+            />
+          ))}
+        </nav>
+      </motion.div>
+      {!isOpen && <Tooltip id="sidebar-tooltip" offset={40} />}
+    </div>
+  );
+};
 
-
-function SideBar() {
-    const [visible,setVisble]=useState(false)
-    const [size,setSize]=useState("small-sidebar")
-    const sideBarRef=useRef(null)
-    const open=()=>{
-        if (size==="small-sidebar") {
-            setSize("large-sidebar")     
-            sideBarRef.current.style.animationName="open-sidebar"  
-            setVisble(true)     
-        }
-        else{
-            setSize("small-sidebar")
-            sideBarRef.current.style.animationName="close-sidebar"  
-            setVisble(false)
-        }
-    }
-    return( <aside id="sideBar" className={size} ref={sideBarRef}>
-        <img src={logo} alt="" width="40px" height="40px" />
-        <div className="menu-icon-large" onClick={open}>
-            <span className="material-icons">menu_open</span>
-        </div>
-        <div className="menu-icon" onClick={open}>
-            <span className="material-icons">menu</span>
-        </div>
-        <NavSideBar viewChild={visible} materialIcon="home" message="Home">Home</NavSideBar>
-        <NavSideBar viewChild={visible} materialIcon="settings" message="Setting">Home</NavSideBar>
-        <NavSideBar viewChild={visible} materialIcon="download" message="Retirer">Home</NavSideBar>
-        <NavSideBar viewChild={visible} materialIcon="group" message="Mes tontine">Home</NavSideBar>
-        <div className="end">
-            <NavSideBar viewChild={visible} materialIcon="logout" message="deconnexion">Se deconnecter</NavSideBar>
-        </div>
-
-    </aside>);
-}
-export default SideBar
+export default Sidebar;
