@@ -2,18 +2,17 @@
 import "../styles/UserHome/UserHome.css";
 
 //importation des composants
-import SideBar from "../component/SideBar/SideBar";
-import Header from "../component/Header/Header";
-import Evaluation from "../component/UserHome/Evaluation";
+import Sidebar from "../component/SideBar/SideBar";
 
-function UserHome(){
-    return(<>
-    <Header></Header>
-    <SideBar/>
-    <main id="userHome">
-        <Evaluation note={87} ranking={1}/>
+
+function UserHome() {
+  return (
+    <main>
+      <Sidebar>
+        
+      </Sidebar>
     </main>
-    </>);
+  );
 }
 
-export default UserHome
+export default UserHome;
