@@ -2,8 +2,6 @@ import 'boxicons'
 import '../boxicons-master/css/boxicons.css'
 import '../styles/slidebar.css'
 import "../styles/general.css"
-import userp from './user.jpg'
-import Notification from '../composants/notification'
 import { useState } from "react";
 import logo from './logo2.png';
 import { Outlet} from 'react-router-dom'
@@ -50,72 +48,6 @@ Onglet.propTypes = {
   icoView: PropTypes.string,
 };
   function SlideBar() {
-    const notifications = [
-      {
-        id: 1,
-        sender: 'Albert',
-        message: 'albert veut rejoindre la tontine makepe',
-        link: '#',
-        linkText: '404 Error Room',
-        avatar: {userp},
-        isRead: false,
-      },
-      {
-        id: 1,
-        sender: 'Tene',
-        message: 'added your Pen to their Collection',
-        link: '#',
-        linkText: '404 Error Room',
-        avatar: 'https://i.pravatar.cc/40?img=8',
-        isRead: false,
-      },
-      {
-        id: 1,
-        sender: 'Tene',
-        message: 'added your Pen to their Collection',
-        link: '#',
-        linkText: '404 Error Room',
-        avatar: 'https://i.pravatar.cc/40?img=8',
-        isRead: false,
-      },
-      {
-        id: 1,
-        sender: 'Tene',
-        message: 'added your Pen to their Collection',
-        link: '#',
-        linkText: '404 Error Room',
-        avatar: 'https://i.pravatar.cc/40?img=8',
-        isRead: false,
-      },
-      {
-        id: 1,
-        sender: 'Tene',
-        message: 'added your Pen to their Collection',
-        link: '#',
-        linkText: '404 Error Room',
-        avatar: 'https://i.pravatar.cc/40?img=8',
-        isRead: true,
-      },
-      {
-        id: 1,
-        sender: 'Tene',
-        message: 'added your Pen to their Collection',
-        link: '#',
-        linkText: '404 Error Room',
-        avatar: 'https://i.pravatar.cc/40?img=8',
-        isRead:true,
-      },
-      {
-        id: 1,
-        sender: 'Tene',
-        message: 'added your Pen to their Collection',
-        link: '#',
-        linkText: '404 Error Room',
-        avatar: 'https://i.pravatar.cc/40?img=8',
-        isRead:true,
-      },
-      // ... other notifications
-    ];
 /*     onAuthStateChanged(auth, (user)=>{
         if(!user){
           navigate("/login");
@@ -171,10 +103,6 @@ Onglet.propTypes = {
             </div>
         </div>
         <div className='center-side'>
-          <div className='center-top'>
-            <div className='search'> </div>
-          <Notification count={notifications.filter((n) => !n.isRead).length} notifications={notifications} />
-          </div>
           <div className='center-center'>
             <Outlet/>
           </div>
