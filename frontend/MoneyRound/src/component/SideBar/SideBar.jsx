@@ -1,54 +1,187 @@
+import 'boxicons'
+import '../boxicons-master/css/boxicons.css'
+import '../styles/slidebar.css'
+import "../styles/general.css"
+import userp from './user.jpg'
+import Notification from '../composants/notification'
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { FaBars } from "react-icons/fa";
-import { menuItems } from "../data";
-import NavItem from "./NavItem";
-import { Tooltip } from "react-tooltip";
+import logo from './logo2.png';
+import { Outlet} from 'react-router-dom'
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <div         style={{
-          background: "var(--background-color)",
-          color: "var(--text-color)",
-        }} >
-      <motion.div
-        initial={{ width: 60 }}
-        animate={{ width: isOpen ? 240 : 60 }}
-        transition={{ duration: 0.4 }}
-        // On force ici l'utilisation des variables CSS personnalisées
-        className="p-4 flex flex-col gap-6 h-screen bg-[var(--background-color)] text-[var(--text-color)]"
-        style={{
-          background: "var(--background-color)",
-          color: "var(--text-color)",
-        }}
-      >
-        <button
-          className="text-xl mb-4"
-          style={{ color: "var(--text-color)" }}
-          onClick={() => setIsOpen((prev) => !prev)}
-        >
-          <FaBars />
-        </button>
-        <nav
-          className={`flex flex-col gap-11 h-full overflow-y-auto ${
-            !isOpen && "no-scrollbar"
-          }`}
-        >
-          {menuItems.map((item, index) => (
-            <NavItem
-              key={index}
-              icon={item.icon}
-              text={item.text}
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-            />
-          ))}
-        </nav>
-      </motion.div>
-      {!isOpen && <Tooltip id="sidebar-tooltip" offset={40} />}
+import PropTypes from 'prop-types';
+
+function Onglet({classIcon,text,view,children,icoView}){
+    const [survol,setSurvol]=useState("none")
+    const isSurvol=(a)=>{
+      if (view=== false) {
+        setSurvol(a)
+      } else {
+        setSurvol("none")
+      }
+      
+    }
+    return (
+    <div className="nav-list"> 
+      <span style={{display:icoView}}>
+        <div className= "slide-icon" onMouseEnter={()=>isSurvol("block")} onMouseOut={()=>isSurvol("none")} >
+          <div className={classIcon} 
+                onMouseEnter={()=>isSurvol("block")}
+                onMouseOut={()=>isSurvol("none")}
+                style={{
+                  position:"relative",
+                  top:"50%",
+                  transform:"translateY(-50%)"
+                }}  
+          > 
+          </div>
+        </div>
+      </span >
+      <span ><div className="text-onglet">{view===true ? children : ""}</div></span >
+      <div className="slide-boxHidden" style={{display: survol}}> <div className="text-onglet">{text}</div></div> 
     </div>
-  );
-};
+    );
+}
 
-export default Sidebar;
+Onglet.propTypes = {
+  classIcon: PropTypes.string,
+  text: PropTypes.string,
+  view: PropTypes.bool,
+  children: PropTypes.node,
+  icoView: PropTypes.string,
+};
+  function SlideBar() {
+    const notifications = [
+      {
+        id: 1,
+        sender: 'Albert',
+        message: 'albert veut rejoindre la tontine makepe',
+        link: '#',
+        linkText: '404 Error Room',
+        avatar: {userp},
+        isRead: false,
+      },
+      {
+        id: 1,
+        sender: 'Tene',
+        message: 'added your Pen to their Collection',
+        link: '#',
+        linkText: '404 Error Room',
+        avatar: 'https://i.pravatar.cc/40?img=8',
+        isRead: false,
+      },
+      {
+        id: 1,
+        sender: 'Tene',
+        message: 'added your Pen to their Collection',
+        link: '#',
+        linkText: '404 Error Room',
+        avatar: 'https://i.pravatar.cc/40?img=8',
+        isRead: false,
+      },
+      {
+        id: 1,
+        sender: 'Tene',
+        message: 'added your Pen to their Collection',
+        link: '#',
+        linkText: '404 Error Room',
+        avatar: 'https://i.pravatar.cc/40?img=8',
+        isRead: false,
+      },
+      {
+        id: 1,
+        sender: 'Tene',
+        message: 'added your Pen to their Collection',
+        link: '#',
+        linkText: '404 Error Room',
+        avatar: 'https://i.pravatar.cc/40?img=8',
+        isRead: true,
+      },
+      {
+        id: 1,
+        sender: 'Tene',
+        message: 'added your Pen to their Collection',
+        link: '#',
+        linkText: '404 Error Room',
+        avatar: 'https://i.pravatar.cc/40?img=8',
+        isRead:true,
+      },
+      {
+        id: 1,
+        sender: 'Tene',
+        message: 'added your Pen to their Collection',
+        link: '#',
+        linkText: '404 Error Room',
+        avatar: 'https://i.pravatar.cc/40?img=8',
+        isRead:true,
+      },
+      // ... other notifications
+    ];
+/*     onAuthStateChanged(auth, (user)=>{
+        if(!user){
+          navigate("/login");
+        }
+      }) */
+      const mail = sessionStorage.getItem("mail")
+
+    const [size,setSize]=useState("slidebar-small")
+    const [viewLogo,setViewLogo]=useState("none")
+    const [visible,setVisble]=useState(false)
+    const [classIco,setClassIco]=useState("menu")
+    const changeSize =()=>{
+      if (size === "slidebar-small") {
+        setSize("slidebar-large")
+        setVisble(true)
+        setViewLogo("block")
+        setClassIco("none")
+      } else {
+        setSize("slidebar-small")
+        setVisble(false)
+        setViewLogo("none")
+        setClassIco("menu")
+      }
+    }
+  
+    return (
+        <>
+        <div className={size} id="side-bar">
+           <p> <div onClick={changeSize} id="chevron"><box-icon  size="ms" color="white" name={classIco}></box-icon></div></p> 
+            <div style={{display:viewLogo}}>
+                <div className='side-top'> 
+               <img src={logo} alt="logo" className="logo"/>
+                { /* <td><Onglet classIcon="" text="" view={visible} icoView="none"></Onglet></td>*/}
+               <div onClick={changeSize} id="chevron"><box-icon color="white" name='menu-alt-right'></box-icon></div>
+               </div> 
+               <div className='name-login'>
+                  <p className='user-mail'>User: {mail}</p>
+                </div>
+            </div>
+            <div className='hid'>
+              <Onglet classIcon="bx bx-home" text="accueil" view={visible} >accueil</Onglet>
+
+              <Onglet classIcon="bx bx-bell" text="notifications" view={visible}>notifications</Onglet>
+              <Onglet classIcon="bx bx-grid-alt" text="tontines" view={visible}>Mes tontines</Onglet>
+              <Onglet classIcon="bx bx-wallet" text="solde" view={visible}>Mon solde</Onglet> 
+              <Onglet classIcon="bx bx-transfer-alt" text="transactions" view={visible}>Transactions</Onglet> 
+              <Onglet classIcon="bx bx-cog" text="paramètres" view={visible}>parametre</Onglet>
+              <Onglet classIcon="bx bx-plus" text="creer" view={visible}> creer une tontine</Onglet>
+              <Onglet classIcon="bx bx-globe" text="rejoindre" view={visible}> rejoindre une tontine</Onglet>
+              <div className="end">
+                <Onglet  classIcon="bx bx-door-open" text="deconnexion" view={visible}>Deconnexion</Onglet>
+              </div>
+            </div>
+        </div>
+        <div className='center-side'>
+          <div className='center-top'>
+            <div className='search'> </div>
+          <Notification count={notifications.filter((n) => !n.isRead).length} notifications={notifications} />
+          </div>
+          <div className='center-center'>
+            <Outlet/>
+          </div>
+        
+        </div>
+        </>
+    );
+  }
+
+export default SlideBar
