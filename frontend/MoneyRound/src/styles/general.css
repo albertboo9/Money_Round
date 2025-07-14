@@ -59,3 +59,31 @@ main .second-view .second-text{
     }
 }
 
+@font-face {
+    font-family: "Chakra Petch";
+    src:
+         url("chakra/ChakraPetch-Regular.ttf") format("truetype");
+  }
+body{
+    font-family: Chakra Petch;
+  }
+
+.middle-position{
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.top-right-position{
+    top: 0px;
+    right: 0px;
+    position: absolute;
+}
+
+.middle-vertical-position{
+  top: 50%;
+  transform: translateY(-50%);
+}
+.bx-pencil{
+  cursor: pointer;
+}
+
