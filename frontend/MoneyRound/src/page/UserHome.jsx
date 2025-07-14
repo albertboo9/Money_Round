@@ -2,7 +2,7 @@
 import "../styles/UserHome/UserHome.css";
 
 //importation des composants
-import Sidebar from "../component/SideBar/SideBar";
+import Sidebar from "../component/SideBar";
 
 
 function UserHome() {
