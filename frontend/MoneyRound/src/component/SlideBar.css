@@ -1,0 +1,175 @@
+/* SlideBar.css */
+.mobile-menu-button {
+  transition: all 0.3s ease;
+  z-index: 1001;
+}
+
+.mobile-menu-button:active {
+  transform: scale(0.95);
+}
+
+.sidebar {
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    bottom: 0;
+  }
+  
+  .mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+  }
+  
+  main {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+}
+
+/* SlideBar.css */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  min-height: 60px;
+}
+
+.sidebar-logo {
+  transition: opacity 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .sidebar-header {
+    justify-content: space-between;
+  }
+  
+  .sidebar-logo {
+    margin-right: auto;
+  }
+}
+
+.sidebar {
+  --sidebar-expanded: 230px;
+  --sidebar-collapsed: 60px;
+  --sidebar-mobile: 0px;
+  
+  background: var(--accent-color);
+  color: var(--text-color);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 60px;
+}
+
+.sidebar-logo {
+  width: 40px;
+  height: 40px;
+}
+
+.toggle-button {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.toggle-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0.2rem;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  position: relative;
+  margin: 0.25rem 0;
+  transition: background-color 0.4s;
+  border-radius: 4px;
+}
+
+.sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-item i {
+  font-size: 1.2rem;
+  min-width: 24px;
+  color: var(--text-color);
+}
+
+.item-text {
+  margin-left: 1rem;
+  white-space: nowrap;
+  color: var(--text-color);
+}
+
+.item-tooltip {
+  position: absolute;
+  left: 50px;
+  background: var(--accent-color);
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  color: var(--text-color);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.sidebar-footer {
+  padding: 0.2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: black;
+  z-index: 999;
+  pointer-events: auto;
+}
+
+@media (min-width: 769px) {
+  .sidebar {
+    position: sticky;
+  }
+}
