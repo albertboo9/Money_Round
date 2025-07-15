@@ -8,7 +8,7 @@ function SearchBar({ value, onChange }) {
       initial={{ opacity: 0.8 }}
       whileFocus={{ opacity: 1 }}
     >
-      <i className="bx bx-search search-icon"></i>
+    
       <input
         type="text"
         placeholder="Rechercher..."
@@ -20,7 +20,7 @@ function SearchBar({ value, onChange }) {
   );
 }
 
-SearchBar.prototype = {
+SearchBar.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 }

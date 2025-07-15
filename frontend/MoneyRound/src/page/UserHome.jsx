@@ -1,17 +1,18 @@
 import "../styles/UserHome/UserHome.css";
 import Sidebar from "../component/SideBar";
 import Header from "../composants/Header";
+import {useState} from "react";
 
 import { Outlet } from "react-router-dom";
 
 function UserHome() {
+  const [isExpanded, setIsExpanded] = useState(false);
   return (
-    <div className="app-layout">
-      <Header />
+    <div className="app-layout" >
+      <Header isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
       <div className="content-container">
-          <Sidebar />
+        <Sidebar isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
         <main className="main-content">
-          {/* Votre contenu principal ira ici */}
           <Outlet />
         </main>
       </div>

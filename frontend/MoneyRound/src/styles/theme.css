@@ -1,7 +1,7 @@
 /* theme claire */
 :root{
     --primary-color:#5ceb70;
-    --secondary-color:#5c6df9;
+    --secondary-color:#5c9bf9;
     --accent-color:#269735;
     --background-color:white;
     --text-color:black;
@@ -18,9 +18,9 @@
 @media (prefers-color-scheme: dark) {
     :root{
         --primary-color:#5ceb70;
-        --secondary-color:#5c6df9;
+        --secondary-color:#050b61;
         --accent-color:#269735;
-        --background-color:#242424;
+        --background-color:#242424 ; /* #242424 */
         --text-color:white;
         --hover-color:#269735; 
         --error-color: #ce5e38;
