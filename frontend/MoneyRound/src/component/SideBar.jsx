@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import logo from "./logo2.png";
 import './SlideBar.css';
 
+// ... (Onglet component remains unchanged)
 function Onglet({ icon, text, isExpanded, onClick }) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -19,7 +20,6 @@ function Onglet({ icon, text, isExpanded, onClick }) {
         cursor: "pointer",
         position: "relative",
         backgroundColor: isHovered ? "rgba(255, 255, 255, 0.1)" : "transparent",
-     
         margin: "0.25rem 0",
         transition: "background-color 0.4s",
       }}
@@ -59,7 +59,6 @@ function Onglet({ icon, text, isExpanded, onClick }) {
                 left: "50px",
                 backgroundColor: "var(--accent-color)",
                 padding: "0.5rem 1rem",
-    
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                 zIndex: 10,
                 color: "var(--text-color)",
@@ -84,35 +83,48 @@ Onglet.propTypes = {
   isExpanded: PropTypes.bool.isRequired,
   onClick: PropTypes.func,
 };
+// End of Onglet component
 
-export default function SlideBar() {
-  const [isExpanded, setIsExpanded] = useState(false);
+export default function SlideBar({isExpanded, setIsExpanded}) {
   const [isMobile, setIsMobile] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(0); // Nouveau state pour la hauteur du header
   const navigate = useNavigate();
   const sidebarRef = useRef(null);
-  const menuButtonRef = useRef(null);
 
+  // Détecter la hauteur du header pour positionner la sidebar
   useEffect(() => {
-    const checkIfMobile = () => {
+    const headerElement = document.querySelector('.main-header'); // Assurez-vous que votre header a cette classe
+    if (headerElement) {
+      setHeaderHeight(headerElement.offsetHeight);
+    }
+
+    const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
+      if (headerElement) {
+        setHeaderHeight(headerElement.offsetHeight); // Mettre à jour si la hauteur du header change (ex: responsive)
+      }
     };
 
-    checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
-
+    window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener('resize', checkIfMobile);
+      window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, []); // Exécute une seule fois au montage pour la hauteur initiale, et gère les redimensionnements
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Ne pas fermer si on clique sur le bouton menu
-      if (menuButtonRef.current && menuButtonRef.current.contains(event.target)) {
-        return;
-      }
+      // Pour le mode mobile, si l'overlay est visible, il gère déjà le clic-outside.
+      // Pour le mode desktop, on veut que le clic en dehors de la sidebar la ferme,
+      // SAUF si le clic provient du bouton toggle du header.
       
-      if (isExpanded && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      const headerToggleButton = document.querySelector('.menu-toggle'); 
+
+      if (
+        isExpanded && 
+        sidebarRef.current && 
+        !sidebarRef.current.contains(event.target) && // Clic en dehors de la sidebar
+        (!headerToggleButton || !headerToggleButton.contains(event.target)) // ET pas sur le bouton toggle du header
+      ) {
         setIsExpanded(false);
       }
     };
@@ -121,7 +133,7 @@ export default function SlideBar() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isExpanded]);
+  }, [isExpanded, setIsExpanded]);
 
   const menuItems = [
     { icon: "bx-home", text: "Accueil", path: "/" },
@@ -135,34 +147,8 @@ export default function SlideBar() {
   ];
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "var(--background-color)" }}>
-      {/* Bouton menu mobile */}
-      {isMobile && (
-        <button
-          ref={menuButtonRef}
-          className="mobile-menu-button"
-          onClick={() => setIsExpanded(!isExpanded) }
-          style={{
-            position: "fixed",
-            left: "10px",
-            top: "10px",
-            zIndex: 1001,
-            marginTop:"0.5rem",
-            color: "var(--text-color)",
-            border: "none",
-            width: "40px",
-            height: "40px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "1.5rem",
-            cursor: "pointer",
-            visibility: isExpanded ? "hidden" : "visible",
-          }}
-        >
-          <i className={`bx ${isExpanded ? "bx-x" : "bx-menu"}`} />
-        </button>
-      )}
+    <div style={{ display: "flex", height: "80vh", backgroundColor: "var(--background-color)" }}>
+
 
       {/* Sidebar */}
       <motion.aside
@@ -170,10 +156,10 @@ export default function SlideBar() {
         style={{
           background: "var(--accent-color)",
           color: "var(--text-color)",
-          height: "100vh",
+          // Ajustements ici pour la hauteur et le positionnement en desktop
+          height: isMobile ? "100vh" : `calc(100vh - ${headerHeight}px)`, // Occupe la hauteur restante
           position: isMobile ? "fixed" : "sticky",
-          top: 0,
-          translateY: isMobile? 0 : '-4.9em',
+          top: isMobile ? 0 : headerHeight, // Commence sous le header en desktop
           left: 0,
           boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
           display: "flex",
@@ -183,78 +169,54 @@ export default function SlideBar() {
         }}
         animate={{
           width: isExpanded ? "230px" : isMobile ? "0px" : "60px",
-          opacity: isMobile && !isExpanded ? 0 : 1
+          x: isMobile && !isExpanded ? -230 : 0
         }}
         transition={{ duration: 0.4, ease: "easeInOut"}}
       >
-       
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: isExpanded ? "space-between" : isMobile ? "flex-end" : "center",
-            padding: "1rem",
-            marginBottom: "1rem",
-            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-            minHeight: "60px" 
-          }}
-        >
-          {isExpanded && (
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <img
-                src={logo}
-                alt="Logo MoneyRound"
-                style={{ 
-                  width: "40px", 
-                  height: "40px",
-                  display: isMobile ? "block" : "block" // Toujours visible si expanded
+        {/* Contenu du header de la sidebar, visible UNIQUEMENT en mode mobile */}
+        {isMobile && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: isExpanded ? "space-between" : "flex-end", // Pas besoin de centrer en mobile quand non expanded
+              padding: "1rem",
+              marginBottom: "1rem",
+              borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+              minHeight: "60px" 
+            }}
+          >
+            {isExpanded && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <img
+                  src={logo}
+                  alt="Logo MoneyRound"
+                  style={{ width: "40px", height: "40px", display: "block" }}
+                />
+              </motion.div>
+            )}
+            
+            {/* Bouton de FERMETURE pour mobile (visible si sidebar ouverte) */}
+            {isMobile && isExpanded && (
+              <button
+                onClick={() => setIsExpanded(false)}
+                style={{
+                  background: "none", border: "none", color: "var(--text-color)",
+                  cursor: "pointer", fontSize: "1.5rem", padding: "0.5rem",
+                  transition: "background-color 0.3s",
                 }}
-              />
-            </motion.div>
-          )}
-          
-          {/* Bouton de fermeture pour mobile */}
-          {isMobile && isExpanded && (
-            <button
-              onClick={() => setIsExpanded(false)}
-              style={{
-                background: "none",
-                border: "none",
-                color: "var(--text-color)",
-                cursor: "pointer",
-                fontSize: "1.5rem",
-                padding: "0.5rem",
-                transition: "background-color 0.3s",
-              }}
-            >
-              <i className="bx bx-x" />
-            </button>
-          )}
-
-          {/* Bouton toggle pour desktop */}
-          {!isMobile && (
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              style={{
-                background: "none",
-                border: "none",
-                color: "var(--text-color)",
-                cursor: "pointer",
-                fontSize: "1.5rem",
-                padding: "0.5rem",
-                transition: "background-color 0.3s",
-              }}
-            >
-              <i className={`bx ${isExpanded ? "bx-x" : "bx-menu"}`} />
-            </button>
-          )}
-        </div>
-
-        {/* Menu */}
+              >
+                <i className="bx bx-x" />
+              </button>
+            )}
+          </div>
+        )}
+        
+        {/* Menu (toujours présent) */}
         <nav style={{ flex: 1, display: "flex", flexDirection: "column", padding: "0.2rem" }}>
           {menuItems.map((item) => (
             <Onglet
@@ -276,7 +238,10 @@ export default function SlideBar() {
             icon="bx-log-out"
             text="Déconnexion"
             isExpanded={isExpanded}
-            onClick={() => console.log("Déconnexion")}
+            onClick={() => {
+                console.log("Déconnexion");
+                if (isMobile) setIsExpanded(false);
+            }}
           />
         </div>
       </motion.aside>
@@ -305,9 +270,19 @@ export default function SlideBar() {
       </AnimatePresence>
           <div style={{ 
       flex: 1,
-      marginLeft: isMobile ? 0 : isExpanded ? "230px" : "60px",
-      transition: "margin-left 0.3s ease"
-    }}></div>
+      marginLeft: isMobile ? 0 : (isExpanded ? "230px" : "60px"),
+      transition: "margin-left 0.3s ease",
+      // Ajustement de la hauteur du contenu principal pour éviter la scrollbar
+      minHeight: `calc(100vh - ${headerHeight}px)`, 
+      marginTop: isMobile ? 0 : headerHeight // Le contenu commence sous le header
+    }}>
+      {/* Ici le contenu principal de la page, par exemple votre <Outlet /> */}
+      </div>
     </div>
   );
 }
+
+SlideBar.propTypes = {
+  isExpanded: PropTypes.bool.isRequired,
+  setIsExpanded: PropTypes.func.isRequired,
+};

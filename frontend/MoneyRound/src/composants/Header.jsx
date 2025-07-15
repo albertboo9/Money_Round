@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import Notification from './Notifications';
 import SearchBar from './SearchBar';
+import LetterAvatars from './Avatar';
+import PropTypes from 'prop-types'
 
-export default function Header() {
+export default function Header({isExpanded, setIsExpanded}) {
   const [searchQuery, setSearchQuery] = useState('');
 
   
@@ -20,31 +21,33 @@ export default function Header() {
 
 
   return (
-    <header className="main-header">
+    <header className="main-header" >
       <div className="header-left">
-        <motion.button 
-          whileTap={{ scale: 0.95 }}
-          className="menu-button"
-          aria-label="Menu"
-         style={{visibility:"hidden"}}
-        >
-          <i className="bx bx-menu"></i>
-        </motion.button>
+        <button className="menu-toggle" onClick={() => setIsExpanded(!isExpanded)}>
+          <i className={`bx ${isExpanded ? "bx-x" : "bx-menu"}`}></i>
+        </button>
       </div>
 
-      <div className="header-center">
+      <div className="header-center" >
         <SearchBar 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
 
-      <div className="header-right">
+      <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap:2}}>
+       
         <Notification 
           count={3} 
           notifications={notificationData} 
         />
+         <LetterAvatars />
       </div>
     </header>
   );
 }
+
+Header.propTypes = {
+  isExpanded: PropTypes.bool.isRequired,
+  setIsExpanded: PropTypes.func.isRequired,
+};
