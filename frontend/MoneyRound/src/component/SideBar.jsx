@@ -1,115 +1,313 @@
 import 'boxicons'
 import '../boxicons-master/css/boxicons.css'
-import '../styles/slidebar.css'
-import "../styles/general.css"
-import { useState } from "react";
-import logo from './logo2.png';
-import { Outlet} from 'react-router-dom'
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import PropTypes from "prop-types";
+import logo from "./logo2.png";
+import './SlideBar.css';
 
-import PropTypes from 'prop-types';
+function Onglet({ icon, text, isExpanded, onClick }) {
+  const [isHovered, setIsHovered] = useState(false);
 
-function Onglet({classIcon,text,view,children,icoView}){
-    const [survol,setSurvol]=useState("none")
-    const isSurvol=(a)=>{
-      if (view=== false) {
-        setSurvol(a)
-      } else {
-        setSurvol("none")
-      }
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        padding: "0.5rem 1rem",
+        cursor: "pointer",
+        position: "relative",
+        backgroundColor: isHovered ? "rgba(255, 255, 255, 0.1)" : "transparent",
+     
+        margin: "0.25rem 0",
+        transition: "background-color 0.4s",
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
+    >
+      <i
+        className={`bx ${icon}`}
+        style={{
+          fontSize: "1.2rem",
+          minWidth: "24px",
+          color: "var(--text-color)",
+        }}
+      />
       
-    }
-    return (
-    <div className="nav-list"> 
-      <span style={{display:icoView}}>
-        <div className= "slide-icon" onMouseEnter={()=>isSurvol("block")} onMouseOut={()=>isSurvol("none")} >
-          <div className={classIcon} 
-                onMouseEnter={()=>isSurvol("block")}
-                onMouseOut={()=>isSurvol("none")}
-                style={{
-                  position:"relative",
-                  top:"50%",
-                  transform:"translateY(-50%)"
-                }}  
-          > 
-          </div>
-        </div>
-      </span >
-      <span ><div className="text-onglet">{view===true ? children : ""}</div></span >
-      <div className="slide-boxHidden" style={{display: survol}}> <div className="text-onglet">{text}</div></div> 
+      <AnimatePresence>
+        {isExpanded ? (
+          <motion.span
+            style={{
+              marginLeft: "1rem",
+              whiteSpace: "nowrap",
+              color: "var(--text-color)",
+            }}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            {text}
+          </motion.span>
+        ) : (
+          isHovered && (
+            <motion.div
+              style={{
+                position: "absolute",
+                left: "50px",
+                backgroundColor: "var(--accent-color)",
+                padding: "0.5rem 1rem",
+    
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                zIndex: 10,
+                color: "var(--text-color)",
+              }}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              {text}
+            </motion.div>
+          )
+        )}
+      </AnimatePresence>
     </div>
-    );
+  );
 }
 
 Onglet.propTypes = {
-  classIcon: PropTypes.string,
-  text: PropTypes.string,
-  view: PropTypes.bool,
-  children: PropTypes.node,
-  icoView: PropTypes.string,
+  icon: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  isExpanded: PropTypes.bool.isRequired,
+  onClick: PropTypes.func,
 };
-  function SlideBar() {
-/*     onAuthStateChanged(auth, (user)=>{
-        if(!user){
-          navigate("/login");
-        }
-      }) */
-      const mail = sessionStorage.getItem("mail")
 
-    const [size,setSize]=useState("slidebar-small")
-    const [viewLogo,setViewLogo]=useState("none")
-    const [visible,setVisble]=useState(false)
-    const [classIco,setClassIco]=useState("menu")
-    const changeSize =()=>{
-      if (size === "slidebar-small") {
-        setSize("slidebar-large")
-        setVisble(true)
-        setViewLogo("block")
-        setClassIco("none")
-      } else {
-        setSize("slidebar-small")
-        setVisble(false)
-        setViewLogo("none")
-        setClassIco("menu")
+export default function SlideBar() {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate();
+  const sidebarRef = useRef(null);
+  const menuButtonRef = useRef(null);
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkIfMobile);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Ne pas fermer si on clique sur le bouton menu
+      if (menuButtonRef.current && menuButtonRef.current.contains(event.target)) {
+        return;
       }
-    }
-  
-    return (
-        <>
-        <div className={size} id="side-bar">
-           <p> <div onClick={changeSize} id="chevron"><box-icon  size="ms" color="white" name={classIco}></box-icon></div></p> 
-            <div style={{display:viewLogo}}>
-                <div className='side-top'> 
-               <img src={logo} alt="logo" className="logo"/>
-                { /* <td><Onglet classIcon="" text="" view={visible} icoView="none"></Onglet></td>*/}
-               <div onClick={changeSize} id="chevron"><box-icon color="white" name='menu-alt-right'></box-icon></div>
-               </div> 
-               <div className='name-login'>
-                  <p className='user-mail'>User: {mail}</p>
-                </div>
-            </div>
-            <div className='hid'>
-              <Onglet classIcon="bx bx-home" text="accueil" view={visible} >accueil</Onglet>
+      
+      if (isExpanded && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setIsExpanded(false);
+      }
+    };
 
-              <Onglet classIcon="bx bx-bell" text="notifications" view={visible}>notifications</Onglet>
-              <Onglet classIcon="bx bx-grid-alt" text="tontines" view={visible}>Mes tontines</Onglet>
-              <Onglet classIcon="bx bx-wallet" text="solde" view={visible}>Mon solde</Onglet> 
-              <Onglet classIcon="bx bx-transfer-alt" text="transactions" view={visible}>Transactions</Onglet> 
-              <Onglet classIcon="bx bx-cog" text="paramètres" view={visible}>parametre</Onglet>
-              <Onglet classIcon="bx bx-plus" text="creer" view={visible}> creer une tontine</Onglet>
-              <Onglet classIcon="bx bx-globe" text="rejoindre" view={visible}> rejoindre une tontine</Onglet>
-              <div className="end">
-                <Onglet  classIcon="bx bx-door-open" text="deconnexion" view={visible}>Deconnexion</Onglet>
-              </div>
-            </div>
-        </div>
-        <div className='center-side'>
-          <div className='center-center'>
-            <Outlet/>
-          </div>
-        
-        </div>
-        </>
-    );
-  }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isExpanded]);
 
-export default SlideBar
+  const menuItems = [
+    { icon: "bx-home", text: "Accueil", path: "/" },
+    { icon: "bx-bell", text: "Notifications", path: "/notifications" },
+    { icon: "bx-grid-alt", text: "Mes Tontines", path: "/tontines" },
+    { icon: "bx-wallet", text: "Mon Solde", path: "/solde" },
+    { icon: "bx-transfer-alt", text: "Transactions", path: "/transactions" },
+    { icon: "bx-cog", text: "Paramètres", path: "/parametres" },
+    { icon: "bx-plus", text: "Créer une Tontine", path: "/creer-tontine" },
+    { icon: "bx-globe", text: "Rejoindre une Tontine", path: "/rejoindre" },
+  ];
+
+  return (
+    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "var(--background-color)" }}>
+      {/* Bouton menu mobile */}
+      {isMobile && (
+        <button
+          ref={menuButtonRef}
+          className="mobile-menu-button"
+          onClick={() => setIsExpanded(!isExpanded) }
+          style={{
+            position: "fixed",
+            left: "10px",
+            top: "10px",
+            zIndex: 1001,
+            marginTop:"0.5rem",
+            color: "var(--text-color)",
+            border: "none",
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "1.5rem",
+            cursor: "pointer",
+            visibility: isExpanded ? "hidden" : "visible",
+          }}
+        >
+          <i className={`bx ${isExpanded ? "bx-x" : "bx-menu"}`} />
+        </button>
+      )}
+
+      {/* Sidebar */}
+      <motion.aside
+        ref={sidebarRef}
+        style={{
+          background: "var(--accent-color)",
+          color: "var(--text-color)",
+          height: "100vh",
+          position: isMobile ? "fixed" : "sticky",
+          top: 0,
+          translateY: isMobile? 0 : '-4.9em',
+          left: 0,
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+          zIndex: 1000,
+        }}
+        animate={{
+          width: isExpanded ? "230px" : isMobile ? "0px" : "60px",
+          opacity: isMobile && !isExpanded ? 0 : 1
+        }}
+        transition={{ duration: 0.4, ease: "easeInOut"}}
+      >
+       
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: isExpanded ? "space-between" : isMobile ? "flex-end" : "center",
+            padding: "1rem",
+            marginBottom: "1rem",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+            minHeight: "60px" 
+          }}
+        >
+          {isExpanded && (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <img
+                src={logo}
+                alt="Logo MoneyRound"
+                style={{ 
+                  width: "40px", 
+                  height: "40px",
+                  display: isMobile ? "block" : "block" // Toujours visible si expanded
+                }}
+              />
+            </motion.div>
+          )}
+          
+          {/* Bouton de fermeture pour mobile */}
+          {isMobile && isExpanded && (
+            <button
+              onClick={() => setIsExpanded(false)}
+              style={{
+                background: "none",
+                border: "none",
+                color: "var(--text-color)",
+                cursor: "pointer",
+                fontSize: "1.5rem",
+                padding: "0.5rem",
+                transition: "background-color 0.3s",
+              }}
+            >
+              <i className="bx bx-x" />
+            </button>
+          )}
+
+          {/* Bouton toggle pour desktop */}
+          {!isMobile && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              style={{
+                background: "none",
+                border: "none",
+                color: "var(--text-color)",
+                cursor: "pointer",
+                fontSize: "1.5rem",
+                padding: "0.5rem",
+                transition: "background-color 0.3s",
+              }}
+            >
+              <i className={`bx ${isExpanded ? "bx-x" : "bx-menu"}`} />
+            </button>
+          )}
+        </div>
+
+        {/* Menu */}
+        <nav style={{ flex: 1, display: "flex", flexDirection: "column", padding: "0.2rem" }}>
+          {menuItems.map((item) => (
+            <Onglet
+              key={item.path}
+              icon={item.icon}
+              text={item.text}
+              isExpanded={isExpanded}
+              onClick={() => {
+                navigate(item.path);
+                if (isMobile) setIsExpanded(false);
+              }}
+            />
+          ))}
+        </nav>
+
+        {/* Footer (Déconnexion) */}
+        <div style={{ padding: "0.2rem", borderTop: "1px solid rgba(255, 255, 255, 0.2)" }}>
+          <Onglet
+            icon="bx-log-out"
+            text="Déconnexion"
+            isExpanded={isExpanded}
+            onClick={() => console.log("Déconnexion")}
+          />
+        </div>
+      </motion.aside>
+
+      {/* Overlay mobile */}
+      <AnimatePresence>
+        {isMobile && isExpanded && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "black",
+              zIndex: 999,
+              pointerEvents: "auto",
+            }}
+            onClick={() => setIsExpanded(false)}
+          />
+        )}
+      </AnimatePresence>
+          <div style={{ 
+      flex: 1,
+      marginLeft: isMobile ? 0 : isExpanded ? "230px" : "60px",
+      transition: "margin-left 0.3s ease"
+    }}></div>
+    </div>
+  );
+}
