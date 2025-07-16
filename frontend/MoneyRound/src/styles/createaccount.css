@@ -1,5 +1,5 @@
 body{
-    background-color: #f4f4f4;
+    background-color: var(--background-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow-x: hidden;
 }
@@ -12,15 +12,14 @@ body{
     position: absolute;
     top: 0;
     left: 0;
-    color: black;
+    color: var(--text-color);
     font-weight: bold;
 }
 .left{
    width: 50%;
    padding: 15px 0px 10px 30px;
-   background: linear-gradient(to right, #5ceb70 10%, #5c6df9 70%,#f4f4f4 55%);
+   background: var(--degrade);
    color: white;
-
 }
 .left .imag{
     display: flex;
@@ -53,7 +52,6 @@ body{
 }
 
 .right{
-    /* background-color: orange; */
     width: 50%;
     display: flex;
     flex-direction: column;
@@ -66,6 +64,7 @@ body{
     flex-direction: column;
     align-items: flex-start;
     font-size: 30px;
+    color: var(--primary-color);
 }
 .right .creerCompte{
     display: flex;
@@ -93,11 +92,11 @@ body{
     width: 90%;
     border-radius: 7px;
     height: 40px;
-    border: 1px solid black;
-    background-color: #f4f4f4;
+    border: 1px solid var(--medium-grey);
+    background-color: var(--background-color);
 }
 .right .creerCompte .formulaire form fieldset legend{
-    color: black;
+    color: var(--text-color);
     font-weight: 500;
 }
 .right .creerCompte .formulaire form fieldset input{
@@ -105,7 +104,8 @@ body{
     height: 100%;
     border: none;
     outline: none;
-    background-color: #f4f4f4;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 .right .creerCompte .formulaire form .submit{
     display: flex;
@@ -114,15 +114,24 @@ body{
     width: 95%;
     height: 40px;
     text-align: center;
-    background-color: #5ceb70;
+    background-color: var(--primary-color);
     color: white;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+.right .creerCompte .formulaire form .submit button:hover {
+    background-color: var(--hover-color);
 }
 .right .creerCompte .register{
     display: flex;
     justify-content: center;
+    color: var(--text-color);
 }
 .right .creerCompte .register a{
-    color: #5c6df9;
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: bold;
 }
 .right .espace{
     display: flex;
@@ -135,7 +144,7 @@ body{
 .right .espace .hr{
     height: 1px;
     width: 40%;
-    background-color: rgb(150, 133, 133);
+    background-color: var(--medium-grey);
 }
 .right .convliens{
     display: flex;
@@ -148,7 +157,7 @@ body{
     width: 48%;
     height: min-content;
     text-align: center;
-    box-shadow: 1px 4px 10px  rgb(168, 161, 161) ;
+    box-shadow: 1px 4px 10px var(--medium-grey);
     outline: none;
     transition: 0.5s ease-in-out;
     display: flex;
@@ -156,11 +165,14 @@ body{
     align-items: center;
     flex-direction: row;
     column-gap: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--medium-grey);
 }
 .right .convliens .google:hover, .right .facebook:hover{
     transform: scale(1.1);
     cursor: pointer;
-    border: green;
+    border-color: var(--primary-color);
 }
 .right .convliens .google img,.right .convliens .facebook img, .bouton img{
     height: 60%;
@@ -173,9 +185,8 @@ body{
     justify-content: start;
     font-style: italic;
     font-size: 15px;
-    /* background-color: #0e502c; */
-    /* color: red; */
 }
+
 @media(max-width: 1000px){
     .createAccount{
         flex-direction: column;
@@ -199,9 +210,7 @@ body{
         position: relative;
         font-size: 50px;
         font-weight: bold;
-        color: 
-        white;
-        background: linear-gradient(to left,#5fa881 30%, rgb(49, 192, 104),#0e502c );
+        background: linear-gradient(to left, var(--accent-color) 30%, var(--primary-color), var(--accent-color));
         background-size: 100% 200%;
         background-clip: text;
         color: transparent;
@@ -232,7 +241,6 @@ body{
         padding-left: 10px;
     }
     .right .convliens{
-        
         flex-direction: column;
         width: 92%;
         row-gap: 15px;
