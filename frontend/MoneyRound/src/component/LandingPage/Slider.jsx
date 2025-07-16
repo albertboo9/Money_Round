@@ -1,106 +1,157 @@
 import "../../styles/LandingPage/Slider.css";
 import { sliderImages } from "../../data";
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useMediaQuery } from "react-responsive";
 
 function Slider() {
   const [indexSlide, setIndexSlide] = useState(0);
-  const [indexPrev, setIndexPrev] = useState(sliderImages.length - 1);
-  const [indexNext, setIndexNext] = useState(1);
-  const eltRef = useRef([]);
+  const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
+  const [isHovered, setIsHovered] = useState(false);
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  const timerRef = useRef(null);
 
+  // Auto-advance slides
   useEffect(() => {
-    const timer = setInterval(() => {
-      nextSlide();
-    }, 8000);
-
-    return () => clearInterval(timer);
-  }, [indexSlide]);
+    if (!isHovered) {
+      timerRef.current = setInterval(() => {
+        nextSlide();
+      }, 5000);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [indexSlide, isHovered]);
 
   const nextSlide = () => {
-    setIndexPrev(indexSlide);
-    setIndexSlide((indexSlide + 1) % sliderImages.length);
-    setIndexNext((indexSlide + 2) % sliderImages.length);
+    setDirection(1);
+    setIndexSlide((prev) => (prev + 1) % sliderImages.length);
   };
 
-/*   const prevSlide = () => {
-    setIndexPrev(indexSlide);
-    setIndexSlide((indexSlide - 1 + sliderImages.length) % sliderImages.length);
-    setIndexNext(indexSlide);
-  }; */
+  const prevSlide = () => {
+    setDirection(-1);
+    setIndexSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
+  };
+
+  const goToSlide = (index) => {
+    setDirection(index > indexSlide ? 1 : -1);
+    setIndexSlide(index);
+  };
+
+  // Animation variants
+  const slideVariants = {
+    hidden: (direction) => ({
+      x: direction > 0 ? "100%" : "-100%",
+      opacity: 0
+    }),
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { duration: 0.8, ease: "easeInOut" }
+    },
+    exit: (direction) => ({
+      x: direction > 0 ? "-100%" : "100%",
+      opacity: 0,
+      transition: { duration: 0.8, ease: "easeInOut" }
+    })
+  };
+
+  const contentVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { staggerChildren: 0.1, delayChildren: 0.3 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 }
+  };
 
   return (
-    <section className="big-container-slider">
-      <section className="slider" id="slider">
-        <div className="slider-wrapper">
-          {sliderImages.map((image, index) => (
-            <motion.div
-              key={"slide" + index}
-              className="slider-slide"
-              ref={(el) => (eltRef.current[index] = el)}
-              initial={{ opacity: 0, x: index === indexSlide ? 100 : -100 }}
-              animate={{
-                opacity: index === indexSlide ? 1 : 0,
-                x: index === indexSlide ? 0 : -100,
-              }}
-              transition={{ duration: 0.8, ease: "easeInOut" }}
+    <section 
+      className="slider-container"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="slider-wrapper">
+        <AnimatePresence custom={direction} initial={false}>
+          <motion.div
+            key={indexSlide}
+            className="slider-slide"
+            custom={direction}
+            variants={slideVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <img 
+              src={sliderImages[indexSlide].url} 
+              alt={sliderImages[indexSlide].title} 
+              className="slider-image" 
+              loading="lazy"
+            />
+            
+            <motion.div 
+              className="slider-content"
+              variants={contentVariants}
+              initial="hidden"
+              animate="visible"
             >
-              <img src={image.url} alt="" className="slider-image" />
-              <motion.div
-                className="info-slider"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
+              <motion.h2 className="slider-title" variants={itemVariants}>
+                {sliderImages[indexSlide].title}
+              </motion.h2>
+              
+              <motion.p className="slider-caption" variants={itemVariants}>
+                {sliderImages[indexSlide].caption}
+              </motion.p>
+              
+              <motion.a 
+                href="/create-account" 
+                className="slider-button"
+                variants={itemVariants}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <motion.h2
-                  className="title"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
+                <motion.span
+                  animate={{ y: [0, -5, 0] }}
+                  transition={{
+                    repeat: Infinity,
+                    repeatType: "mirror",
+                    duration: 1.5,
+                    ease: "easeInOut",
+                  }}
                 >
-                  {image.title}
-                </motion.h2>
-                 <a href="/create-account" style={{
-                  textDecoration: "none", color: "inherit", 
-                 }}>
-                <motion.p
-                  className="caption"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
-                >
-                  {image.caption}
-                </motion.p>
-               
-                  <motion.button
-                    className="classic-btn floating-button"
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{
-                      repeat: Infinity,
-                      repeatType: "mirror",
-                      duration: 1.5,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <div>Get Free Now</div>
-                    <span className="material-icons">outbound</span>
-                  </motion.button>
-                </a>
-              </motion.div>
+                  Get Free Now
+                  <span className="material-icons">arrow_right_alt</span>
+                </motion.span>
+              </motion.a>
             </motion.div>
-          ))}
-        </div>
+          </motion.div>
+        </AnimatePresence>
+
+        {!isMobile && (
+          <>
+            <button className="slider-nav prev" onClick={prevSlide} aria-label="Previous slide">
+              <span className="material-icons">chevron_left</span>
+            </button>
+            <button className="slider-nav next" onClick={nextSlide} aria-label="Next slide">
+              <span className="material-icons">chevron_right</span>
+            </button>
+          </>
+        )}
 
         <div className="slider-pagination">
           {sliderImages.map((_, i) => (
-            <nav
+            <button
               key={i}
-              className={i === indexSlide ? "current-index" : "other-index"}
-              onClick={() => setIndexSlide(i)}
-            ></nav>
+              className={`slider-dot ${i === indexSlide ? 'active' : ''}`}
+              onClick={() => goToSlide(i)}
+              aria-label={`Go to slide ${i + 1}`}
+            />
           ))}
         </div>
-      </section>
+      </div>
     </section>
   );
 }

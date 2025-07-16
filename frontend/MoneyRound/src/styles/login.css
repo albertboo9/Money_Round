@@ -1,9 +1,11 @@
-body{
-    background-color: #f4f4f4;
+body {
+    background-color: var(--background-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow-x: hidden;
+    color: var(--text-color);
 }
-.login{
+
+.login {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -12,113 +14,152 @@ body{
     position: absolute;
     top: 10%;
     left: 0;
-    /* background-color: #f4f4f4; */
 }
-.leftpart{
-    /* background-color: yellow; */
+
+.leftpart {
     width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
 }
-.leftpart img{
+
+.leftpart img {
     width: 85%;
     height: 90%;
+    max-width: 600px;
 }
-.rightpart{
-    /* background-color: orange; */
+
+.rightpart {
     width: 50%;
     display: flex;
     flex-direction: column;
     row-gap: 10px;
     padding-left: 40px;
 }
-.rightpart .greetings{
+
+.rightpart .greetings {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: 2rem;
 }
-.rightpart .greetings .bienvenue{
+
+.rightpart .greetings .bienvenue {
     font-weight: bold;
     font-size: 20px;
+    color: var(--text-color);
 }
-.rightpart .greetings .nomapp{
-    color: #5ceb70;
+
+.rightpart .greetings .nomapp {
+    color: var(--primary-color);
     font-weight: bolder;
     font-size: xx-large;
 }
-.rightpart .connexion{
+
+.rightpart .connexion {
     display: flex;
     flex-direction: column;
     row-gap: 20px;
 }
-.rightpart .connexion .convliens{
+
+.rightpart .connexion .convliens {
     display: flex;
     flex-direction: column;
     row-gap: 15px;
 }
-.rightpart .connexion .convliens .google, .rightpart .connexion .convliens .facebook{
+
+.rightpart .connexion .convliens .google,
+.rightpart .connexion .convliens .facebook {
     width: 90%;
     height: 50px;
     text-align: center;
-    box-shadow: 1px 4px 10px  rgb(168, 161, 161) ;
+    box-shadow: 1px 4px 10px var(--medium-grey);
     outline: none;
-    /* transition: 0.5s ease-in-out; */
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: row;
     column-gap: 20px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--medium-grey);
+    border-radius: 4px;
+    transition: all 0.3s;
 }
-.rightpart .connexion .convliens .google:hover, .rightpart .connexion .convliens .facebook:hover{
-    /* transform: scale(1.1); */
+
+.rightpart .connexion .convliens .google:hover,
+.rightpart .connexion .convliens .facebook:hover {
     cursor: pointer;
-    border: #5ceb70;
+    border-color: var(--primary-color);
 }
-.rightpart .connexion .convliens .google img,.rightpart .connexion .convliens .facebook img, .bouton img{
+
+.rightpart .connexion .convliens .google img,
+.rightpart .connexion .convliens .facebook img,
+.bouton img {
     height: min-content;
     width: 5%;
 }
-.rightpart .connexion .espace{
+
+.rightpart .connexion .espace {
     display: flex;
     flex-direction: row;
     column-gap: 50px;
     justify-content: flex-start;
     align-items: center;
     width: 90%;
+    color: var(--text-color);
 }
-.rightpart .connexion .espace .hr{
+
+.rightpart .connexion .espace .hr {
     height: 1px;
     width: 40%;
-    background-color: rgb(150, 133, 133);
+    background-color: var(--medium-grey);
 }
-.rightpart .connexion .convmails form{
+
+.rightpart .connexion .convmails form {
     display: flex;
     flex-direction: column;
     row-gap: 10px;
 }
-.rightpart .connexion .convmails .email, .rightpart .connexion .convmails .password{
+
+.rightpart .connexion .convmails .email,
+.rightpart .connexion .convmails .password {
     display: flex;
     flex-direction: row;
-    background-color: #cec5c5;
+    background-color: var(--small-grey);
     column-gap: 20px;
     width: 90%;
     border-radius: 5px;
     height: 50px;
     align-items: center;
     padding-left: 5px;
-}
-.rightpart .connexion .convmails .email input, .rightpart .connexion .convmails .password input{
-    border: none;
-    outline: none;
+    border: 1px solid var(--medium-grey);
 }
 
-.rightpart .connexion .convmails .email .icone, .rightpart .connexion .convmails .password .icone{
+.rightpart .connexion .convmails .email input,
+.rightpart .connexion .convmails .password input {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: var(--text-color);
+    width: 100%;
+}
+
+.rightpart .connexion .convmails .email .icone,
+.rightpart .connexion .convmails .password .icone {
     height: 50%;
     width: 6%;
 }
-.rightpart .connexion .convmails .email .icone img, .rightpart .connexion .convmails .password .icone img{
+
+.rightpart .connexion .convmails .email .icone img,
+.rightpart .connexion .convmails .password .icone img {
     width: 100%;
     height: 100%;
 }
-.rightpart .connexion .convmails .email .enterEmail, .rightpart .connexion .convmails .password .enterPassword{
+
+.rightpart .connexion .convmails .email .enterEmail,
+.rightpart .connexion .convmails .password .enterPassword {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -126,58 +167,76 @@ body{
     width: 79%;
     height: 100%;
 }
-.rightpart .connexion .convmails .email label, .rightpart .connexion .convmails .password label{
+
+.rightpart .connexion .convmails .email label,
+.rightpart .connexion .convmails .password label {
     width: 98%;
     height: 30%;
     text-align: start;
     font-size: 11px;
-    /* background-color: brown; */
+    color: var(--text-color);
 }
-.rightpart .connexion .convmails .email .enterEmail input, .rightpart .connexion .convmails .password .enterPassword input{
-    width: 98%;
-    height: 70%;
-    background-color: #cec5c5;
-    border: none;
-}
-.rightpart .connexion .convmails .password .bouton{
+
+.rightpart .connexion .convmails .password .bouton {
     height: 25px;
     width: 30px;
     padding: 20px;
-    /* background-color: tomato; */
+    cursor: pointer;
 }
-.rightpart .connexion .convmails .password .bouton img{
+
+.rightpart .connexion .convmails .password .bouton img {
     height: 100%;
     width: 100%;
 }
-.rightpart .connexion .convmails .forgotPass{
+
+.rightpart .connexion .convmails .forgotPass {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     width: 91%;
+    color: var(--text-color);
 }
-.rightpart .connexion .convmails .forgotPass a{
-    color: #5ceb70;
-}
-.rightpart .connexion .convmails .submit{
-    display: flex;
 
+.rightpart .connexion .convmails .forgotPass a {
+    color: var(--primary-color);
+    text-decoration: none;
 }
-.rightpart .connexion .convmails .submit button{
+
+.rightpart .connexion .convmails .submit {
+    display: flex;
+}
+
+.rightpart .connexion .convmails .submit button {
     width: 90%;
     height: 40px;
     text-align: center;
-    background-color: #5ceb70;
+    background-color: var(--primary-color);
     color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
-.rightpart .connexion .register{
+
+.rightpart .connexion .convmails .submit button:hover {
+    background-color: var(--hover-color);
+}
+
+.rightpart .connexion .register {
     display: flex;
     justify-content: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+}
 
+.rightpart .connexion .register a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
 }
-.rightpart .connexion .register a{
-    color: #5ceb70;
-}
-.errors{
+
+.errors {
     height: 10px;
     display: flex;
     align-items: start;
@@ -186,40 +245,32 @@ body{
     font-size: 15px;
 }
 
-@media(max-width: 1000px){
-    body{
-        overflow-x: hidden;
-        background-color: black;
-        /* box-sizing: border-box; */
-        /* height: auto; */
-        display: block;
-        /* padding: 0px; */
+@media (max-width: 1000px) {
+    body {
+        background-color: var(--background-color);
     }
-    .login{
-        display:flex ;
+
+    .login {
         flex-direction: row;
-        /* overflow-y: hidden; */
         width: 100vw;
         height: 100vh;
-        /* position: absolute; */
         top: 0;
         left: 0;
-        /* align-items: center; */
     }
-    .leftpart{
+
+    .leftpart {
         display: none;
         width: 0%;
     }
-    .rightpart{
 
-        /* width: max-content; */
+    .rightpart {
         padding-left: 0px;
         width: 100%;
-        background-color: #f4f4f4;
         row-gap: 20px;
     }
-    .rightpart .greetings{
-        background: linear-gradient(135deg, #02490e, #54fc11, #20580a, #3d971a );
+
+    .rightpart .greetings {
+        background: linear-gradient(135deg, var(--accent-color), var(--primary-color), var(--accent-color), var(--primary-color));
         padding: 40px 20px;
         border-bottom-left-radius: 50% 50px;
         border-bottom-right-radius: 90% 100px;
@@ -227,20 +278,24 @@ body{
         color: white;
         height: 30%;
     }
-    .rightpart .greetings .bienvenue{
+
+    .rightpart .greetings .bienvenue {
         font-size: 45px;
     }
-    .rightpart .greetings .nomapp{
+
+    .rightpart .greetings .nomapp {
         color: white;
         font-weight: bolder;
         font-size: 50px;
     }
-    .rightpart .connexion{
-       padding-left: 15px;
-       font-size: 17px;
-       row-gap: 25px;
+
+    .rightpart .connexion {
+        padding-left: 15px;
+        font-size: 17px;
+        row-gap: 25px;
     }
-    .rightpart .connexion .convmails form{
+
+    .rightpart .connexion .convmails form {
         row-gap: 20px;
     }
 }
