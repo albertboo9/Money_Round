@@ -15,14 +15,19 @@ function LetStart() {
         Let’s Start To Keep Your Money Safe
         <div className="all-btn">
           {/* Animation du bouton "Start Here" avec rebond */}
-          <motion.button
-            className="classic-btn"
-            animate={{ y: [0, -5, 0] }}
-            transition={{ repeat: Infinity, repeatType: "reverse", duration: 1 }}
-          >
-            Start Here
-          </motion.button>
-
+          <a href="/create-account">
+            <motion.button
+              className="classic-btn"
+              animate={{ y: [0, -5, 0] }}
+              transition={{
+                repeat: Infinity,
+                repeatType: "reverse",
+                duration: 1,
+              }}
+            >
+              Start Here
+            </motion.button>
+          </a>
           {/* Bouton Explore Now */}
           <motion.button
             className="classic-btn"

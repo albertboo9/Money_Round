@@ -4,6 +4,8 @@ import facebook from '../assets/facebook.png'
 import sablier from '../assets/sablier.png'
 import {useState} from 'react'
 
+import { useNavigate } from 'react-router-dom'
+
 import axios from 'axios'
 import "../styles/createaccount.css"
 import CustomAlert from '../composants/Customalert'
@@ -20,6 +22,7 @@ const Createaccount = () => {
     const [errors, setErrors] = useState({})
     //afficher l'alerte
     const [alert, setAlert] = useState("")
+    const navigate = useNavigate()
 
 
     // fonction pour verifier la validite d'une adrres email
@@ -155,7 +158,7 @@ const Createaccount = () => {
 
             <div className='register'>
                 <div>Already have an account?</div>
-                <a href="./Login">Login</a>
+                <a href="/login">Login</a>
             </div>
         </div>
         <div className='espace'>
