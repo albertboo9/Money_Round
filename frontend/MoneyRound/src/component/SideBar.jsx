@@ -1,11 +1,11 @@
-import 'boxicons'
-import '../boxicons-master/css/boxicons.css'
+import "boxicons";
+import "../boxicons-master/css/boxicons.css";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 import logo from "./logo2.png";
-import './SlideBar.css';
+import "./SlideBar.css";
 
 // ... (Onglet component remains unchanged)
 function Onglet({ icon, text, isExpanded, onClick }) {
@@ -35,7 +35,7 @@ function Onglet({ icon, text, isExpanded, onClick }) {
           color: "var(--text-color)",
         }}
       />
-      
+
       <AnimatePresence>
         {isExpanded ? (
           <motion.span
@@ -85,7 +85,7 @@ Onglet.propTypes = {
 };
 // End of Onglet component
 
-export default function SlideBar({isExpanded, setIsExpanded}) {
+export default function SlideBar({ isExpanded, setIsExpanded }) {
   const [isMobile, setIsMobile] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0); // Nouveau state pour la hauteur du header
   const navigate = useNavigate();
@@ -93,7 +93,7 @@ export default function SlideBar({isExpanded, setIsExpanded}) {
 
   // Détecter la hauteur du header pour positionner la sidebar
   useEffect(() => {
-    const headerElement = document.querySelector('.main-header'); // Assurez-vous que votre header a cette classe
+    const headerElement = document.querySelector(".main-header"); // Assurez-vous que votre header a cette classe
     if (headerElement) {
       setHeaderHeight(headerElement.offsetHeight);
     }
@@ -105,9 +105,9 @@ export default function SlideBar({isExpanded, setIsExpanded}) {
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []); // Exécute une seule fois au montage pour la hauteur initiale, et gère les redimensionnements
 
@@ -116,12 +116,12 @@ export default function SlideBar({isExpanded, setIsExpanded}) {
       // Pour le mode mobile, si l'overlay est visible, il gère déjà le clic-outside.
       // Pour le mode desktop, on veut que le clic en dehors de la sidebar la ferme,
       // SAUF si le clic provient du bouton toggle du header.
-      
-      const headerToggleButton = document.querySelector('.menu-toggle'); 
+
+      const headerToggleButton = document.querySelector(".menu-toggle");
 
       if (
-        isExpanded && 
-        sidebarRef.current && 
+        isExpanded &&
+        sidebarRef.current &&
         !sidebarRef.current.contains(event.target) && // Clic en dehors de la sidebar
         (!headerToggleButton || !headerToggleButton.contains(event.target)) // ET pas sur le bouton toggle du header
       ) {
@@ -136,20 +136,45 @@ export default function SlideBar({isExpanded, setIsExpanded}) {
   }, [isExpanded, setIsExpanded]);
 
   const menuItems = [
-    { icon: "bx-home", text: "Accueil", path: "/" },
-    { icon: "bx-bell", text: "Notifications", path: "/notifications" },
-    { icon: "bx-grid-alt", text: "Mes Tontines", path: "/tontines" },
-    { icon: "bx-wallet", text: "Mon Solde", path: "/solde" },
-    { icon: "bx-transfer-alt", text: "Transactions", path: "/transactions" },
-    { icon: "bx-cog", text: "Paramètres", path: "/parametres" },
-    { icon: "bx-plus", text: "Créer une Tontine", path: "/creer-tontine" },
-    { icon: "bx-globe", text: "Rejoindre une Tontine", path: "/rejoindre" },
+    { icon: "bx-home", text: "Accueil", path: "/app/home" },
+    { icon: "bx-bell", text: "Notifications", path: "/app/notifications" },
+    { icon: "bx-grid-alt", text: "Mes Tontines", path: "/app/tontines/list" },
+    {
+      icon: "bx-transfer-alt",
+      text: "Transactions",
+      path: "/app/transactions/list",
+    },
+    { icon: "bx-cog", text: "Paramètres", path: "/app/settings" },
+    {
+      icon: "bx-plus",
+      text: "Créer une Tontine",
+      path: "/app/tontines/create",
+    },
+    {
+      icon: "bx-globe",
+      text: "Rejoindre une Tontine",
+      path: "/app/tontines/join",
+    },
+    {
+      icon: "bx-credit-card",
+      text: "Dépôt",
+      path: "/app/transactions/deposit",
+    },
+    {
+      icon: "bx-money-withdraw",
+      text: "Retrait",
+      path: "/app/transactions/withdraw",
+    },
   ];
 
   return (
-    <div style={{ display: "flex", height: "80vh", backgroundColor: "var(--background-color)" }}>
-
-
+    <div
+      style={{
+        display: "flex",
+        height: "80vh",
+        backgroundColor: "var(--background-color)",
+      }}
+    >
       {/* Sidebar */}
       <motion.aside
         ref={sidebarRef}
@@ -169,9 +194,9 @@ export default function SlideBar({isExpanded, setIsExpanded}) {
         }}
         animate={{
           width: isExpanded ? "230px" : isMobile ? "0px" : "60px",
-          x: isMobile && !isExpanded ? -230 : 0
+          x: isMobile && !isExpanded ? -230 : 0,
         }}
-        transition={{ duration: 0.4, ease: "easeInOut"}}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
       >
         {/* Contenu du header de la sidebar, visible UNIQUEMENT en mode mobile */}
         {isMobile && (
@@ -183,7 +208,7 @@ export default function SlideBar({isExpanded, setIsExpanded}) {
               padding: "1rem",
               marginBottom: "1rem",
               borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-              minHeight: "60px" 
+              minHeight: "60px",
             }}
           >
             {isExpanded && (
@@ -199,14 +224,18 @@ export default function SlideBar({isExpanded, setIsExpanded}) {
                 />
               </motion.div>
             )}
-            
+
             {/* Bouton de FERMETURE pour mobile (visible si sidebar ouverte) */}
             {isMobile && isExpanded && (
               <button
                 onClick={() => setIsExpanded(false)}
                 style={{
-                  background: "none", border: "none", color: "var(--text-color)",
-                  cursor: "pointer", fontSize: "1.5rem", padding: "0.5rem",
+                  background: "none",
+                  border: "none",
+                  color: "var(--text-color)",
+                  cursor: "pointer",
+                  fontSize: "1.5rem",
+                  padding: "0.5rem",
                   transition: "background-color 0.3s",
                 }}
               >
@@ -215,9 +244,16 @@ export default function SlideBar({isExpanded, setIsExpanded}) {
             )}
           </div>
         )}
-        
+
         {/* Menu (toujours présent) */}
-        <nav style={{ flex: 1, display: "flex", flexDirection: "column", padding: "0.2rem" }}>
+        <nav
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            padding: "0.2rem",
+          }}
+        >
           {menuItems.map((item) => (
             <Onglet
               key={item.path}
@@ -233,14 +269,19 @@ export default function SlideBar({isExpanded, setIsExpanded}) {
         </nav>
 
         {/* Footer (Déconnexion) */}
-        <div style={{ padding: "0.2rem", borderTop: "1px solid rgba(255, 255, 255, 0.2)" }}>
+        <div
+          style={{
+            padding: "0.2rem",
+            borderTop: "1px solid rgba(255, 255, 255, 0.2)",
+          }}
+        >
           <Onglet
             icon="bx-log-out"
             text="Déconnexion"
             isExpanded={isExpanded}
             onClick={() => {
-                console.log("Déconnexion");
-                if (isMobile) setIsExpanded(false);
+              console.log("Déconnexion");
+              if (isMobile) setIsExpanded(false);
             }}
           />
         </div>
@@ -268,16 +309,16 @@ export default function SlideBar({isExpanded, setIsExpanded}) {
           />
         )}
       </AnimatePresence>
-          <div style={{ 
-      flex: 1,
-      marginLeft: isMobile ? 0 : (isExpanded ? "230px" : "60px"),
-      transition: "margin-left 0.3s ease",
-      // Ajustement de la hauteur du contenu principal pour éviter la scrollbar
-      minHeight: `calc(100vh - ${headerHeight}px)`, 
-      marginTop: isMobile ? 0 : headerHeight // Le contenu commence sous le header
-    }}>
-      {/* Ici le contenu principal de la page, par exemple votre <Outlet /> */}
-      </div>
+      <div
+        style={{
+          flex: 1,
+          marginLeft: isMobile ? 0 : isExpanded ? "230px" : "60px",
+          transition: "margin-left 0.3s ease",
+          // Ajustement de la hauteur du contenu principal pour éviter la scrollbar
+          minHeight: `calc(100vh - ${headerHeight}px)`,
+          marginTop: isMobile ? 0 : headerHeight, // Le contenu commence sous le header
+        }}
+      ></div>
     </div>
   );
 }

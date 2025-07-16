@@ -9,7 +9,6 @@ function Slider() {
   const [indexNext, setIndexNext] = useState(1);
   const eltRef = useRef([]);
 
-  
   useEffect(() => {
     const timer = setInterval(() => {
       nextSlide();
@@ -24,11 +23,11 @@ function Slider() {
     setIndexNext((indexSlide + 2) % sliderImages.length);
   };
 
-  const prevSlide = () => {
+/*   const prevSlide = () => {
     setIndexPrev(indexSlide);
     setIndexSlide((indexSlide - 1 + sliderImages.length) % sliderImages.length);
     setIndexNext(indexSlide);
-  };
+  }; */
 
   return (
     <section className="big-container-slider">
@@ -61,6 +60,9 @@ function Slider() {
                 >
                   {image.title}
                 </motion.h2>
+                 <a href="/create-account" style={{
+                  textDecoration: "none", color: "inherit", 
+                 }}>
                 <motion.p
                   className="caption"
                   initial={{ opacity: 0, y: 10 }}
@@ -69,35 +71,25 @@ function Slider() {
                 >
                   {image.caption}
                 </motion.p>
-                <motion.button
-                  className="classic-btn floating-button"
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ repeat: Infinity, repeatType: "mirror", duration: 1.5, ease: "easeInOut" }}
-                >
-                  <div>Get Free Now</div>
-                  <span className="material-icons">outbound</span>
-                </motion.button>
+               
+                  <motion.button
+                    className="classic-btn floating-button"
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{
+                      repeat: Infinity,
+                      repeatType: "mirror",
+                      duration: 1.5,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <div>Get Free Now</div>
+                    <span className="material-icons">outbound</span>
+                  </motion.button>
+                </a>
               </motion.div>
             </motion.div>
           ))}
         </div>
-
-        <motion.button 
-          className="slider-button-next"
-          onClick={nextSlide}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <span className="material-icons">arrow_forward_ios</span>
-        </motion.button>
-        <motion.button 
-          className="slider-button-prev"
-          onClick={prevSlide}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <span className="material-icons">arrow_back_ios</span>
-        </motion.button>
 
         <div className="slider-pagination">
           {sliderImages.map((_, i) => (
