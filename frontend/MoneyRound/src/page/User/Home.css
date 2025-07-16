@@ -1,0 +1,89 @@
+/* Skeleton Styles */
+.skeleton-block {
+  background-color: var(--medium-grey);
+  width: 100%;
+}
+
+.skeleton-text {
+  background-color: var(--medium-grey);
+  border-radius: 4px;
+}
+
+.skeleton-circle {
+  background-color: var(--medium-grey);
+}
+
+/* Animation spécifique pour les squelettes */
+@keyframes skeletonPulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.skeleton-block, .skeleton-text, .skeleton-circle {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+/* Layout spécifique */
+.home-container {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.balance-card {
+  grid-column: 1 / -1;
+}
+
+.tontines-card {
+  grid-column: span 2;
+}
+
+.tontines-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+@media (max-width: 1024px) {
+  .tontines-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-container {
+    padding: 1rem;
+  }
+  
+  .home-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tontines-grid {
+    grid-template-columns: 1fr;
+  }
+}

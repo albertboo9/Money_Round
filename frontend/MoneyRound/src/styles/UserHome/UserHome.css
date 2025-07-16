@@ -53,3 +53,45 @@
     padding: 1rem;
   }
 }
+
+/* Structure de base */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Prend toute la hauteur de la vue */
+  overflow: hidden; /* Empêche le défilement global */
+}
+
+/* Conteneur principal */
+.content-container {
+  display: flex;
+  flex: 1; /* Prend tout l'espace disponible */
+  overflow: hidden; /* Important pour le défilement interne */
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px; /* Largeur fixe */
+  height: 100%; /* Prend toute la hauteur disponible */
+  overflow-y: auto; /* Défilement si contenu trop long */
+  flex-shrink: 0; /* Empêche le rétrécissement */
+  position: sticky;
+  top: 0;
+}
+
+/* Contenu principal */
+.main-content {
+  flex: 1; /* Prend tout l'espace restant */
+  overflow-y: auto; /* Active le défilement vertical */
+  padding: 20px; /* Espacement interne */
+}
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100; /* S'assure qu'il reste au-dessus */
+  width: 100%;
+  flex-shrink: 0; /* Empêche le rétrécissement */
+}
+
