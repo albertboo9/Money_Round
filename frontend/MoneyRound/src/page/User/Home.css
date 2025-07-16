@@ -1,54 +1,96 @@
-/* Skeleton Styles */
-.skeleton-block {
-  background-color: var(--medium-grey);
-  width: 100%;
+:root {
+  --card-bg: var(--background-card-color);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --card-radius: 12px;
+  --section-gap: 1.5rem;
 }
 
-.skeleton-text {
-  background-color: var(--medium-grey);
-  border-radius: 4px;
-}
-
-.skeleton-circle {
-  background-color: var(--medium-grey);
-}
-
-/* Animation spécifique pour les squelettes */
-@keyframes skeletonPulse {
-  0%, 100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 0.3;
-  }
-}
-
-.skeleton-block, .skeleton-text, .skeleton-circle {
-  animation: skeletonPulse 1.5s ease-in-out infinite;
-}
-
-/* Layout spécifique */
+/* Layout de base */
 .home-container {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--section-gap);
+  min-height: 100%;
 }
 
+/* Header utilisateur */
+.user-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.user-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.stat-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--small-grey);
+  border: 1px solid var(--medium-grey);
+}
+
+/* Grille responsive */
 .home-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: var(--section-gap);
 }
 
+/* Cartes */
 .card {
   background: var(--card-bg);
-  border-radius: 12px;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
   padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Cartes spécifiques */
 .balance-card {
   grid-column: 1 / -1;
+}
+
+.balance-values {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.balance-main, .balance-secondary {
+  display: flex;
+  flex-direction: column;
 }
 
 .tontines-card {
@@ -61,6 +103,10 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
+.transactions-card {
+  grid-row: span 2;
+}
+
 .actions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
@@ -68,9 +114,22 @@
   padding: 1rem 0;
 }
 
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Responsive */
 @media (max-width: 1024px) {
   .tontines-card {
     grid-column: 1 / -1;
+  }
+  
+  .balance-values {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 
@@ -79,11 +138,44 @@
     padding: 1rem;
   }
   
+  .user-header {
+    flex-direction: column;
+  }
+  
+  .user-stats {
+    justify-content: space-between;
+  }
+  
   .home-grid {
     grid-template-columns: 1fr;
   }
   
   .tontines-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .actions-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .user-stats {
+    flex-wrap: wrap;
+  }
+  
+  .stat-badge {
+    width: 45%;
+    margin-bottom: 1rem;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .actions-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

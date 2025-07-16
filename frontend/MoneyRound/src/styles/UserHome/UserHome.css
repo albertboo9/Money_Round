@@ -1,21 +1,21 @@
-#userHome{
-    padding-left:60px ;
-    padding-top: 30px;
-    }
-    #userHome .box-user-information{
-        box-shadow: 1px 1px 10px 1px gray;
-        border-radius: 7px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        }
-        #userHome .box-user-information .title-evaluation{
-            display: flex;
-            align-items: center;
-            font-size: 20px;
-        }
-    
-        .app-layout {
+#userHome {
+  padding-left: 60px;
+  padding-top: 30px;
+}
+#userHome .box-user-information {
+  box-shadow: 1px 1px 10px 1px gray;
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#userHome .box-user-information .title-evaluation {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+}
+
+.app-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -31,7 +31,7 @@
   justify-content: space-between;
   padding: 1rem;
   background-color: var(--header-bg);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .content-container {
@@ -83,7 +83,8 @@
 .main-content {
   flex: 1; /* Prend tout l'espace restant */
   overflow-y: auto; /* Active le défilement vertical */
-  padding: 20px; /* Espacement interne */
+  padding: 0px; /* Espacement interne */
+  margin: 0%;
 }
 
 /* Header */
@@ -94,4 +95,3 @@
   width: 100%;
   flex-shrink: 0; /* Empêche le rétrécissement */
 }
-

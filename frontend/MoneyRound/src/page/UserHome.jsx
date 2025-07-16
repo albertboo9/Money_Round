@@ -21,7 +21,7 @@ function UserHome() {
           setIsExpanded={setIsExpanded} 
         />
         
-        <main className="main-content">
+        <main className="main-content" >
           <Outlet />
         </main>
       </div>
