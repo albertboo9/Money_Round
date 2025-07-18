@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { useMediaQuery } from 'react-responsive';
 import './Home.css';
+import UserHeader from '../../component/home/UserHeader/UserHeader.jsx';
+import BalanceCard from '../../component/home/BalanceCard/BalanceCard.jsx';
 
 export default function Home() {
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
@@ -57,7 +59,7 @@ export default function Home() {
     >
       {/* Header avec stats utilisateur */}
       <motion.header className="user-header" variants={itemVariants}>
-        <div className="user-greeting">
+{/*         <div className="user-greeting">
           <motion.div 
             className="skeleton-circle"
             variants={skeletonVariants}
@@ -117,14 +119,15 @@ export default function Home() {
               />
             </motion.div>
           ))}
-        </div>
+        </div> */}
+        <UserHeader />
       </motion.header>
 
       {/* Grid Layout */}
       <div className="home-grid">
         {/* Balance Summary */}
         <motion.section className="card balance-card" variants={itemVariants}>
-          <div className="balance-header">
+{/*           <div className="balance-header">
             <motion.div 
               className="skeleton-text"
               style={{ width: '40%', height: '24px' }}
@@ -166,7 +169,9 @@ export default function Home() {
                 animate="animate"
               />
             </div>
-          </div>
+          </div> */}
+          <BalanceCard />
+
         </motion.section>
 
         {/* Active Tontines */}

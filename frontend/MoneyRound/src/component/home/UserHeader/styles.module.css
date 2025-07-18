@@ -1,0 +1,289 @@
+/* Base Styles */
+.header {
+  position: relative;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: var(--shadow-md);
+  background: var(--header-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--header-border);
+}
+
+.headerBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  opacity: 0.9;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+/* Profile Section */
+.profileSection {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.avatarContainer {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 2rem;
+  box-shadow: var(--shadow-md);
+  border: 3px solid var(--avatar-border);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.reputationBadge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--avatar-border);
+}
+
+.reputationBadge.blue {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.reputationBadge.green {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.reputationBadge.gold {
+  background-color: var(--gold-accent);
+  color: white;
+}
+
+.repIcon {
+  font-size: 1rem;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.welcomeContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.welcomeIcon {
+  font-size: 1.5rem;
+  color: var(--welcome-icon-color);
+}
+
+.profileInfo h2 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.profileInfo h2 span {
+  color: var(--primary-color);
+}
+
+.welcomeMessage {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0;
+  font-style: italic;
+}
+
+/* Stats Section */
+.statsContainer {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.statBadge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 80px;
+}
+
+.badgeCircle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  background-color: var(--stat-badge-bg);
+}
+
+.badgeCircle.primary {
+  color: var(--primary-color);
+}
+
+.badgeCircle.secondary {
+  color: var(--secondary-color);
+}
+
+.badgeCircle.gold {
+  color: var(--gold-accent);
+}
+
+.statIcon {
+  font-size: 1.5rem;
+}
+
+.badgeContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badgeValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.badgeLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.4;
+  max-width: 100px;
+}
+
+/* Light Mode */
+:root {
+  --header-bg: rgba(255, 255, 255, 0.7);
+  --header-border: rgba(255, 255, 255, 0.5);
+  --header-gradient: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  --avatar-border: white;
+  --stat-badge-bg: rgba(173, 209, 173, 0.8);
+  --welcome-icon-color: #f59e0b;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --gold-accent: #f59e0b;
+  --border-radius: 16px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --header-bg: var(--background-card-color);
+    --header-border: rgba(255, 255, 255, 0.1);
+    --header-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+    --avatar-border: #1e293b;
+    --stat-badge-bg: rgba(30, 41, 59, 0.8);
+    --welcome-icon-color: #f59e0b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+  }
+
+  .badgeCircle {
+    background-color: rgba(55, 57, 61, 0.6);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .headerContent {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+  
+  .statsContainer {
+    width: 100%;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  
+  .statBadge {
+    min-width: auto;
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 1.25rem;
+  }
+  
+  .avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 1.6rem;
+  }
+  
+  .profileInfo h2 {
+    font-size: 1.3rem;
+  }
+  
+  .welcomeMessage {
+    font-size: 0.85rem;
+  }
+  
+  .badgeCircle {
+    width: 50px;
+    height: 50px;
+    font-size: 1.3rem;
+  }
+  
+  .statIcon {
+    font-size: 1.3rem;
+  }
+  
+  .badgeValue {
+    font-size: 1.1rem;
+  }
+  
+  .badgeLabel {
+    font-size: 0.7rem;
+  }
+}

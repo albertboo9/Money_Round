@@ -1,15 +1,13 @@
 import { useState } from 'react';
+import { useApi } from '../hook/useApi';
 import Notification from './Notifications';
-import SearchBar from './SearchBar';
-import LetterAvatars from './Avatar';
-import PropTypes from 'prop-types'
-
-export default function Header({isExpanded, setIsExpanded}) {
+import styles from './Header.module.css';
+import { FiMenu, FiX, FiSearch, FiBell } from 'react-icons/fi';
+import PropTypes from 'prop-types';
+export default function Header({ isExpanded, setIsExpanded }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const { data: user } = useApi('user');
 
-  
-
-  // Données de démonstration pour les notifications
   const notificationData = [
     {
       id: 1,
@@ -19,29 +17,48 @@ export default function Header({isExpanded, setIsExpanded}) {
     }
   ];
 
-
   return (
-    <header className="main-header" >
-      <div className="header-left">
-        <button className="menu-toggle" onClick={() => setIsExpanded(!isExpanded)}>
-          <i className={`bx ${isExpanded ? "bx-x" : "bx-menu"}`}></i>
-        </button>
-      </div>
+    <header className={styles.header}>
+      {/* Partie gauche - Bouton menu */}
+      <button 
+        className={styles.menuToggle} 
+        onClick={() => setIsExpanded(!isExpanded)}
+        aria-label="Toggle menu"
+      >
+        {isExpanded ? <FiX size={24} /> : <FiMenu size={24} />}
+      </button>
 
-      <div className="header-center" >
-        <SearchBar 
+      {/* Partie centrale - Barre de recherche */}
+      <div className={styles.searchContainer}>
+        <FiSearch className={styles.searchIcon} />
+        <input
+          type="text"
+          placeholder="Rechercher..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          className={styles.searchInput}
         />
       </div>
 
-      <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap:2}}>
-       
+      {/* Partie droite - Notifications + Avatar */}
+      <div className={styles.rightSection}>
         <Notification 
-          count={3} 
+          count={notificationData.filter(n => !n.isRead).length} 
           notifications={notificationData} 
+          icon={<FiBell className={styles.notificationIcon} />}
         />
-         <LetterAvatars />
+        
+        {user && (
+          <div className={styles.avatar}>
+            {user.profilePicture ? (
+              <img src={user.profilePicture} alt={user.fullName} />
+            ) : (
+              <div className={styles.initials}>
+                {user.fullName.split(' ').map(n => n[0]).join('')}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </header>
   );
