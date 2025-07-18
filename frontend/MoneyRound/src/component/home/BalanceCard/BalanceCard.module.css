@@ -9,14 +9,15 @@
 /* Carte Principale */
 .mainCard {
   background: var(--background-card-color);
-  border-radius: 16px;
-  padding: 1.5rem;
+  border-radius: 20px;
+  padding: 1.75rem;
   color: white;
   position: relative;
   overflow: hidden;
   border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   z-index: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .cardGradient {
@@ -26,7 +27,7 @@
   right: 0;
   bottom: 0;
   background: var(--degrade);
-  opacity: 0.9;
+  opacity: 0.95;
   z-index: -1;
 }
 
@@ -39,52 +40,56 @@
 }
 
 .cardIconContainer {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .cardIcon {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   color: white;
 }
 
 .cardHeader h2 {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   font-weight: 600;
   margin: 0;
   color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .cardSubtitle {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0.25rem 0 0 0;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0.3rem 0 0 0;
 }
 
 .balanceDisplay {
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
+  align-items: center;
   margin: 2rem 0;
   z-index: 2;
 }
 
-.currencySymbol {
-  font-size: 1rem;
-  opacity: 0.9;
-}
-
 .balanceAmount {
-  font-size: 2.5rem;
+  font-size: 2.75rem;
   font-weight: 700;
   letter-spacing: -1px;
   line-height: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.currency {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+  opacity: 0.9;
 }
 
 .cardFooter {
@@ -97,32 +102,37 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: white;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+  cursor: pointer;
 }
 
 .providerLogo {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(5px);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: bold;
 }
 
 /* Section Épargne */
 .compactSavings {
-  background: var(--background-card-color);
-  border-radius: 16px;
+  background: white;
+  border-radius: 20px;
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
 }
 
 .savingsHeader {
@@ -131,12 +141,30 @@
   align-items: center;
   cursor: pointer;
   padding: 0.5rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.headerIcon {
+  font-size: 1.25rem;
+  color: var(--primary-color);
 }
 
 .savingsHeader h3 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin: 0;
-  color: var(--text-color);
+  color: #1F2937;
+}
+
+.chevronIcon {
+  font-size: 1.25rem;
+  color: #6B7280;
+  transition: all 0.3s ease;
 }
 
 .savingsOverview {
@@ -144,7 +172,7 @@
   justify-content: space-between;
   align-items: center;
   margin-top: 1rem;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .totalSaved {
@@ -154,50 +182,63 @@
 }
 
 .savingsLabel {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #6B7280;
+}
+
+.labelIcon {
+  font-size: 0.9rem;
+  color: #6B7280;
 }
 
 .savingsValue {
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-top: 0.25rem;
-  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  color: #1F2937;
 }
 
 .savingsVisualization {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .radialChart {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   flex-shrink: 0;
 }
 
 .radialBackground {
   fill: none;
-  stroke: var(--medium-grey);
-  stroke-width: 8;
+  stroke: #E5E7EB;
+  stroke-width: 10;
 }
 
 .radialCenter {
-  fill: var(--background-card-color);
+  fill: white;
 }
 
 .radialText {
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  fill: var(--text-color);
+  fill: #1F2937;
+}
+
+.radialSubtext {
+  font-size: 0.7rem;
+  fill: #6B7280;
 }
 
 .savingsBreakdown {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
   flex: 1;
 }
 
@@ -208,21 +249,22 @@
 }
 
 .breakdownDot {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   flex-shrink: 0;
 }
 
 .breakdownLabel {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+  font-size: 0.9rem;
+  color: #6B7280;
+  margin-bottom: 0.15rem;
 }
 
 .breakdownValue {
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  color: var(--text-color);
+  color: #1F2937;
 }
 
 .savingsDetails {
@@ -231,15 +273,23 @@
 }
 
 .detailCard {
-  background: rgba(0, 0, 0, 0.03);
-  border-radius: 12px;
-  padding: 1.25rem;
+  background: #F9FAFB;
+  border-radius: 16px;
+  padding: 1.5rem;
 }
 
 .detailCard h4 {
-  font-size: 0.95rem;
-  margin: 0 0 1rem 0;
-  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+  margin: 0 0 1.25rem 0;
+  color: #1F2937;
+}
+
+.detailIcon {
+  font-size: 1.1rem;
+  color: var(--primary-color);
 }
 
 .detailProgress {
@@ -249,50 +299,65 @@
 }
 
 .progressTrack {
-  height: 8px;
-  background: var(--medium-grey);
-  border-radius: 4px;
+  height: 10px;
+  background: #E5E7EB;
+  border-radius: 5px;
   overflow: hidden;
 }
 
 .progressBar {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 5px;
   transform-origin: left;
 }
 
 .progressLabel {
   display: flex;
   justify-content: space-between;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+  font-size: 0.9rem;
+  color: #6B7280;
+}
+
+.progressIcon {
+  margin-right: 0.3rem;
 }
 
 /* Carte Transaction */
 .transactionCard {
-  background: var(--background-card-color);
-  border-radius: 16px;
+  background: white;
+  border-radius: 20px;
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
 }
 
 .transactionHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.transactionHeader .headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.transactionHeader .headerIcon {
+  color: #6B7280;
 }
 
 .transactionHeader h3 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   margin: 0;
-  color: var(--text-color);
+  color: #1F2937;
 }
 
 .transactionDate {
   font-size: 0.85rem;
-  color: var(--text-secondary);
+  color: #6B7280;
 }
 
 .transactionContent {
@@ -302,16 +367,27 @@
 }
 
 .transactionIcon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: rgba(92, 235, 112, 0.1);
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-color);
   font-size: 1.5rem;
   flex-shrink: 0;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.transactionArrow {
+  color: #10B981;
+}
+
+.transactionIcon.withdrawal {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.transactionIcon.withdrawal .transactionArrow {
+  color: #EF4444;
 }
 
 .transactionInfo {
@@ -319,14 +395,13 @@
 }
 
 .transactionAmount {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .transactionType {
   font-size: 0.9rem;
-  color: var(--text-secondary);
+  color: #6B7280;
   margin-top: 0.5rem;
   display: flex;
   align-items: center;
@@ -334,11 +409,49 @@
 }
 
 .tontineTag {
-  background: rgba(92, 155, 249, 0.1);
-  color: var(--secondary-color);
+  background: rgba(59, 130, 246, 0.1);
+  color: #3B82F6;
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .compactSavings,
+  .transactionCard {
+    background: var(--background-card-color);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .savingsHeader h3,
+  .transactionHeader h3,
+  .savingsValue,
+  .breakdownValue,
+  .detailCard h4,
+  .radialText {
+    color: white;
+  }
+
+  .savingsLabel,
+  .breakdownLabel,
+  .transactionDate,
+  .radialSubtext {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .detailCard {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .radialBackground {
+    stroke: rgba(255, 255, 255, 0.1);
+  }
+
+  .radialCenter {
+    fill: var(--background-card-color);
+  }
 }
 
 /* Responsive */
@@ -351,24 +464,25 @@
   .mainCard,
   .compactSavings,
   .transactionCard {
-    padding: 1.25rem;
+    padding: 1.5rem;
+    border-radius: 18px;
   }
   
   .balanceAmount {
-    font-size: 2rem;
+    font-size: 2.25rem;
   }
   
   .savingsVisualization {
-    gap: 1rem;
+    gap: 1.5rem;
   }
   
   .radialChart {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
   }
   
   .transactionContent {
-    gap: 1rem;
+    gap: 1.25rem;
   }
 }
 
@@ -380,20 +494,20 @@
   .mainCard,
   .compactSavings,
   .transactionCard {
-    padding: 1rem;
-    border-radius: 12px;
+    padding: 1.25rem;
+    border-radius: 16px;
   }
   
   .cardHeader {
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
   }
   
   .balanceDisplay {
-    margin: 1.5rem 0;
+    margin: 1.75rem 0;
   }
   
   .balanceAmount {
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
   
   .savingsOverview {
@@ -412,12 +526,12 @@
   }
   
   .transactionIcon {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     font-size: 1.25rem;
   }
   
   .transactionAmount {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 }
