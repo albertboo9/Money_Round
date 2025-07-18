@@ -38,5 +38,5 @@
   --medium-grey: #dcdcdc;
   --small-grey: #f5f5f5;
 
-  --degrade: linear-gradient(45deg, #5ceb70, #5c6df9);
+  --degrade: linear-gradient(135deg,#5c6df9, #5ceb8c, #5c9bf9);
 }

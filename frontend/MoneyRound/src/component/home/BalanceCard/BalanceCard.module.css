@@ -1,0 +1,537 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  padding: 0.5rem;
+}
+
+/* Carte Principale */
+.mainCard {
+  background: var(--background-card-color);
+  border-radius: 20px;
+  padding: 1.75rem;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cardGradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--degrade);
+  opacity: 0.95;
+  z-index: -1;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  z-index: 2;
+}
+
+.cardIconContainer {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.cardIcon {
+  font-size: 1.75rem;
+  color: white;
+}
+
+.cardHeader h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.cardSubtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0.3rem 0 0 0;
+}
+
+.balanceDisplay {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  z-index: 2;
+}
+
+.balanceAmount {
+  font-size: 2.75rem;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.currency {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+  opacity: 0.9;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: flex-end;
+  z-index: 2;
+}
+
+.providerBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+  cursor: pointer;
+}
+
+.providerLogo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* Section Épargne */
+.compactSavings {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.savingsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.headerIcon {
+  font-size: 1.25rem;
+  color: var(--primary-color);
+}
+
+.savingsHeader h3 {
+  font-size: 1.2rem;
+  margin: 0;
+  color: #1F2937;
+}
+
+.chevronIcon {
+  font-size: 1.25rem;
+  color: #6B7280;
+  transition: all 0.3s ease;
+}
+
+.savingsOverview {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 1.5rem;
+}
+
+.totalSaved {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.savingsLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #6B7280;
+}
+
+.labelIcon {
+  font-size: 0.9rem;
+  color: #6B7280;
+}
+
+.savingsValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  color: #1F2937;
+}
+
+.savingsVisualization {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.radialChart {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+}
+
+.radialBackground {
+  fill: none;
+  stroke: #E5E7EB;
+  stroke-width: 10;
+}
+
+.radialCenter {
+  fill: white;
+}
+
+.radialText {
+  font-size: 1.5rem;
+  font-weight: 700;
+  fill: #1F2937;
+}
+
+.radialSubtext {
+  font-size: 0.7rem;
+  fill: #6B7280;
+}
+
+.savingsBreakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
+}
+
+.breakdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.breakdownDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.breakdownLabel {
+  font-size: 0.9rem;
+  color: #6B7280;
+  margin-bottom: 0.15rem;
+}
+
+.breakdownValue {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.savingsDetails {
+  margin-top: 1.5rem;
+  overflow: hidden;
+}
+
+.detailCard {
+  background: #F9FAFB;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.detailCard h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+  margin: 0 0 1.25rem 0;
+  color: #1F2937;
+}
+
+.detailIcon {
+  font-size: 1.1rem;
+  color: var(--primary-color);
+}
+
+.detailProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.progressTrack {
+  height: 10px;
+  background: #E5E7EB;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: 5px;
+  transform-origin: left;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #6B7280;
+}
+
+.progressIcon {
+  margin-right: 0.3rem;
+}
+
+/* Carte Transaction */
+.transactionCard {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.transactionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.transactionHeader .headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.transactionHeader .headerIcon {
+  color: #6B7280;
+}
+
+.transactionHeader h3 {
+  font-size: 1.2rem;
+  margin: 0;
+  color: #1F2937;
+}
+
+.transactionDate {
+  font-size: 0.85rem;
+  color: #6B7280;
+}
+
+.transactionContent {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.transactionIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.transactionArrow {
+  color: #10B981;
+}
+
+.transactionIcon.withdrawal {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.transactionIcon.withdrawal .transactionArrow {
+  color: #EF4444;
+}
+
+.transactionInfo {
+  flex: 1;
+}
+
+.transactionAmount {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.transactionType {
+  font-size: 0.9rem;
+  color: #6B7280;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tontineTag {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3B82F6;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .compactSavings,
+  .transactionCard {
+    background: var(--background-card-color);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .savingsHeader h3,
+  .transactionHeader h3,
+  .savingsValue,
+  .breakdownValue,
+  .detailCard h4,
+  .radialText {
+    color: white;
+  }
+
+  .savingsLabel,
+  .breakdownLabel,
+  .transactionDate,
+  .radialSubtext {
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .detailCard {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .radialBackground {
+    stroke: rgba(255, 255, 255, 0.1);
+  }
+
+  .radialCenter {
+    fill: var(--background-card-color);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    gap: 1.25rem;
+    padding: 0.25rem;
+  }
+  
+  .mainCard,
+  .compactSavings,
+  .transactionCard {
+    padding: 1.5rem;
+    border-radius: 18px;
+  }
+  
+  .balanceAmount {
+    font-size: 2.25rem;
+  }
+  
+  .savingsVisualization {
+    gap: 1.5rem;
+  }
+  
+  .radialChart {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .transactionContent {
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    gap: 1rem;
+  }
+  
+  .mainCard,
+  .compactSavings,
+  .transactionCard {
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
+  
+  .cardHeader {
+    margin-bottom: 1.25rem;
+  }
+  
+  .balanceDisplay {
+    margin: 1.75rem 0;
+  }
+  
+  .balanceAmount {
+    font-size: 2rem;
+  }
+  
+  .savingsOverview {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  
+  .savingsVisualization {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .transactionContent {
+    gap: 1rem;
+  }
+  
+  .transactionIcon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+  
+  .transactionAmount {
+    font-size: 1.3rem;
+  }
+}
