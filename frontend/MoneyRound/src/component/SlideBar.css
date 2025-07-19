@@ -65,7 +65,7 @@
   
   background: var(--accent-color);
   color: var(--text-color);
-  height: 100vh;
+/*   height: 100vh; */
   position: fixed;
   top: 0;
   left: 0;
@@ -171,5 +171,25 @@
 @media (min-width: 769px) {
   .sidebar {
     position: sticky;
+  }
+}
+
+.sidebar-item.active {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.sidebar-item.active i {
+  color: white !important;
+}
+
+.sidebar-item.active .item-text {
+  color: white !important;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

@@ -3,9 +3,9 @@ import { useState } from "react";
 import styles from "./BalanceCard.module.css";
 import { useApi } from "../../../hook/useApi";
 import SkeletonBalance from "./SkeletonBalance";
-import { 
+import {
   
-  FiCreditCard, 
+  FiCreditCard,
   FiDollarSign,
   FiPieChart,
   FiCalendar,
@@ -31,11 +31,11 @@ const BalanceCard = () => {
   const formattedFuture = formatCurrency(gainfuture);
 
   const lastTransaction = transactions?.[0];
-  const transactionDate = lastTransaction?.date 
-    ? new Date(lastTransaction.date).toLocaleDateString('fr-FR', { 
-        day: '2-digit', 
-        month: 'short', 
-        year: 'numeric' 
+  const transactionDate = lastTransaction?.date
+    ? new Date(lastTransaction.date).toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
       })
     : "--/--/----";
 
@@ -105,7 +105,7 @@ const BalanceCard = () => {
             <FiPieChart className={styles.headerIcon} />
             <h3>Votre Épargne Totale</h3>
           </div>
-          <motion.div 
+          <motion.div
             animate={{ rotate: activeView === 'savings' ? 180 : 0 }}
             transition={{ duration: 0.3 }}
           >
